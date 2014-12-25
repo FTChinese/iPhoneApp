@@ -1,42 +1,27 @@
 //
-//  ViewController.swift
+//  WKWebPageController.swift
 //  FT Academy
 //
 //  Created by Zhang Oliver on 14/12/25.
 //  Copyright (c) 2014年 Zhang Oliver. All rights reserved.
 //
 
+import Foundation
 import UIKit
 import WebKit
 
-class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate {
 
-    @IBOutlet weak var containerView: UIWebView!
+class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDelegate {
     
-    var webView: WKWebView?
-    
-    override func loadView() {
-        super.loadView()
-        checkWKSupport()
-        if supportWK == true {
-            self.webView = WKWebView()
-            self.view = self.webView!
-            self.webView!.navigationDelegate = self
-        } else {
-            containerView.delegate = self
-        }
-    }
-    
+
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        var url = NSURL(string:"http://m.ftchinese.com/phone.html")
+        //webView!.navigationDelegate = self
+        var url = NSURL(string:"http://m.ftchinese.com/")
         var req = NSURLRequest(URL:url!)
-        if supportWK == true {
-            self.webView!.loadRequest(req)
-        } else {
-            containerView.loadRequest(req)
-        }
+        //webView!.loadRequest(req)
+        println ("opened")
     }
     
     override func didReceiveMemoryWarning() {
@@ -50,7 +35,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     override func prefersStatusBarHidden() -> Bool {
         return true
     }
-    
+
+    /*
     func webView(webView: WKWebView!, decidePolicyForNavigationAction navigationAction: WKNavigationAction!, decisionHandler: ((WKNavigationActionPolicy) -> Void)!) {
         if navigationAction.navigationType == .LinkActivated{
             //UIApplication.sharedApplication().openURL(navigationAction.request.URL)
@@ -73,27 +59,28 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         if supportWK == true {
             self.performSegueWithIdentifier("WKWebPageSegue", sender: nil)
         } else {
-        
+            
         }
-    }
-    /*
-    func webView(webView: UIWebView, shouldStartLoadWithRequest r: NSURLRequest, navigationType nt: UIWebViewNavigationType) -> Bool {
-        if r.URL.scheme == "play" {
-            println("user would like to hear the podcast")
-            return false
-        }
-        if nt == .LinkClicked { // disable link-clicking
-            if self.canNavigate {
-                return true
-            }
-            println("user would like to navigation to \(r.URL)")
-            // this is how you would open in Mobile Safari
-            // UIApplication.sharedApplication().openURL(r.URL)
-            return false
-        }
-        return true
     }
 */
+    /*
+    func webView(webView: UIWebView, shouldStartLoadWithRequest r: NSURLRequest, navigationType nt: UIWebViewNavigationType) -> Bool {
+    if r.URL.scheme == "play" {
+    println("user would like to hear the podcast")
+    return false
+    }
+    if nt == .LinkClicked { // disable link-clicking
+    if self.canNavigate {
+    return true
+    }
+    println("user would like to navigation to \(r.URL)")
+    // this is how you would open in Mobile Safari
+    // UIApplication.sharedApplication().openURL(r.URL)
+    return false
+    }
+    return true
+    }
+    */
     
 }
 

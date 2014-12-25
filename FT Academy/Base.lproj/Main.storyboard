@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6211" systemVersion="14A298i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6204"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="FT_Academy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -15,11 +16,59 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7N1-zi-Gm7">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </webView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="7N1-zi-Gm7" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="aFF-E5-V7b"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="7N1-zi-Gm7" secondAttribute="bottom" id="fNK-lo-Jpr"/>
+                            <constraint firstItem="7N1-zi-Gm7" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="ko6-gr-bCr"/>
+                            <constraint firstAttribute="trailing" secondItem="7N1-zi-Gm7" secondAttribute="trailing" id="sGY-bX-noe"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="containerView" destination="7N1-zi-Gm7" id="c6B-sB-lB8"/>
+                        <outlet property="webView" destination="7N1-zi-Gm7" id="b8j-qT-UKb"/>
+                        <segue destination="zfb-r0-mCC" kind="presentation" identifier="WKWebPageSegue" modalTransitionStyle="flipHorizontal" id="ZcG-dw-GVq"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+        </scene>
+        <!--Web Page Controller-->
+        <scene sceneID="0SU-aU-9lE">
+            <objects>
+                <viewController id="zfb-r0-mCC" customClass="WKWebPageController" customModule="FT_Academy" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="q8g-sd-dLJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="zy6-az-tb3"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="27e-1q-xPU">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ohG-Tp-8Av">
+                                <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                                <items>
+                                    <barButtonItem title="Item" id="Lio-a3-5pQ"/>
+                                </items>
+                            </toolbar>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="ohG-Tp-8Av" firstAttribute="bottom" secondItem="zy6-az-tb3" secondAttribute="top" id="Lae-w9-isv"/>
+                            <constraint firstAttribute="trailing" secondItem="ohG-Tp-8Av" secondAttribute="trailing" id="cBA-3C-oCQ"/>
+                            <constraint firstItem="ohG-Tp-8Av" firstAttribute="leading" secondItem="27e-1q-xPU" secondAttribute="leading" id="l2e-QU-F2g"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0Pe-pR-AQN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1110" y="306"/>
         </scene>
     </scenes>
 </document>
