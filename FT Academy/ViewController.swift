@@ -29,11 +29,19 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        var url = NSURL(string:"http://m.ftchinese.com/phone.html")
+        var url = NSURL(string:"http://m.ftchinese.com/")
         var req = NSURLRequest(URL:url!)
         if supportWK == true {
-            self.webView!.loadRequest(req)
+            //self.webView!.loadRequest(req)
+            
+            let templatepath = NSBundle.mainBundle().pathForResource("index", ofType: "html")!
+            //let base = NSURL.fileURLWithPath(templatepath)!
+            let base = NSURL(string:"http://m.ftchinese.com/iphone-2014.html#iOSShare")
+            var s = NSString(contentsOfFile:templatepath, encoding:NSUTF8StringEncoding, error:nil)!
+            //let ss = "<content>"
+            //s = s.stringByReplacingOccurrencesOfString("<content>", withString:ss)
+            self.webView!.loadHTMLString(s, baseURL:base)
+
         } else {
             containerView.loadRequest(req)
         }
@@ -70,11 +78,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     }
     func openInView(urlString : String) {
         webPageUrl = urlString
-        if supportWK == true {
-            self.performSegueWithIdentifier("WKWebPageSegue", sender: nil)
-        } else {
-        
-        }
+        self.performSegueWithIdentifier("WKWebPageSegue", sender: nil)
     }
     /*
     func webView(webView: UIWebView, shouldStartLoadWithRequest r: NSURLRequest, navigationType nt: UIWebViewNavigationType) -> Bool {

@@ -11,32 +11,106 @@ import UIKit
 import WebKit
 
 
-class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDelegate {
+class WKWebPageController: UIViewController, UIWebViewDelegate{
+    @IBOutlet weak var containerView: UIWebView!
+    var webView: WKWebView?
     
-
-
+    override func loadView() {
+        super.loadView()
+        checkWKSupport()
+        if supportWK == true {
+            //self.webView = WKWebView()
+            var contentController = WKUserContentController();
+            var config = WKWebViewConfiguration()
+            config.userContentController = contentController
+            self.webView = WKWebView(
+                frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.mainScreen().bounds.width, height: UIScreen.mainScreen().bounds.height - 44),
+                //frame: CGRect(x: 0.0, y: 0.0, width: 1024, height: UIScreen.mainScreen().bounds.height - 44),
+                configuration: config
+            )
+            //self.view = self.webView!
+            self.containerView.addSubview(webView!)
+            
+            webView!.setTranslatesAutoresizingMaskIntoConstraints(false)
+            
+            var constX = NSLayoutConstraint(item: webView!, attribute: NSLayoutAttribute.RightMargin, relatedBy: NSLayoutRelation.Equal, toItem: self.view, attribute: NSLayoutAttribute.RightMargin, multiplier: 1, constant: 0)
+            //webView!.addConstraint(constX)
+            
+            self.containerView.clipsToBounds = true
+        } else {
+            containerView.delegate = self
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        //webView!.navigationDelegate = self
-        var url = NSURL(string:"http://m.ftchinese.com/")
+        var url = NSURL(string:webPageUrl)
         var req = NSURLRequest(URL:url!)
-        //webView!.loadRequest(req)
-        println ("opened")
+        if supportWK == true {
+            self.webView!.loadRequest(req)
+        } else {
+            containerView.loadRequest(req)
+        }
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
+    @IBAction func goBack(sender: AnyObject) {
+        if supportWK == true {
+            webView!.goBack()
+        } else {
+            containerView.goBack()
+        }
+    }
+
+    @IBAction func goForward(sender: AnyObject) {
+        if supportWK == true {
+            webView!.goForward()
+        } else {
+            containerView.goForward()
+        }
     }
     
+    @IBAction func share(sender: AnyObject) {
+        var url = NSURL(string:webPageUrl)
+        if supportWK == true {
+            url = webView?.URL
+        } else {
+            url = containerView.request?.URL
+        }
+        UIApplication.sharedApplication().openURL(url!)
+    }
+    
+    
+    @IBAction func dismissSegue(sender: AnyObject) {
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    @IBAction func reload(sender: AnyObject) {
+        if supportWK == true {
+            webView!.reload()
+        } else {
+            containerView.reload()
+        }
+    }
+    
+    override func viewWillTransitionToSize(size: CGSize,
+        withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+            if supportWK == true {
+                
+            }
+    }
+
     override func prefersStatusBarHidden() -> Bool {
         return true
     }
-
     /*
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+    return UIStatusBarStyle.LightContent
+    }
+    
     func webView(webView: WKWebView!, decidePolicyForNavigationAction navigationAction: WKNavigationAction!, decisionHandler: ((WKNavigationActionPolicy) -> Void)!) {
         if navigationAction.navigationType == .LinkActivated{
             //UIApplication.sharedApplication().openURL(navigationAction.request.URL)
@@ -54,6 +128,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         }
         return true;
     }
+    
     func openInView(urlString : String) {
         webPageUrl = urlString
         if supportWK == true {
@@ -63,24 +138,6 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         }
     }
 */
-    /*
-    func webView(webView: UIWebView, shouldStartLoadWithRequest r: NSURLRequest, navigationType nt: UIWebViewNavigationType) -> Bool {
-    if r.URL.scheme == "play" {
-    println("user would like to hear the podcast")
-    return false
-    }
-    if nt == .LinkClicked { // disable link-clicking
-    if self.canNavigate {
-    return true
-    }
-    println("user would like to navigation to \(r.URL)")
-    // this is how you would open in Mobile Safari
-    // UIApplication.sharedApplication().openURL(r.URL)
-    return false
-    }
-    return true
-    }
-    */
-    
+
 }
 

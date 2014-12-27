@@ -51,24 +51,63 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JnL-pu-uVc">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </webView>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ohG-Tp-8Av">
                                 <rect key="frame" x="0.0" y="556" width="600" height="44"/>
                                 <items>
-                                    <barButtonItem title="Item" id="Lio-a3-5pQ"/>
+                                    <barButtonItem systemItem="rewind" id="Lio-a3-5pQ">
+                                        <connections>
+                                            <action selector="goBack:" destination="zfb-r0-mCC" id="90A-R2-Xdc"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Wya-uk-wth"/>
+                                    <barButtonItem systemItem="fastForward" id="Klk-Wr-L1z">
+                                        <connections>
+                                            <action selector="goForward:" destination="zfb-r0-mCC" id="jU5-AQ-RXQ"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="MQD-qB-CHh"/>
+                                    <barButtonItem systemItem="action" id="M4M-74-g0S">
+                                        <connections>
+                                            <action selector="share:" destination="zfb-r0-mCC" id="sT9-en-dPx"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="AuR-yB-D5M"/>
+                                    <barButtonItem systemItem="refresh" id="dtA-jY-p8T">
+                                        <connections>
+                                            <action selector="reload:" destination="zfb-r0-mCC" id="jwk-Bo-Kdf"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="1CW-FV-nEA"/>
+                                    <barButtonItem systemItem="stop" id="wmz-1h-u7z">
+                                        <connections>
+                                            <action selector="dismissSegue:" destination="zfb-r0-mCC" id="64p-lO-8Ya"/>
+                                        </connections>
+                                    </barButtonItem>
                                 </items>
                             </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="ohG-Tp-8Av" firstAttribute="bottom" secondItem="zy6-az-tb3" secondAttribute="top" id="Lae-w9-isv"/>
-                            <constraint firstAttribute="trailing" secondItem="ohG-Tp-8Av" secondAttribute="trailing" id="cBA-3C-oCQ"/>
-                            <constraint firstItem="ohG-Tp-8Av" firstAttribute="leading" secondItem="27e-1q-xPU" secondAttribute="leading" id="l2e-QU-F2g"/>
+                            <constraint firstItem="zy6-az-tb3" firstAttribute="top" secondItem="JnL-pu-uVc" secondAttribute="bottom" constant="44" id="NfV-wt-orq"/>
+                            <constraint firstItem="ohG-Tp-8Av" firstAttribute="leading" secondItem="JnL-pu-uVc" secondAttribute="leading" id="SiQ-0Z-BmR"/>
+                            <constraint firstItem="JnL-pu-uVc" firstAttribute="leading" secondItem="27e-1q-xPU" secondAttribute="leading" id="anR-Z4-03F"/>
+                            <constraint firstItem="ohG-Tp-8Av" firstAttribute="top" secondItem="JnL-pu-uVc" secondAttribute="bottom" id="eFq-E3-1zE"/>
+                            <constraint firstAttribute="trailing" secondItem="JnL-pu-uVc" secondAttribute="trailing" id="jNi-ej-fsF"/>
+                            <constraint firstItem="ohG-Tp-8Av" firstAttribute="trailing" secondItem="JnL-pu-uVc" secondAttribute="trailing" id="mmi-Zz-ACD"/>
+                            <constraint firstItem="JnL-pu-uVc" firstAttribute="top" secondItem="27e-1q-xPU" secondAttribute="top" id="oHA-o9-pxY"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="containerView" destination="JnL-pu-uVc" id="IjN-QP-Y2J"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0Pe-pR-AQN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1110" y="306"/>
+            <point key="canvasLocation" x="812" y="306"/>
         </scene>
     </scenes>
 </document>
