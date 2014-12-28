@@ -25,11 +25,14 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         } else {
             containerView.delegate = self
         }
+        let googleAd = GoogleAdMob()
+        googleAd.run()
+
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        var url = NSURL(string:"http://m.ftchinese.com/")
+        var url = NSURL(string:"http://m.ftchinese.com/mba-2014.html")
         var req = NSURLRequest(URL:url!)
         if supportWK == true {
             self.webView!.loadRequest(req)
