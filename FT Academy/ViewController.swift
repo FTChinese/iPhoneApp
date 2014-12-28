@@ -32,8 +32,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         var url = NSURL(string:"http://m.ftchinese.com/")
         var req = NSURLRequest(URL:url!)
         if supportWK == true {
-            //self.webView!.loadRequest(req)
-            
+            self.webView!.loadRequest(req)
+            /*
             let templatepath = NSBundle.mainBundle().pathForResource("index", ofType: "html")!
             //let base = NSURL.fileURLWithPath(templatepath)!
             let base = NSURL(string:"http://m.ftchinese.com/iphone-2014.html#iOSShare")
@@ -41,7 +41,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
             //let ss = "<content>"
             //s = s.stringByReplacingOccurrencesOfString("<content>", withString:ss)
             self.webView!.loadHTMLString(s, baseURL:base)
-
+*/
         } else {
             containerView.loadRequest(req)
         }
@@ -62,7 +62,12 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     func webView(webView: WKWebView!, decidePolicyForNavigationAction navigationAction: WKNavigationAction!, decisionHandler: ((WKNavigationActionPolicy) -> Void)!) {
         if navigationAction.navigationType == .LinkActivated{
             //UIApplication.sharedApplication().openURL(navigationAction.request.URL)
+            var urlString = navigationAction.request.URL.absoluteString!
+            if urlString.rangeOfString("mailto:") != nil{
+                UIApplication.sharedApplication().openURL(navigationAction.request.URL)
+            } else {
             openInView (navigationAction.request.URL.absoluteString!)
+            }
             decisionHandler(.Cancel)
         }else{
             decisionHandler(.Allow)

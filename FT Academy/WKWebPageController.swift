@@ -17,6 +17,8 @@ class WKWebPageController: UIViewController, UIWebViewDelegate{
     
     override func loadView() {
         super.loadView()
+        //println(UIInterfaceOrientationMask.Portrait.rawValue)
+        //println(self.interfaceOrientation.rawValue)
         checkWKSupport()
         if supportWK == true {
             //self.webView = WKWebView()
@@ -95,14 +97,25 @@ class WKWebPageController: UIViewController, UIWebViewDelegate{
             containerView.reload()
         }
     }
-    
+    override func shouldAutorotate() -> Bool {
+        return false
+    }
+    /*
     override func viewWillTransitionToSize(size: CGSize,
         withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
             if supportWK == true {
-                
+                //
             }
     }
-
+*/
+    
+  /*
+    override func supportedInterfaceOrientations() -> Int {
+        //return self.interfaceOrientation.rawValue
+        return Int(UIInterfaceOrientationMask.Portrait.rawValue)
+    }
+*/
+    
     override func prefersStatusBarHidden() -> Bool {
         return true
     }
