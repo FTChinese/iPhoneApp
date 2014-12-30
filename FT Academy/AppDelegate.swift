@@ -16,6 +16,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        
+        //GoogleConversionPing.pingWithConversionId ("993907328", label: "35JGCOi9xAQQgKX32QM", value: "0", isRepeatable: false)
+        WXApi.registerApp("wxc1bc20ee7478536a", withDescription: "FT中文网")
+        NSLog("wechat register!")
+        /*
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+            [GoogleConversionPing pingWithConversionId:@"993907328"
+            label:@"35JGCOi9xAQQgKX32QM"
+            value:@"0" isRepeatable:NO];
+            
+            [WXApi registerApp:@"wxc1bc20ee7478536a" withDescription:@"FT中文网"];
+            });
+        */
         return true
     }
 
