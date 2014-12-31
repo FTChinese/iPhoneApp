@@ -17,10 +17,14 @@
 		50256CC11A4BF7F4005950B9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50256CC01A4BF7F4005950B9 /* UIKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		50256CC31A4BFAE7005950B9 /* global.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50256CC21A4BFAE7005950B9 /* global.swift */; };
 		50256CC51A4C1916005950B9 /* WKWebPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50256CC41A4C1916005950B9 /* WKWebPageController.swift */; };
-		50552F151A52D4390070671F /* libGoogleConversionTracking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50552F131A52D4390070671F /* libGoogleConversionTracking.a */; };
-		50552F161A52D4390070671F /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50552F141A52D4390070671F /* libWeChatSDK.a */; };
 		50873CCC1A503A880027955A /* GoogleAdMob.m in Sources */ = {isa = PBXBuildFile; fileRef = 50873CCB1A503A880027955A /* GoogleAdMob.m */; };
 		50A677271A4EBFBC002B347F /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 50A677261A4EBFBC002B347F /* index.html */; };
+		50FC07E21A539BF3006EE23F /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FC07DF1A539BF3006EE23F /* libWeChatSDK.a */; };
+		50FC07E41A53A2B3006EE23F /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FC07E31A53A2B3006EE23F /* CoreLocation.framework */; };
+		50FC07E61A53A33D006EE23F /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FC07E51A53A33D006EE23F /* libc++.dylib */; };
+		50FC07E81A53A419006EE23F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FC07E71A53A419006EE23F /* SystemConfiguration.framework */; };
+		50FC07EA1A53A44C006EE23F /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FC07E91A53A44C006EE23F /* libz.dylib */; };
+		50FC07EC1A53A589006EE23F /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FC07EB1A53A589006EE23F /* libsqlite3.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,13 +52,18 @@
 		50256CC01A4BF7F4005950B9 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		50256CC21A4BFAE7005950B9 /* global.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = global.swift; sourceTree = "<group>"; };
 		50256CC41A4C1916005950B9 /* WKWebPageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WKWebPageController.swift; sourceTree = "<group>"; };
-		50552F121A52D4390070671F /* GoogleConversionPing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GoogleConversionPing.h; path = "FT Academy/GoogleConversionPing.h"; sourceTree = "<group>"; };
-		50552F131A52D4390070671F /* libGoogleConversionTracking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGoogleConversionTracking.a; path = "FT Academy/libGoogleConversionTracking.a"; sourceTree = "<group>"; };
-		50552F141A52D4390070671F /* libWeChatSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libWeChatSDK.a; path = "FT Academy/libWeChatSDK.a"; sourceTree = "<group>"; };
 		50873CC91A503A870027955A /* FT Academy-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FT Academy-Bridging-Header.h"; sourceTree = "<group>"; };
 		50873CCA1A503A880027955A /* GoogleAdMob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleAdMob.h; sourceTree = "<group>"; };
 		50873CCB1A503A880027955A /* GoogleAdMob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleAdMob.m; sourceTree = "<group>"; };
 		50A677261A4EBFBC002B347F /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = index.html; path = supporting/index.html; sourceTree = "<group>"; };
+		50FC07DF1A539BF3006EE23F /* libWeChatSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeChatSDK.a; sourceTree = "<group>"; };
+		50FC07E01A539BF3006EE23F /* WXApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApi.h; sourceTree = "<group>"; };
+		50FC07E11A539BF3006EE23F /* WXApiObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApiObject.h; sourceTree = "<group>"; };
+		50FC07E31A53A2B3006EE23F /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		50FC07E51A53A33D006EE23F /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
+		50FC07E71A53A419006EE23F /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		50FC07E91A53A44C006EE23F /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		50FC07EB1A53A589006EE23F /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,10 +71,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50FC07EC1A53A589006EE23F /* libsqlite3.dylib in Frameworks */,
+				50FC07EA1A53A44C006EE23F /* libz.dylib in Frameworks */,
+				50FC07E81A53A419006EE23F /* SystemConfiguration.framework in Frameworks */,
+				50FC07E61A53A33D006EE23F /* libc++.dylib in Frameworks */,
+				50FC07E41A53A2B3006EE23F /* CoreLocation.framework in Frameworks */,
 				50256CC11A4BF7F4005950B9 /* UIKit.framework in Frameworks */,
 				50256CBF1A4BF7E4005950B9 /* WebKit.framework in Frameworks */,
-				50552F161A52D4390070671F /* libWeChatSDK.a in Frameworks */,
-				50552F151A52D4390070671F /* libGoogleConversionTracking.a in Frameworks */,
+				50FC07E21A539BF3006EE23F /* libWeChatSDK.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,9 +95,14 @@
 		50256C901A4B9D0B005950B9 = {
 			isa = PBXGroup;
 			children = (
-				50552F121A52D4390070671F /* GoogleConversionPing.h */,
-				50552F131A52D4390070671F /* libGoogleConversionTracking.a */,
-				50552F141A52D4390070671F /* libWeChatSDK.a */,
+				50FC07EB1A53A589006EE23F /* libsqlite3.dylib */,
+				50FC07E91A53A44C006EE23F /* libz.dylib */,
+				50FC07E71A53A419006EE23F /* SystemConfiguration.framework */,
+				50FC07E51A53A33D006EE23F /* libc++.dylib */,
+				50FC07E31A53A2B3006EE23F /* CoreLocation.framework */,
+				50FC07DF1A539BF3006EE23F /* libWeChatSDK.a */,
+				50FC07E01A539BF3006EE23F /* WXApi.h */,
+				50FC07E11A539BF3006EE23F /* WXApiObject.h */,
 				50256CC01A4BF7F4005950B9 /* UIKit.framework */,
 				50256CBE1A4BF7E4005950B9 /* WebKit.framework */,
 				50256C9B1A4B9D0B005950B9 /* FT Academy */,
@@ -377,20 +395,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "FT Academy/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/FT",
-					Academy,
-					"$(PROJECT_DIR)/FT",
-					Academy,
-					"$(PROJECT_DIR)/FT",
-					Academy,
-				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "FT Academy/FT Academy-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
 			name = Debug;
 		};
@@ -399,19 +412,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "FT Academy/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/FT",
-					Academy,
-					"$(PROJECT_DIR)/FT",
-					Academy,
-					"$(PROJECT_DIR)/FT",
-					Academy,
-				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "FT Academy/FT Academy-Bridging-Header.h";
+				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
 			name = Release;
 		};

@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         //GoogleConversionPing.pingWithConversionId ("993907328", label: "35JGCOi9xAQQgKX32QM", value: "0", isRepeatable: false)
         WXApi.registerApp("wxc1bc20ee7478536a", withDescription: "FT中文网")
-        NSLog("wechat register!")
+        //NSLog("wechat register!")
         /*
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
             [GoogleConversionPing pingWithConversionId:@"993907328"

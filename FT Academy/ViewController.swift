@@ -35,8 +35,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         var url = NSURL(string:"http://m.ftchinese.com/phone.html#iOSShareWechat")
         var req = NSURLRequest(URL:url!)
         if supportWK == true {
-            self.webView!.loadRequest(req)
-            /*
+            //self.webView!.loadRequest(req)
+            
             let templatepath = NSBundle.mainBundle().pathForResource("index", ofType: "html")!
             //let base = NSURL.fileURLWithPath(templatepath)!
             let base = NSURL(string:"http://app005.ftmailbox.com/iphone-2014.html#iOSShareWechat")
@@ -44,7 +44,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
             //let ss = "<content>"
             //s = s.stringByReplacingOccurrencesOfString("<content>", withString:ss)
             self.webView!.loadHTMLString(s, baseURL:base)
-*/
+
         } else {
             containerView.loadRequest(req)
         }
@@ -91,7 +91,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         webPageUrl = urlString
         self.performSegueWithIdentifier("WKWebPageSegue", sender: nil)
     }
+    
     func shareToWeChat(originalUrlString : String) {
+        
+       
         let originalURL = originalUrlString
         var queryStringDictionary = ["url":""]
         var urlComponents : NSArray = (originalURL as NSString!).substringFromIndex(13).componentsSeparatedByString("&")
@@ -103,7 +106,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
                 queryStringDictionary[pairKey] = pairValue.stringByRemovingPercentEncoding
             }
         }
-        if WXApi.isWXAppInstalled() == false  && 1>1 {
+        if WXApi.isWXAppInstalled() == false {
             var alert = UIAlertController(title: "请先安装微信", message: "谢谢您的支持！请先去app store安装微信再分享", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "了解", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
@@ -136,6 +139,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
             req.scene = 1
         }
         WXApi.sendReq(req)
+        print ("share finished!")
+
     }
     /*
     func webView(webView: UIWebView, shouldStartLoadWithRequest r: NSURLRequest, navigationType nt: UIWebViewNavigationType) -> Bool {
