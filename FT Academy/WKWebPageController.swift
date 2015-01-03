@@ -14,7 +14,7 @@ import WebKit
 class WKWebPageController: UIViewController, UIWebViewDelegate{
     @IBOutlet weak var containerView: UIWebView!
     var webView: WKWebView?
-    
+
     override func loadView() {
         super.loadView()
         //println(UIInterfaceOrientationMask.Portrait.rawValue)
@@ -32,12 +32,12 @@ class WKWebPageController: UIViewController, UIWebViewDelegate{
             )
             //self.view = self.webView!
             self.containerView.addSubview(webView!)
-            
+            /*
             webView!.setTranslatesAutoresizingMaskIntoConstraints(false)
             
             var constX = NSLayoutConstraint(item: webView!, attribute: NSLayoutAttribute.RightMargin, relatedBy: NSLayoutRelation.Equal, toItem: self.view, attribute: NSLayoutAttribute.RightMargin, multiplier: 1, constant: 0)
-            //webView!.addConstraint(constX)
-            
+            webView!.addConstraint(constX)
+            */
             self.containerView.clipsToBounds = true
         } else {
             containerView.delegate = self
@@ -97,24 +97,31 @@ class WKWebPageController: UIViewController, UIWebViewDelegate{
             containerView.reload()
         }
     }
-    override func shouldAutorotate() -> Bool {
-        return false
-    }
-    /*
+    
+
+
     override func viewWillTransitionToSize(size: CGSize,
         withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
             if supportWK == true {
                 //
             }
     }
-*/
-    
-  /*
+
     override func supportedInterfaceOrientations() -> Int {
-        //return self.interfaceOrientation.rawValue
-        return Int(UIInterfaceOrientationMask.Portrait.rawValue)
+        if UIScreen.mainScreen().bounds.width > 700 {
+            return Int(UIInterfaceOrientationMask.All.rawValue)
+        } else {
+            return Int(UIInterfaceOrientationMask.Portrait.rawValue)
+        }
     }
-*/
+    
+    override func shouldAutorotate() -> Bool {
+        if UIScreen.mainScreen().bounds.width > 700 {
+            return true
+        } else {
+            return false
+        }
+    }
     
     override func prefersStatusBarHidden() -> Bool {
         return true

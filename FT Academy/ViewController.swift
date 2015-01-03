@@ -11,68 +11,158 @@ import WebKit
 
 class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate {
 
-    @IBOutlet weak var containerView: UIWebView!
-    
     var webView: WKWebView?
+    var uiWebView: UIWebView?
+    weak var timer: NSTimer?
+    var pageStatus: WebViewStatus?
+    let startUrl = "http://m.ftchinese.com/phone.html#iOSShareWechat"
+    //let startUrl = "http://m.ftchinese.com/"
+    let overlayView = UIView()
     
     override func loadView() {
         super.loadView()
+        pageStatus = .ViewToLoad
         checkWKSupport()
         if supportWK == true {
             self.webView = WKWebView()
-            self.view = self.webView!
+            self.view = self.webView
             self.webView!.navigationDelegate = self
         } else {
-            containerView.delegate = self
+            self.uiWebView = UIWebView()
+            self.view = self.uiWebView
+            uiWebView?.delegate = self
         }
-        let googleAd = GoogleAdMob()
-        googleAd.run()
+        
+        //Add an overlay onto the webview to deal with white screen
+        overlayView.backgroundColor = UIColor(netHex:0x002F5F)
+        overlayView.frame = self.view.bounds
+        self.view.addSubview(overlayView)
+        overlayView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Leading, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Trailing, multiplier: 1, constant: 0))
+        
+        let imageName = "FTC-start"
+        let image = UIImage(named: imageName)
+        let imageView = UIImageView(image: image!)
+        imageView.frame = CGRect(x: 0, y: 0, width: 266, height: 210)
+        imageView.contentMode = .ScaleAspectFit
+        self.overlayView.addSubview(imageView)
+        imageView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1/3, constant: 1))
+        view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 266))
+        view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 210))
 
+        let label = UILabel(frame: CGRectMake(0, 0, 441, 21))
+        label.center = CGPointMake(160, 284)
+        label.textAlignment = NSTextAlignment.Center
+        label.text = "努力加载中..."
+        label.textColor = UIColor.whiteColor()
+        self.overlayView.addSubview(label)
+        label.setTranslatesAutoresizingMaskIntoConstraints(false)
+        
+        view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: -20))
+        view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 441))
+        view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 21))
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        var url = NSURL(string:"http://m.ftchinese.com/phone.html#iOSShareWechat")
+        pageStatus = .ViewLoaded
+        var url = NSURL(string:startUrl)
         var req = NSURLRequest(URL:url!)
-        if supportWK == true {
+        if supportWK == true { //WKWebView doesn't support manifest. Load from a statice HTML file.
             //self.webView!.loadRequest(req)
-            
+
             let templatepath = NSBundle.mainBundle().pathForResource("index", ofType: "html")!
             //let base = NSURL.fileURLWithPath(templatepath)!
-            let base = NSURL(string:"http://app005.ftmailbox.com/iphone-2014.html#iOSShareWechat")
+            let base = NSURL(string: startUrl)
             var s = NSString(contentsOfFile:templatepath, encoding:NSUTF8StringEncoding, error:nil)!
             //let ss = "<content>"
             //s = s.stringByReplacingOccurrencesOfString("<content>", withString:ss)
             self.webView!.loadHTMLString(s, baseURL:base)
-
         } else {
-            containerView.loadRequest(req)
+            uiWebView?.loadRequest(req)
         }
+        pageStatus = .WebViewLoading
+        NSLog("timer set")
+        resetTimer(5.0)
     }
     
+    func resetTimer(seconds: NSTimeInterval) {
+        timer?.invalidate()
+        let nextTimer = NSTimer.scheduledTimerWithTimeInterval(seconds, target: self, selector: "handleIdleEvent:", userInfo: nil, repeats: false)
+        timer = nextTimer
+    }
+
+    func handleIdleEvent(timer: NSTimer) {
+        // do whatever you want when idle after certain period of time 
+        NSLog("time is up")
+        displayWebView()
+    }
+    
+    func displayWebView() {
+        if pageStatus != .WebViewDisplayed {
+            overlayView.removeFromSuperview()
+            pageStatus = .WebViewDisplayed
+            prefersStatusBarHidden()
+        }
+    }
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
+        //return UIStatusBarStyle.LightContent
+        return UIStatusBarStyle.Default
     }
     
     override func prefersStatusBarHidden() -> Bool {
-        return true
+        if pageStatus != .WebViewDisplayed {
+            NSLog ("hide status bar")
+            return true
+        } else {
+            NSLog ("show status bar")
+            //self.prefersStatusBarHidden = false
+            return false
+        }
     }
     
+    //On mobile phone, lock the screen to portrait only
+    override func supportedInterfaceOrientations() -> Int {
+        if UIScreen.mainScreen().bounds.width > 700 {
+            return Int(UIInterfaceOrientationMask.All.rawValue)
+        } else {
+            return Int(UIInterfaceOrientationMask.Portrait.rawValue)
+        }
+    }
+
+    override func shouldAutorotate() -> Bool {
+        if UIScreen.mainScreen().bounds.width > 700 {
+            return true
+        } else {
+            return false
+        }
+    }
+
     func webView(webView: WKWebView!, decidePolicyForNavigationAction navigationAction: WKNavigationAction!, decisionHandler: ((WKNavigationActionPolicy) -> Void)!) {
+        let urlString = navigationAction.request.URL.absoluteString!
+        if (urlString != startUrl && urlString != "about:blank") {
+            //displayWebView()
+            resetTimer(1.2)
+        }
         if navigationAction.request.URL.scheme == "ftcweixin" {
-            shareToWeChat(navigationAction.request.URL.absoluteString!)
+            shareToWeChat(urlString)
             decisionHandler(.Cancel)
         } else if navigationAction.navigationType == .LinkActivated{
-            //UIApplication.sharedApplication().openURL(navigationAction.request.URL)
-            var urlString = navigationAction.request.URL.absoluteString!
             if urlString.rangeOfString("mailto:") != nil{
                 UIApplication.sharedApplication().openURL(navigationAction.request.URL)
             } else {
-            openInView (navigationAction.request.URL.absoluteString!)
+                openInView (urlString)
             }
             decisionHandler(.Cancel)
         } else {
@@ -81,20 +171,20 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     }
     
     func webView(webView: UIWebView!, shouldStartLoadWithRequest request: NSURLRequest!, navigationType: UIWebViewNavigationType) -> Bool {
+        let urlString = request.URL.absoluteString!
         if navigationType == .LinkClicked {
             openInView(request.URL.absoluteString!)
             return false
         }
         return true;
     }
+    
     func openInView(urlString : String) {
         webPageUrl = urlString
         self.performSegueWithIdentifier("WKWebPageSegue", sender: nil)
     }
     
     func shareToWeChat(originalUrlString : String) {
-        
-       
         let originalURL = originalUrlString
         var queryStringDictionary = ["url":""]
         var urlComponents : NSArray = (originalURL as NSString!).substringFromIndex(13).componentsSeparatedByString("&")
@@ -140,8 +230,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         }
         WXApi.sendReq(req)
         print ("share finished!")
-
     }
+    
     /*
     func webView(webView: UIWebView, shouldStartLoadWithRequest r: NSURLRequest, navigationType nt: UIWebViewNavigationType) -> Bool {
         if r.URL.scheme == "play" {
