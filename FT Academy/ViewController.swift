@@ -108,7 +108,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         if pageStatus != .WebViewDisplayed {
             overlayView.removeFromSuperview()
             pageStatus = .WebViewDisplayed
-            prefersStatusBarHidden()
+            //trigger prefersStatusBarHidden
+            setNeedsStatusBarAppearanceUpdate()
         }
     }
 
@@ -117,11 +118,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        //return UIStatusBarStyle.LightContent
-        return UIStatusBarStyle.Default
+        return UIStatusBarStyle.LightContent
     }
     
     override func prefersStatusBarHidden() -> Bool {
+        /*
         if pageStatus != .WebViewDisplayed {
             NSLog ("hide status bar")
             return true
@@ -130,6 +131,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
             //self.prefersStatusBarHidden = false
             return false
         }
+        */
+        return true
     }
     
     //On mobile phone, lock the screen to portrait only
@@ -172,11 +175,23 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     
     func webView(webView: UIWebView!, shouldStartLoadWithRequest request: NSURLRequest!, navigationType: UIWebViewNavigationType) -> Bool {
         let urlString = request.URL.absoluteString!
-        if navigationType == .LinkClicked {
-            openInView(request.URL.absoluteString!)
-            return false
+        if (urlString != startUrl && urlString != "about:blank") {
+            //displayWebView()
+            resetTimer(1.2)
         }
-        return true;
+        if request.URL.scheme == "ftcweixin" {
+            shareToWeChat(urlString)
+            return false
+        } else if navigationType == .LinkClicked{
+            if urlString.rangeOfString("mailto:") != nil{
+                UIApplication.sharedApplication().openURL(request.URL)
+            } else {
+                openInView (urlString)
+            }
+            return false
+        } else {
+            return true
+        }
     }
     
     func openInView(urlString : String) {
