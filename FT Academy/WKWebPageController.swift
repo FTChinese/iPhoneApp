@@ -11,34 +11,42 @@ import UIKit
 import WebKit
 
 
-class WKWebPageController: UIViewController, UIWebViewDelegate{
+class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, WKUIDelegate{
     @IBOutlet weak var containerView: UIWebView!
     var webView: WKWebView?
+    var myContext = 0
+    let progressView = UIProgressView(progressViewStyle: UIProgressViewStyle.Default)
 
+    
+    @IBOutlet weak var backBarButton: UIBarButtonItem!
+    
+    @IBOutlet weak var forwardBarButton: UIBarButtonItem!
+    
+    
+    deinit {
+        if supportWK == true {
+            self.webView?.removeObserver(self, forKeyPath: "estimatedProgress")
+            self.webView?.removeObserver(self, forKeyPath: "canGoBack")
+            self.webView?.removeObserver(self, forKeyPath: "canGoForward")
+        }
+    }
+    
+    
     override func loadView() {
         super.loadView()
-        //println(UIInterfaceOrientationMask.Portrait.rawValue)
-        //println(self.interfaceOrientation.rawValue)
         checkWKSupport()
         if supportWK == true {
-            //self.webView = WKWebView()
             var contentController = WKUserContentController();
             var config = WKWebViewConfiguration()
             config.userContentController = contentController
-            self.webView = WKWebView(
-                frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.mainScreen().bounds.width, height: UIScreen.mainScreen().bounds.height - 44),
-                //frame: CGRect(x: 0.0, y: 0.0, width: 1024, height: UIScreen.mainScreen().bounds.height - 44),
-                configuration: config
-            )
-            //self.view = self.webView!
+            self.webView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.mainScreen().bounds.width, height: UIScreen.mainScreen().bounds.height - 44), configuration: config)
             self.containerView.addSubview(webView!)
-            /*
-            webView!.setTranslatesAutoresizingMaskIntoConstraints(false)
-            
-            var constX = NSLayoutConstraint(item: webView!, attribute: NSLayoutAttribute.RightMargin, relatedBy: NSLayoutRelation.Equal, toItem: self.view, attribute: NSLayoutAttribute.RightMargin, multiplier: 1, constant: 0)
-            webView!.addConstraint(constX)
-            */
             self.containerView.clipsToBounds = true
+            self.webView?.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: &myContext)
+            self.webView?.addObserver(self, forKeyPath: "canGoBack", options: .New, context: &myContext)
+            self.webView?.addObserver(self, forKeyPath: "canGoForward", options: .New, context: &myContext)
+            self.webView!.navigationDelegate = self
+            self.webView!.UIDelegate = self
         } else {
             containerView.delegate = self
         }
@@ -50,10 +58,61 @@ class WKWebPageController: UIViewController, UIWebViewDelegate{
         var req = NSURLRequest(URL:url!)
         if supportWK == true {
             self.webView!.loadRequest(req)
+            progressView.frame = CGRectMake(0,0,UIScreen.mainScreen().bounds.width,10)
+            self.containerView.addSubview(progressView)
+            backBarButton.enabled = false
+            forwardBarButton.enabled = false
         } else {
             containerView.loadRequest(req)
         }
     }
+    
+    
+    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
+        if context != &myContext {
+            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+            return
+        }
+        if keyPath == "estimatedProgress" {
+            if let progress: Float = change[NSKeyValueChangeNewKey]?.floatValue {
+                self.progressView.setProgress(progress, animated: true)
+                if progress == 1.0 {
+                    self.progressView.hidden = true
+                } else {
+                    self.progressView.hidden = false
+                }
+            }
+            return
+        }
+        if keyPath == "canGoBack" {
+            if let canGoBack = change[NSKeyValueChangeNewKey]?.boolValue {
+                backBarButton.enabled = canGoBack
+            }
+            return
+        }
+        if keyPath == "canGoForward" {
+            if let canGoForward = change[NSKeyValueChangeNewKey]?.boolValue {
+                forwardBarButton.enabled = canGoForward
+            }
+            return
+        }
+    }
+    
+    // this handles target=_blank links by opening them in the same view
+    func webView(webView: WKWebView!, createWebViewWithConfiguration configuration: WKWebViewConfiguration!, forNavigationAction navigationAction: WKNavigationAction!, windowFeatures: WKWindowFeatures!) -> WKWebView! {
+        if navigationAction.targetFrame == nil {
+            webView.loadRequest(navigationAction.request)
+        }
+        return nil
+    }
+    
+    func webView(webView: WKWebView!, decidePolicyForNavigationAction navigationAction: WKNavigationAction!, decisionHandler: ((WKNavigationActionPolicy) -> Void)!) {
+        if navigationAction.navigationType == .LinkActivated{
+        
+        }
+        decisionHandler(.Allow)
+    }
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -98,15 +157,6 @@ class WKWebPageController: UIViewController, UIWebViewDelegate{
         }
     }
     
-
-
-    override func viewWillTransitionToSize(size: CGSize,
-        withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-            if supportWK == true {
-                //
-            }
-    }
-
     override func supportedInterfaceOrientations() -> Int {
         if UIScreen.mainScreen().bounds.width > 700 {
             return Int(UIInterfaceOrientationMask.All.rawValue)
@@ -115,6 +165,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate{
         }
     }
     
+    
     override func shouldAutorotate() -> Bool {
         if UIScreen.mainScreen().bounds.width > 700 {
             return true
@@ -122,42 +173,10 @@ class WKWebPageController: UIViewController, UIWebViewDelegate{
             return false
         }
     }
+
     
     override func prefersStatusBarHidden() -> Bool {
         return true
     }
-    /*
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-    return UIStatusBarStyle.LightContent
-    }
-    
-    func webView(webView: WKWebView!, decidePolicyForNavigationAction navigationAction: WKNavigationAction!, decisionHandler: ((WKNavigationActionPolicy) -> Void)!) {
-        if navigationAction.navigationType == .LinkActivated{
-            //UIApplication.sharedApplication().openURL(navigationAction.request.URL)
-            openInView (navigationAction.request.URL.absoluteString!)
-            decisionHandler(.Cancel)
-        }else{
-            decisionHandler(.Allow)
-        }
-    }
-    
-    func webView(webView: UIWebView!, shouldStartLoadWithRequest request: NSURLRequest!, navigationType: UIWebViewNavigationType) -> Bool {
-        if navigationType == .LinkClicked {
-            openInView(request.URL.absoluteString!)
-            return false
-        }
-        return true;
-    }
-    
-    func openInView(urlString : String) {
-        webPageUrl = urlString
-        if supportWK == true {
-            self.performSegueWithIdentifier("WKWebPageSegue", sender: nil)
-        } else {
-            
-        }
-    }
-*/
-
 }
 

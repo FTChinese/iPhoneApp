@@ -19,6 +19,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     //let startUrl = "http://m.ftchinese.com/"
     let overlayView = UIView()
     
+    deinit {
+        println("main view is being deinitialized")
+    }
+    
     override func loadView() {
         super.loadView()
         pageStatus = .ViewToLoad
@@ -88,8 +92,19 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
             uiWebView?.loadRequest(req)
         }
         pageStatus = .WebViewLoading
-        NSLog("timer set")
         resetTimer(5.0)
+    }
+    
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(false)
+        if pageStatus == .WebViewDisplayed {
+            NSLog("back from other scene")
+            //write here to deal with white screen when back from other scene
+            
+        } else {
+            NSLog("first time")
+        }
     }
     
     func resetTimer(seconds: NSTimeInterval) {
@@ -99,8 +114,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     }
 
     func handleIdleEvent(timer: NSTimer) {
-        // do whatever you want when idle after certain period of time 
-        NSLog("time is up")
+        // do whatever you want when idle after certain period of time
         displayWebView()
     }
     
@@ -115,6 +129,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+        NSLog("memory warning in main view!")
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
@@ -176,7 +191,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     func webView(webView: UIWebView!, shouldStartLoadWithRequest request: NSURLRequest!, navigationType: UIWebViewNavigationType) -> Bool {
         let urlString = request.URL.absoluteString!
         if (urlString != startUrl && urlString != "about:blank") {
-            //displayWebView()
             resetTimer(1.2)
         }
         if request.URL.scheme == "ftcweixin" {
@@ -212,9 +226,17 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
             }
         }
         if WXApi.isWXAppInstalled() == false {
-            var alert = UIAlertController(title: "请先安装微信", message: "谢谢您的支持！请先去app store安装微信再分享", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "了解", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+            if supportWK == true {
+                var alert = UIAlertController(title: "请先安装微信", message: "谢谢您的支持！请先去app store安装微信再分享", preferredStyle: UIAlertControllerStyle.Alert)
+                alert.addAction(UIAlertAction(title: "了解", style: UIAlertActionStyle.Default, handler: nil))
+                self.presentViewController(alert, animated: true, completion: nil)
+            } else {
+                var alertView = UIAlertView();
+                alertView.addButtonWithTitle("了解");
+                alertView.title = "请安装微信";
+                alertView.message = "谢谢您的支持！请先去app store安装微信再分享";
+                alertView.show();
+            }
             return
         }
         var message = WXMediaMessage()
@@ -244,7 +266,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
             req.scene = 1
         }
         WXApi.sendReq(req)
-        print ("share finished!")
     }
     
     /*
@@ -264,7 +285,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         }
         return true
     }
-*/
+    */
     
 }
 

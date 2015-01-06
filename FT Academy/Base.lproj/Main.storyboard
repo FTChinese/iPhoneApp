@@ -3,7 +3,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -17,28 +16,7 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="英国《金融时报》中文网" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="vQe-Xz-Hn1">
-                                <rect key="frame" x="80" y="563" width="441" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="FTC-start" translatesAutoresizingMaskIntoConstraints="NO" id="zSd-S7-caN">
-                                <rect key="frame" x="180" y="110" width="240" height="128"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="128" id="0SW-CT-h2j"/>
-                                    <constraint firstAttribute="width" constant="240" id="mOW-oq-Pc0"/>
-                                </constraints>
-                            </imageView>
-                        </subviews>
                         <color key="backgroundColor" red="0.0" green="0.1843137255" blue="0.37254901959999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstAttribute="centerX" secondItem="vQe-Xz-Hn1" secondAttribute="centerX" id="83F-YX-zct"/>
-                            <constraint firstAttribute="centerX" secondItem="zSd-S7-caN" secondAttribute="centerX" id="DqQ-P2-cd9"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="vQe-Xz-Hn1" secondAttribute="bottom" constant="20" id="YZ0-fP-pIl"/>
-                            <constraint firstItem="zSd-S7-caN" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="bottom" multiplier="1/3" constant="1" id="gvP-tz-fhh"/>
-                        </constraints>
                     </view>
                     <connections>
                         <segue destination="zfb-r0-mCC" kind="presentation" identifier="WKWebPageSegue" modalTransitionStyle="flipHorizontal" id="ZcG-dw-GVq"/>
@@ -114,7 +92,9 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="backBarButton" destination="Lio-a3-5pQ" id="ay6-3J-is0"/>
                         <outlet property="containerView" destination="JnL-pu-uVc" id="IjN-QP-Y2J"/>
+                        <outlet property="forwardBarButton" destination="Klk-Wr-L1z" id="e0g-YE-fHF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0Pe-pR-AQN" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -122,7 +102,4 @@
             <point key="canvasLocation" x="1130" y="248"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="FTC-start" width="532" height="420"/>
-    </resources>
 </document>
