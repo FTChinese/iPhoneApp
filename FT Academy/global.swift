@@ -15,6 +15,7 @@ enum WebViewStatus {
     case ViewLoaded
     case WebViewLoading
     case WebViewDisplayed
+    case WebViewWarned
 }
 func checkWKSupport() {
     switch UIDevice.currentDevice().systemVersion.compare("8.0.0", options: NSStringCompareOptions.NumericSearch) {

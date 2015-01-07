@@ -15,7 +15,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     var uiWebView: UIWebView?
     weak var timer: NSTimer?
     var pageStatus: WebViewStatus?
-    let startUrl = "http://m.ftchinese.com/phone.html#iOSShareWechat"
+    var startUrl = "http://m.ftchinese.com/phone.html#iOSShareWechat"
     //let startUrl = "http://m.ftchinese.com/"
     let overlayView = UIView()
     
@@ -76,11 +76,16 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     override func viewDidLoad() {
         super.viewDidLoad()
         pageStatus = .ViewLoaded
+        loadFromLocal()
+        pageStatus = .WebViewLoading
+        resetTimer(5.0)
+    }
+    
+    func loadFromLocal() {
         var url = NSURL(string:startUrl)
         var req = NSURLRequest(URL:url!)
         if supportWK == true { //WKWebView doesn't support manifest. Load from a statice HTML file.
             //self.webView!.loadRequest(req)
-
             let templatepath = NSBundle.mainBundle().pathForResource("index", ofType: "html")!
             //let base = NSURL.fileURLWithPath(templatepath)!
             let base = NSURL(string: startUrl)
@@ -89,21 +94,22 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
             //s = s.stringByReplacingOccurrencesOfString("<content>", withString:ss)
             self.webView!.loadHTMLString(s, baseURL:base)
         } else {
+            //UI Web View supports manifest
+            //Need more experiments to decide whether it's necessary to load from local file
             uiWebView?.loadRequest(req)
         }
-        pageStatus = .WebViewLoading
-        resetTimer(5.0)
     }
-    
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(false)
-        if pageStatus == .WebViewDisplayed {
-            NSLog("back from other scene")
-            //write here to deal with white screen when back from other scene
-            
+        if pageStatus == .WebViewDisplayed || pageStatus == .WebViewWarned {
+            //Code to deal with white screen when back from other scene
+            //this code is magical in that it doesn't add new code if the white screen is not displayed
+            //yet it reload the page from local file when white screen is displayed
+            loadFromLocal()
+            NSLog("back from other scene!")
         } else {
-            NSLog("first time")
+            NSLog("first time load!")
         }
     }
     
@@ -130,6 +136,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         NSLog("memory warning in main view!")
+        pageStatus = .WebViewWarned
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {

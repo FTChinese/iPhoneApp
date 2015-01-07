@@ -106,14 +106,6 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         return nil
     }
     
-    func webView(webView: WKWebView!, decidePolicyForNavigationAction navigationAction: WKNavigationAction!, decisionHandler: ((WKNavigationActionPolicy) -> Void)!) {
-        if navigationAction.navigationType == .LinkActivated{
-        
-        }
-        decisionHandler(.Allow)
-    }
-    
-    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
