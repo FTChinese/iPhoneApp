@@ -15,7 +15,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     var uiWebView: UIWebView?
     weak var timer: NSTimer?
     var pageStatus: WebViewStatus?
-    var startUrl = "http://m.ftchinese.com/phone.html#iOSShareWechat"
+    var startUrl = "http://m.ftchinese.com/mba-2014.html#iOSShareWechat&gShowStatusBar"
     //let startUrl = "http://m.ftchinese.com/"
     let overlayView = UIView()
     
@@ -85,7 +85,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         var url = NSURL(string:startUrl)
         var req = NSURLRequest(URL:url!)
         if supportWK == true { //WKWebView doesn't support manifest. Load from a statice HTML file.
-            //self.webView!.loadRequest(req)
+            self.webView!.loadRequest(req)
+            /*
             let templatepath = NSBundle.mainBundle().pathForResource("index", ofType: "html")!
             //let base = NSURL.fileURLWithPath(templatepath)!
             let base = NSURL(string: startUrl)
@@ -93,6 +94,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
             //let ss = "<content>"
             //s = s.stringByReplacingOccurrencesOfString("<content>", withString:ss)
             self.webView!.loadHTMLString(s, baseURL:base)
+            */
         } else {
             //UI Web View supports manifest
             //Need more experiments to decide whether it's necessary to load from local file
@@ -144,7 +146,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     }
     
     override func prefersStatusBarHidden() -> Bool {
-        /*
         if pageStatus != .WebViewDisplayed {
             NSLog ("hide status bar")
             return true
@@ -153,8 +154,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
             //self.prefersStatusBarHidden = false
             return false
         }
-        */
-        return true
     }
     
     //On mobile phone, lock the screen to portrait only
