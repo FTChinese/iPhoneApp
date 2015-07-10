@@ -15,7 +15,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     var uiWebView: UIWebView?
     weak var timer: NSTimer?
     var pageStatus: WebViewStatus?
-    var startUrl = "http://m.ftchinese.com/mba-2014.html#iOSShareWechat&gShowStatusBar"
+    //var startUrl = "http://m.ftchinese.com/mba-2014.html#iOSShareWechat&gShowStatusBar"
+    var startUrl = "http://olizh.github.io/#isInSWIFT"
     //let startUrl = "http://m.ftchinese.com/"
     let overlayView = UIView()
     
@@ -173,18 +174,18 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         }
     }
 
-    func webView(webView: WKWebView!, decidePolicyForNavigationAction navigationAction: WKNavigationAction!, decisionHandler: ((WKNavigationActionPolicy) -> Void)!) {
-        let urlString = navigationAction.request.URL.absoluteString!
+    func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: ((WKNavigationActionPolicy) -> Void)) {
+        let urlString = navigationAction.request.URL!.absoluteString!
         if (urlString != startUrl && urlString != "about:blank") {
             //displayWebView()
             resetTimer(1.2)
         }
-        if navigationAction.request.URL.scheme == "ftcweixin" {
+        if navigationAction.request.URL!.scheme == "ftcweixin" {
             shareToWeChat(urlString)
             decisionHandler(.Cancel)
         } else if navigationAction.navigationType == .LinkActivated{
             if urlString.rangeOfString("mailto:") != nil{
-                UIApplication.sharedApplication().openURL(navigationAction.request.URL)
+                UIApplication.sharedApplication().openURL(navigationAction.request.URL!)
             } else {
                 openInView (urlString)
             }
@@ -194,17 +195,17 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         }
     }
     
-    func webView(webView: UIWebView!, shouldStartLoadWithRequest request: NSURLRequest!, navigationType: UIWebViewNavigationType) -> Bool {
-        let urlString = request.URL.absoluteString!
+    func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+        let urlString = request.URL!.absoluteString!
         if (urlString != startUrl && urlString != "about:blank") {
             resetTimer(1.2)
         }
-        if request.URL.scheme == "ftcweixin" {
+        if request.URL!.scheme == "ftcweixin" {
             shareToWeChat(urlString)
             return false
         } else if navigationType == .LinkClicked{
             if urlString.rangeOfString("mailto:") != nil{
-                UIApplication.sharedApplication().openURL(request.URL)
+                UIApplication.sharedApplication().openURL(request.URL!)
             } else {
                 openInView (urlString)
             }
@@ -226,8 +227,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         for keyValuePair in urlComponents {
             let stringSeparate = keyValuePair.rangeOfString("=").location
             if (stringSeparate>0 && stringSeparate < 100) {
-                let pairKey = (keyValuePair as NSString).substringToIndex(stringSeparate)
-                let pairValue = (keyValuePair as NSString).substringFromIndex(stringSeparate+1)
+                let pairKey = (keyValuePair as! NSString).substringToIndex(stringSeparate)
+                let pairValue = (keyValuePair as! NSString).substringFromIndex(stringSeparate+1)
                 queryStringDictionary[pairKey] = pairValue.stringByRemovingPercentEncoding
             }
         }
