@@ -128,12 +128,29 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     
     @IBAction func share(sender: AnyObject) {
         var url = NSURL(string:webPageUrl)
+        var textToShare = "share test from oliver"
         if supportWK == true {
             url = webView?.URL
         } else {
             url = containerView.request?.URL
         }
-        UIApplication.sharedApplication().openURL(url!)
+        //UIApplication.sharedApplication().openURL(url!)
+        
+
+        
+        textToShare = "Swift is awesome!  Check out this website about it!"
+        
+        if let myWebsite = url
+        {
+            let objectsToShare = [textToShare, myWebsite]
+            //let shareTo = [UIActivityTypePostToWeibo]
+            let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
+            activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList]
+            
+            self.presentViewController(activityVC, animated: true, completion: nil)
+        }
+        
+        
     }
     
     
