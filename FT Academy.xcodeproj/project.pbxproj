@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		50159E451B98A70B00F22FFC /* wechat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E441B98A70B00F22FFC /* wechat.swift */; };
 		50256C9F1A4B9D0B005950B9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50256C9E1A4B9D0B005950B9 /* AppDelegate.swift */; };
 		50256CA11A4B9D0B005950B9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50256CA01A4B9D0B005950B9 /* ViewController.swift */; };
 		50256CA41A4B9D0B005950B9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50256CA21A4B9D0B005950B9 /* Main.storyboard */; };
@@ -39,6 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		50159E441B98A70B00F22FFC /* wechat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = wechat.swift; sourceTree = "<group>"; };
 		50256C991A4B9D0B005950B9 /* FT Academy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FT Academy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		50256C9D1A4B9D0B005950B9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50256C9E1A4B9D0B005950B9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 				50256CA01A4B9D0B005950B9 /* ViewController.swift */,
 				50256CA21A4B9D0B005950B9 /* Main.storyboard */,
 				50256CC41A4C1916005950B9 /* WKWebPageController.swift */,
+				50159E441B98A70B00F22FFC /* wechat.swift */,
 				50256CA51A4B9D0B005950B9 /* Images.xcassets */,
 				50256CA71A4B9D0B005950B9 /* LaunchScreen.xib */,
 				50256C9C1A4B9D0B005950B9 /* Supporting Files */,
@@ -271,6 +274,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				50256CC31A4BFAE7005950B9 /* global.swift in Sources */,
+				50159E451B98A70B00F22FFC /* wechat.swift in Sources */,
 				50256CC51A4C1916005950B9 /* WKWebPageController.swift in Sources */,
 				50873CCC1A503A880027955A /* GoogleAdMob.m in Sources */,
 				50256CA11A4B9D0B005950B9 /* ViewController.swift in Sources */,
