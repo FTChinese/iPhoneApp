@@ -11,7 +11,7 @@ import UIKit
 import WebKit
 
 
-class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, WKUIDelegate{
+class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler{
     @IBOutlet weak var containerView: UIWebView!
     var webView: WKWebView?
     var myContext = 0
@@ -37,6 +37,23 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         checkWKSupport()
         if supportWK == true {
             var contentController = WKUserContentController();
+            
+            
+            
+            
+            var userScript = WKUserScript(
+                source: "webkit.messageHandlers.callbackHandler.postMessage('Hello from JavaScript');document.querySelector('h1').style.color = 'red';",
+                injectionTime: WKUserScriptInjectionTime.AtDocumentEnd,
+                forMainFrameOnly: true
+            )
+            contentController.addUserScript(userScript)
+            
+            
+            contentController.addScriptMessageHandler(
+                self,
+                name: "callbackHandler"
+            )
+            
             var config = WKWebViewConfiguration()
             config.userContentController = contentController
             self.webView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.mainScreen().bounds.width, height: UIScreen.mainScreen().bounds.height - 44), configuration: config)
@@ -81,6 +98,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
                 } else {
                     self.progressView.hidden = false
                 }
+                webPageTitle = self.webView!.title!;
             }
             return
         }
@@ -106,6 +124,14 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         return nil
     }
     
+    // message sent back to native app
+    func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+        if(message.name == "callbackHandler") {
+            //println("JavaScript is sending a message \(message.body)")
+            //webPageTitle = message.body as! String
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
@@ -127,14 +153,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     }
     
     @IBAction func share(sender: AnyObject) {
-        
-        //shareToWeChat("ftcweixin://?url=http%3A%2F%2Fm.ftchinese.com%2Fstory%2F001063730&title=%E5%8C%97%E4%BA%AC%E9%98%85%E5%85%B5%E8%83%8C%E5%90%8E%E7%9A%84%E2%80%9C%E5%9B%9B%E5%9B%BD%E6%BC%94%E4%B9%89%E2%80%9D&description=自北京宣布今年9月3日要举行庆祝二战/抗战胜利70周年大阅兵的消息以来，全球的观察家都在猜测，哪些主要国家的哪些重要领导人将会出席北京阅兵式。中国的老百姓讲面子，中国的党政高官更讲面子。来的外国代表越多、其级别越高，北京的这笔风险投资在国内外的政治和宣传市场上获取的回报率就越耀眼。&img=http://i.ftimg.net/picture/5/000045605_piclink.jpg&to=chat")
-        
-        
         let wcActivity = WeChatActivity()
-        
-        
-        
         var url = NSURL(string:webPageUrl)
         var textToShare = "share test from oliver"
         if supportWK == true {
@@ -154,7 +173,6 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
             //let shareTo = [UIActivityTypePostToWeibo]
             let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity])
             activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList]
-            
             self.presentViewController(activityVC, animated: true, completion: nil)
         }
 

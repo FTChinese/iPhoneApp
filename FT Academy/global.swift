@@ -9,6 +9,9 @@
 import Foundation
 import UIKit
 var webPageUrl = "http://m.ftchinese.com/"
+var webPageTitle = "FT中文网特别报道"
+var webPageDescription = "FT中文网是英国《金融时报》旗下唯一中文网站。"
+var webPageImage = "http://i.ftimg.net/picture/5/000045605_piclink.jpg"
 var supportWK = false
 enum WebViewStatus {
     case ViewToLoad
