@@ -8,10 +8,16 @@
 
 import Foundation
 import UIKit
-var webPageUrl = "http://m.ftchinese.com/"
-var webPageTitle = "FT中文网特别报道"
-var webPageDescription = "FT中文网是英国《金融时报》旗下唯一中文网站。"
-var webPageImage = "http://i.ftimg.net/picture/5/000045605_piclink.jpg"
+let webPageUrl0 = "http://m.ftchinese.com/"
+let webPageTitle0 = "来自FT中文网iOS应用的分享"
+let webPageDescription0 = "本链接分享自FT中文网的iOS应用，FT中文网是英国《金融时报》旗下唯一中文网站。"
+let webPageImage0 = "http://i.ftimg.net/picture/8/000045768_piclink.jpg"
+let webPageImageIcon0 = "http://i.ftimg.net/picture/8/000045768_piclink.jpg"
+var webPageUrl = ""
+var webPageTitle = ""
+var webPageDescription = ""
+var webPageImage = ""
+var webPageImageIcon = ""
 var supportWK = false
 enum WebViewStatus {
     case ViewToLoad

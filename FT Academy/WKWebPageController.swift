@@ -34,26 +34,25 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     
     override func loadView() {
         super.loadView()
+        webPageTitle = webPageTitle0
+        webPageDescription = webPageDescription0
+        webPageImage = webPageImage0
+        webPageImageIcon = webPageImageIcon0
         checkWKSupport()
         if supportWK == true {
             var contentController = WKUserContentController();
-            
-            
-            
-            
             var userScript = WKUserScript(
-                source: "webkit.messageHandlers.callbackHandler.postMessage('Hello from JavaScript');document.querySelector('h1').style.color = 'red';",
+                source: "var gCoverImage = document.querySelector('#startstatus').getAttribute('aria-image-url');var gIconImage = document.querySelector('#startstatus').getAttribute('aria-icon-url');var gDescription = document.querySelector('#startstatus').innerHTML;gIconImage=encodeURIComponent(gIconImage);webkit.messageHandlers.callbackHandler.postMessage(gCoverImage + '|' + gIconImage + '|' + gDescription);",
                 injectionTime: WKUserScriptInjectionTime.AtDocumentEnd,
                 forMainFrameOnly: true
             )
             contentController.addUserScript(userScript)
-            
-            
             contentController.addScriptMessageHandler(
                 self,
                 name: "callbackHandler"
             )
-            
+
+
             var config = WKWebViewConfiguration()
             config.userContentController = contentController
             self.webView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.mainScreen().bounds.width, height: UIScreen.mainScreen().bounds.height - 44), configuration: config)
@@ -67,6 +66,18 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         } else {
             containerView.delegate = self
         }
+    }
+    
+    // message sent back to native app
+    func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+        if(message.name == "callbackHandler") {
+            let infoForShare = message.body as! String
+            let toArray = infoForShare.componentsSeparatedByString("|")
+            webPageDescription = toArray[2]
+            webPageImage = toArray[0]
+            webPageImageIcon = "https://image.webservices.ft.com/v1/images/raw/\(toArray[1])?source=ftchinese&width=72&height=72"
+        }
+        
     }
     
     override func viewDidLoad() {
@@ -98,7 +109,8 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
                 } else {
                     self.progressView.hidden = false
                 }
-                webPageTitle = self.webView!.title!;
+                webPageUrl = self.webView!.URL!.absoluteString!
+                webPageTitle = self.webView!.title!
             }
             return
         }
@@ -124,14 +136,6 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         return nil
     }
     
-    // message sent back to native app
-    func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
-        if(message.name == "callbackHandler") {
-            //println("JavaScript is sending a message \(message.body)")
-            //webPageTitle = message.body as! String
-        }
-    }
-    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
@@ -153,31 +157,26 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     }
     
     @IBAction func share(sender: AnyObject) {
+        //UIApplication.sharedApplication().openURL(url!)
         let wcActivity = WeChatActivity()
+        let wcMoment = WeChatMoment()
+        let openInSafari = OpenInSafari()
         var url = NSURL(string:webPageUrl)
-        var textToShare = "share test from oliver"
         if supportWK == true {
             url = webView?.URL
         } else {
             url = containerView.request?.URL
         }
-        //UIApplication.sharedApplication().openURL(url!)
-        
-
-        
-        textToShare = "Swift is awesome!  Check out this website about it!"
-        
         if let myWebsite = url
         {
-            let objectsToShare = [textToShare, myWebsite]
+            //let objectsToShare = [webPageTitle, myWebsite]
+            let shareData = DataForShare()
+            let objectsToShare = [shareData, myWebsite]
             //let shareTo = [UIActivityTypePostToWeibo]
-            let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity])
+            let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcMoment, openInSafari])
             activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList]
             self.presentViewController(activityVC, animated: true, completion: nil)
         }
-
-        
-        
     }
     
     
@@ -201,7 +200,6 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         }
     }
     
-    
     override func shouldAutorotate() -> Bool {
         if UIScreen.mainScreen().bounds.width > 700 {
             return true
@@ -209,7 +207,6 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
             return false
         }
     }
-
     
     override func prefersStatusBarHidden() -> Bool {
         return true
