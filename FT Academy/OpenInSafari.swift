@@ -19,13 +19,12 @@ class OpenInSafari : UIActivity{
     
     
     override func activityType()-> String {
-        return "WeChatMoment"
+        return "openInSafari"
     }
     
     override func activityImage()-> UIImage?
     {
-        //return UIImage(named: "AppIcon")!
-        return nil
+        return UIImage(named: "Safari")!
     }
     
     override func activityTitle() -> String
@@ -35,7 +34,7 @@ class OpenInSafari : UIActivity{
     
     
     override class func activityCategory() -> UIActivityCategory{
-        return UIActivityCategory.Action
+        return UIActivityCategory.Share
     }
     
     

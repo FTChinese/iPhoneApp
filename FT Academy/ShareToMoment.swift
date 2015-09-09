@@ -24,8 +24,7 @@ class WeChatMoment : UIActivity{
     
     override func activityImage()-> UIImage?
     {
-        //return UIImage(named: "AppIcon")!
-        return nil
+        return UIImage(named: "Moment")!
     }
     
     override func activityTitle() -> String
@@ -35,7 +34,7 @@ class WeChatMoment : UIActivity{
     
     
     override class func activityCategory() -> UIActivityCategory{
-        return UIActivityCategory.Share
+        return UIActivityCategory.Action
     }
     
     func getURLFromMessage(message:String)-> NSURL

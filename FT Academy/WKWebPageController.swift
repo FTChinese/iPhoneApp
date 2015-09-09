@@ -169,10 +169,8 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         }
         if let myWebsite = url
         {
-            //let objectsToShare = [webPageTitle, myWebsite]
             let shareData = DataForShare()
             let objectsToShare = [shareData, myWebsite]
-            //let shareTo = [UIActivityTypePostToWeibo]
             let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcMoment, openInSafari])
             activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList]
             self.presentViewController(activityVC, animated: true, completion: nil)

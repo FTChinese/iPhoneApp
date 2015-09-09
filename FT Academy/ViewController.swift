@@ -17,7 +17,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     var pageStatus: WebViewStatus?
     //var startUrl = "http://m.ftchinese.com/mba-2014.html#iOSShareWechat&gShowStatusBar"
     //var startUrl = "http://olizh.github.io/?10#isInSWIFT"
-    let startUrl = "http://192.168.3.104:9000/#isInSWIFT&iOSShareWechat&gShowStatusBar"
+    let startUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat"
     //let startUrl = "http://m.ftchinese.com/"
     //let startUrl = "http://192.168.3.104:9000"
     let overlayView = UIView()
@@ -88,16 +88,16 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         var url = NSURL(string:startUrl)
         var req = NSURLRequest(URL:url!)
         if supportWK == true { //WKWebView doesn't support manifest. Load from a statice HTML file.
-            self.webView!.loadRequest(req)
-            /*
+            //self.webView!.loadRequest(req)
+            
             let templatepath = NSBundle.mainBundle().pathForResource("index", ofType: "html")!
             //let base = NSURL.fileURLWithPath(templatepath)!
             let base = NSURL(string: startUrl)
             var s = NSString(contentsOfFile:templatepath, encoding:NSUTF8StringEncoding, error:nil)!
             //let ss = "<content>"
             //s = s.stringByReplacingOccurrencesOfString("<content>", withString:ss)
-            self.webView!.loadHTMLString(s, baseURL:base)
-            */
+            self.webView!.loadHTMLString(s as String, baseURL:base)
+            
         } else {
             //UI Web View supports manifest
             //Need more experiments to decide whether it's necessary to load from local file
@@ -145,7 +145,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
+        return UIStatusBarStyle.Default
     }
     
     override func prefersStatusBarHidden() -> Bool {
@@ -185,6 +185,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         if navigationAction.request.URL!.scheme == "ftcweixin" {
             shareToWeChat(urlString)
             decisionHandler(.Cancel)
+        } else if navigationAction.request.URL!.scheme == "iosaction" {
+            turnOnActionSheet(urlString)
+            decisionHandler(.Cancel)
         } else if navigationAction.navigationType == .LinkActivated{
             if urlString.rangeOfString("mailto:") != nil{
                 UIApplication.sharedApplication().openURL(navigationAction.request.URL!)
@@ -194,6 +197,37 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
             decisionHandler(.Cancel)
         } else {
             decisionHandler(.Allow)
+        }
+    }
+    
+    func turnOnActionSheet(originalUrlString : String) {
+        let originalURL = originalUrlString
+        var queryStringDictionary = ["url":""]
+        var urlComponents : NSArray = (originalURL as NSString!).substringFromIndex(13).componentsSeparatedByString("&")
+        for keyValuePair in urlComponents {
+            let stringSeparate = keyValuePair.rangeOfString("=").location
+            if (stringSeparate>0 && stringSeparate < 100) {
+                let pairKey = (keyValuePair as! NSString).substringToIndex(stringSeparate)
+                let pairValue = (keyValuePair as! NSString).substringFromIndex(stringSeparate+1)
+                queryStringDictionary[pairKey] = pairValue.stringByRemovingPercentEncoding
+            }
+        }
+        webPageUrl = queryStringDictionary["url"]!.stringByReplacingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!        
+        webPageTitle = queryStringDictionary["title"]!
+        webPageDescription = queryStringDictionary["description"]!
+        webPageImage = queryStringDictionary["img"]!
+        webPageImageIcon = queryStringDictionary["img"]!
+        let wcActivity = WeChatActivity()
+        let wcMoment = WeChatMoment()
+        let openInSafari = OpenInSafari()
+        var url = NSURL(string:webPageUrl)
+        if let myWebsite = url
+        {
+            let shareData = DataForShare()
+            let objectsToShare = [shareData, myWebsite]
+            let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcMoment, openInSafari])
+            activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList]
+            self.presentViewController(activityVC, animated: true, completion: nil)
         }
     }
     
