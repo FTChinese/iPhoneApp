@@ -41,8 +41,10 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         checkWKSupport()
         if supportWK == true {
             var contentController = WKUserContentController();
+            var jsCode = "function getContentByMetaTagName(c) {for (var b = document.getElementsByTagName('meta'), a = 0; a < b.length; a++) {if (c == b[a].name || c == b[a].getAttribute('property')) { return b[a].content; }} return '';} var gCoverImage = getContentByMetaTagName('og:image') || '';var gIconImage = getContentByMetaTagName('thumbnail') || '';var gDescription = getContentByMetaTagName('og:description') || getContentByMetaTagName('description') || '';gIconImage=encodeURIComponent(gIconImage);webkit.messageHandlers.callbackHandler.postMessage(gCoverImage + '|' + gIconImage + '|' + gDescription);"
+            //var jsCode = "var gCoverImage = document.querySelector('meta[property=\"og:image\"]').getAttribute('content') || '';var gIconImage = document.querySelector('meta[property=\"thumbnail\"]').getAttribute('content') || gCoverImage;var gDescription = document.querySelector('meta[property=\"og:description\"]').getAttribute('content') || '';gIconImage=encodeURIComponent(gIconImage);webkit.messageHandlers.callbackHandler.postMessage(gCoverImage + '|' + gIconImage + '|' + gDescription);"
             var userScript = WKUserScript(
-                source: "var gCoverImage = document.querySelector('#startstatus').getAttribute('aria-image-url');var gIconImage = document.querySelector('#startstatus').getAttribute('aria-icon-url');var gDescription = document.querySelector('#startstatus').innerHTML;gIconImage=encodeURIComponent(gIconImage);webkit.messageHandlers.callbackHandler.postMessage(gCoverImage + '|' + gIconImage + '|' + gDescription);",
+                source: jsCode,
                 injectionTime: WKUserScriptInjectionTime.AtDocumentEnd,
                 forMainFrameOnly: true
             )
@@ -76,6 +78,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
             webPageDescription = toArray[2]
             webPageImage = toArray[0]
             webPageImageIcon = "https://image.webservices.ft.com/v1/images/raw/\(toArray[1])?source=ftchinese&width=72&height=72"
+            NSLog(infoForShare)
         }
         
     }
