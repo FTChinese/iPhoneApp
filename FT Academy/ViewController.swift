@@ -17,9 +17,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     var pageStatus: WebViewStatus?
     //var startUrl = "http://m.ftchinese.com/mba-2014.html#iOSShareWechat&gShowStatusBar"
     //var startUrl = "http://olizh.github.io/?10#isInSWIFT"
-    let startUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat"
+    let startUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
     //let startUrl = "http://m.ftchinese.com/"
-    //let startUrl = "http://192.168.3.104:9000"
+    //let startUrl = "http://192.168.253.2:9000?isInSWIFT&iOSShareWechat&gShowStatusBar"
     let overlayView = UIView()
     
     deinit {
@@ -97,7 +97,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
             //let ss = "<content>"
             //s = s.stringByReplacingOccurrencesOfString("<content>", withString:ss)
             self.webView!.loadHTMLString(s as String, baseURL:base)
-            
+
         } else {
             //UI Web View supports manifest
             //Need more experiments to decide whether it's necessary to load from local file
@@ -214,7 +214,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         }
         webPageUrl = queryStringDictionary["url"]!.stringByReplacingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!        
         webPageTitle = queryStringDictionary["title"]!
-        webPageDescription = queryStringDictionary["description"]!
+        if queryStringDictionary["description"] != nil {
+            webPageDescription = queryStringDictionary["description"]!
+        } else {
+            webPageDescription = webPageDescription0
+        }
         webPageImage = queryStringDictionary["img"]!
         webPageImageIcon = queryStringDictionary["img"]!
         let wcActivity = WeChatActivity()

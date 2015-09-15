@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>88638B9E-075F-444A-9BE3-83404AD73160</string>
 	<key>IDESourceControlProjectName</key>
-	<string>FT Academy</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>7268A4B2D6A26B87FDAABFC0688AFA182B771010</key>
 		<string>https://github.com/olizh/FT-Academy.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>FT Academy.xcodeproj</string>
+	<string>FT Academy.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>7268A4B2D6A26B87FDAABFC0688AFA182B771010</key>
