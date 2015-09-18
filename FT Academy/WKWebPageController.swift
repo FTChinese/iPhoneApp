@@ -53,8 +53,6 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
                 self,
                 name: "callbackHandler"
             )
-
-
             var config = WKWebViewConfiguration()
             config.userContentController = contentController
             self.webView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.mainScreen().bounds.width, height: UIScreen.mainScreen().bounds.height - 44), configuration: config)
@@ -68,6 +66,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         } else {
             containerView.delegate = self
         }
+
     }
     
     // message sent back to native app
@@ -77,18 +76,19 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
             let toArray = infoForShare.componentsSeparatedByString("|")
             webPageDescription = toArray[2]
             webPageImage = toArray[0]
-            webPageImageIcon = "https://image.webservices.ft.com/v1/images/raw/\(toArray[1])?source=ftchinese&width=72&height=72"
-            NSLog(infoForShare)
+            webPageImageIcon = toArray[1]
         }
-        
     }
     
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         var url = NSURL(string:webPageUrl)
         var req = NSURLRequest(URL:url!)
         if supportWK == true {
-            self.webView!.loadRequest(req)
+            if let selfWebView = self.webView {
+                self.webView!.loadRequest(req)
+            }
             progressView.frame = CGRectMake(0,0,UIScreen.mainScreen().bounds.width,10)
             self.containerView.addSubview(progressView)
             backBarButton.enabled = false
@@ -112,8 +112,10 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
                 } else {
                     self.progressView.hidden = false
                 }
-                webPageUrl = self.webView!.URL!.absoluteString!
-                webPageTitle = self.webView!.title!
+                if let selfWebViewUrl = self.webView!.URL {
+                    webPageUrl = self.webView!.URL!.absoluteString!
+                    webPageTitle = self.webView!.title!
+                }
             }
             return
         }

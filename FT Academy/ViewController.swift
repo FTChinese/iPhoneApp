@@ -20,8 +20,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     let startUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
     //let startUrl = "http://m.ftchinese.com/"
     //let startUrl = "http://192.168.253.2:9000?isInSWIFT&iOSShareWechat&gShowStatusBar"
+    //let startUrl = "http://m.corp.ftchinese.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
     let overlayView = UIView()
-    
+
     deinit {
         println("main view is being deinitialized")
     }

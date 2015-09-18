@@ -35,7 +35,6 @@ func checkWKSupport() {
     }
 }
 func shareToWeChat(originalUrlString : String) {
-
     let originalURL = originalUrlString
     var queryStringDictionary = ["url":""]
     var urlComponents : NSArray = (originalURL as NSString!).substringFromIndex(13).componentsSeparatedByString("&")
@@ -44,11 +43,10 @@ func shareToWeChat(originalUrlString : String) {
         if (stringSeparate>0 && stringSeparate < 100) {
             let pairKey = (keyValuePair as! NSString).substringToIndex(stringSeparate)
             let pairValue = (keyValuePair as! NSString).substringFromIndex(stringSeparate+1)
-            queryStringDictionary[pairKey] = pairValue.stringByRemovingPercentEncoding
+            queryStringDictionary[pairKey] = pairValue
         }
+        
     }
-    
-
     if WXApi.isWXAppInstalled() == false {
         if supportWK == true {
             var alert = UIAlertController(title: "请先安装微信", message: "谢谢您的支持！请先去app store安装微信再分享", preferredStyle: UIAlertControllerStyle.Alert)
@@ -63,19 +61,16 @@ func shareToWeChat(originalUrlString : String) {
         }
         return
     }
-
-    
     var message = WXMediaMessage()
     message.title = queryStringDictionary["title"]
     message.description = queryStringDictionary["description"]
-    
-
     var image : UIImage
-    
-    
     if queryStringDictionary["img"] != nil {
-        println(queryStringDictionary["img"])
-        let url = NSURL(string: queryStringDictionary["img"]!)
+        var imgUrl = queryStringDictionary["img"]
+        if imgUrl!.rangeOfString("https://image.webservices.ft.com") == nil{
+            imgUrl = "https://image.webservices.ft.com/v1/images/raw/\(imgUrl!)?source=ftchinese&width=72&height=72"
+        }
+        let url = NSURL(string: imgUrl!)
         let data = NSData(contentsOfURL: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check
         if (data == nil) {
             image = UIImage(named: "ftcicon.jpg")!
@@ -85,13 +80,8 @@ func shareToWeChat(originalUrlString : String) {
     } else {
         image = UIImage(named: "ftcicon.jpg")!
     }
-
-
-    
     image = image.resizableImageWithCapInsets(UIEdgeInsetsZero)
     message.setThumbImage(image)
-    
-    
     var webpageObj = WXWebpageObject()
     webpageObj.webpageUrl = queryStringDictionary["url"]
     message.mediaObject = webpageObj
@@ -105,8 +95,6 @@ func shareToWeChat(originalUrlString : String) {
     } else {
         req.scene = 1
     }
-    
-
     WXApi.sendReq(req)
 }
 
@@ -118,7 +106,6 @@ extension UIColor {
         
         self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
     }
-    
     convenience init(netHex:Int) {
         self.init(red:(netHex >> 16) & 0xff, green:(netHex >> 8) & 0xff, blue:netHex & 0xff)
     }
