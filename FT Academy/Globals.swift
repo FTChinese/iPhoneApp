@@ -37,7 +37,7 @@ func checkWKSupport() {
 func shareToWeChat(originalUrlString : String) {
     let originalURL = originalUrlString
     var queryStringDictionary = ["url":""]
-    var urlComponents : NSArray = (originalURL as NSString!).substringFromIndex(13).componentsSeparatedByString("&")
+    let urlComponents : NSArray = (originalURL as NSString!).substringFromIndex(13).componentsSeparatedByString("&")
     for keyValuePair in urlComponents {
         let stringSeparate = keyValuePair.rangeOfString("=").location
         if (stringSeparate>0 && stringSeparate < 100) {
@@ -48,12 +48,12 @@ func shareToWeChat(originalUrlString : String) {
         
     }
     if WXApi.isWXAppInstalled() == false {
-        if supportWK == true {
-            var alert = UIAlertController(title: "请先安装微信", message: "谢谢您的支持！请先去app store安装微信再分享", preferredStyle: UIAlertControllerStyle.Alert)
+        if #available(iOS 8.0, *) {
+            let alert = UIAlertController(title: "请先安装微信", message: "谢谢您的支持！请先去app store安装微信再分享", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "了解", style: UIAlertActionStyle.Default, handler: nil))
-            //self.presentViewController(alert, animated: true, completion: nil)
         } else {
-            var alertView = UIAlertView();
+            // Fallback on earlier versions
+            let alertView = UIAlertView();
             alertView.addButtonWithTitle("了解");
             alertView.title = "请安装微信";
             alertView.message = "谢谢您的支持！请先去app store安装微信再分享";
@@ -61,7 +61,7 @@ func shareToWeChat(originalUrlString : String) {
         }
         return
     }
-    var message = WXMediaMessage()
+    let message = WXMediaMessage()
     message.title = queryStringDictionary["title"]
     message.description = queryStringDictionary["description"]
     var image : UIImage
@@ -82,10 +82,10 @@ func shareToWeChat(originalUrlString : String) {
     }
     image = image.resizableImageWithCapInsets(UIEdgeInsetsZero)
     message.setThumbImage(image)
-    var webpageObj = WXWebpageObject()
+    let webpageObj = WXWebpageObject()
     webpageObj.webpageUrl = queryStringDictionary["url"]
     message.mediaObject = webpageObj
-    var req = SendMessageToWXReq()
+    let req = SendMessageToWXReq()
     req.bText = false
     req.message = message
     if queryStringDictionary["to"] == "chat" {

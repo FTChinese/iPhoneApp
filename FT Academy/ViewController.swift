@@ -24,14 +24,14 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     let overlayView = UIView()
 
     deinit {
-        println("main view is being deinitialized")
+        print("main view is being deinitialized")
     }
     
     override func loadView() {
         super.loadView()
         pageStatus = .ViewToLoad
         checkWKSupport()
-        if supportWK == true {
+        if #available(iOS 8.0, *) {
             self.webView = WKWebView()
             self.view = self.webView
             self.webView!.navigationDelegate = self
@@ -45,7 +45,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         overlayView.backgroundColor = UIColor(netHex:0x002F5F)
         overlayView.frame = self.view.bounds
         self.view.addSubview(overlayView)
-        overlayView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        overlayView.translatesAutoresizingMaskIntoConstraints = false
         view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Leading, multiplier: 1, constant: 0))
@@ -57,7 +57,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         imageView.frame = CGRect(x: 0, y: 0, width: 266, height: 210)
         imageView.contentMode = .ScaleAspectFit
         self.overlayView.addSubview(imageView)
-        imageView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1/3, constant: 1))
         view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 266))
@@ -69,7 +69,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         label.text = "努力加载中..."
         label.textColor = UIColor.whiteColor()
         self.overlayView.addSubview(label)
-        label.setTranslatesAutoresizingMaskIntoConstraints(false)
+        label.translatesAutoresizingMaskIntoConstraints = false
         
         view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: -20))
@@ -86,15 +86,15 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     }
     
     func loadFromLocal() {
-        var url = NSURL(string:startUrl)
-        var req = NSURLRequest(URL:url!)
+        let url = NSURL(string:startUrl)
+        let req = NSURLRequest(URL:url!)
         if supportWK == true { //WKWebView doesn't support manifest. Load from a statice HTML file.
             //self.webView!.loadRequest(req)
             
             let templatepath = NSBundle.mainBundle().pathForResource("index", ofType: "html")!
             //let base = NSURL.fileURLWithPath(templatepath)!
             let base = NSURL(string: startUrl)
-            var s = NSString(contentsOfFile:templatepath, encoding:NSUTF8StringEncoding, error:nil)!
+            let s = try! NSString(contentsOfFile:templatepath, encoding:NSUTF8StringEncoding)
             //let ss = "<content>"
             //s = s.stringByReplacingOccurrencesOfString("<content>", withString:ss)
             self.webView!.loadHTMLString(s as String, baseURL:base)
@@ -161,11 +161,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     }
     
     //On mobile phone, lock the screen to portrait only
-    override func supportedInterfaceOrientations() -> Int {
+    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
         if UIScreen.mainScreen().bounds.width > 700 {
-            return Int(UIInterfaceOrientationMask.All.rawValue)
+            return UIInterfaceOrientationMask.All
         } else {
-            return Int(UIInterfaceOrientationMask.Portrait.rawValue)
+            return UIInterfaceOrientationMask.Portrait
         }
     }
 
@@ -177,8 +177,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         }
     }
 
+    @available(iOS 8.0, *)
     func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: ((WKNavigationActionPolicy) -> Void)) {
-        let urlString = navigationAction.request.URL!.absoluteString!
+        let urlString = navigationAction.request.URL!.absoluteString
         if (urlString != startUrl && urlString != "about:blank") {
             //displayWebView()
             resetTimer(1.2)
@@ -204,7 +205,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     func turnOnActionSheet(originalUrlString : String) {
         let originalURL = originalUrlString
         var queryStringDictionary = ["url":""]
-        var urlComponents : NSArray = (originalURL as NSString!).substringFromIndex(13).componentsSeparatedByString("&")
+        let urlComponents : NSArray = (originalURL as NSString!).substringFromIndex(13).componentsSeparatedByString("&")
         for keyValuePair in urlComponents {
             let stringSeparate = keyValuePair.rangeOfString("=").location
             if (stringSeparate>0 && stringSeparate < 100) {
@@ -213,7 +214,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
                 queryStringDictionary[pairKey] = pairValue.stringByRemovingPercentEncoding
             }
         }
-        webPageUrl = queryStringDictionary["url"]!.stringByReplacingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!        
+        webPageUrl = queryStringDictionary["url"]!.stringByRemovingPercentEncoding!
         webPageTitle = queryStringDictionary["title"]!
         if queryStringDictionary["description"] != nil {
             webPageDescription = queryStringDictionary["description"]!
@@ -225,7 +226,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         let wcActivity = WeChatActivity()
         let wcMoment = WeChatMoment()
         let openInSafari = OpenInSafari()
-        var url = NSURL(string:webPageUrl)
+        let url = NSURL(string:webPageUrl)
         if let myWebsite = url
         {
             let shareData = DataForShare()
@@ -237,7 +238,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     }
     
     func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
-        let urlString = request.URL!.absoluteString!
+        let urlString = request.URL!.absoluteString
         if (urlString != startUrl && urlString != "about:blank") {
             resetTimer(1.2)
         }

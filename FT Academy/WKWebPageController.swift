@@ -24,7 +24,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     
     
     deinit {
-        if supportWK == true {
+        if #available(iOS 8.0, *) {
             self.webView?.removeObserver(self, forKeyPath: "estimatedProgress")
             self.webView?.removeObserver(self, forKeyPath: "canGoBack")
             self.webView?.removeObserver(self, forKeyPath: "canGoForward")
@@ -39,11 +39,11 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         webPageImage = webPageImage0
         webPageImageIcon = webPageImageIcon0
         checkWKSupport()
-        if supportWK == true {
-            var contentController = WKUserContentController();
-            var jsCode = "function getContentByMetaTagName(c) {for (var b = document.getElementsByTagName('meta'), a = 0; a < b.length; a++) {if (c == b[a].name || c == b[a].getAttribute('property')) { return b[a].content; }} return '';} var gCoverImage = getContentByMetaTagName('og:image') || '';var gIconImage = getContentByMetaTagName('thumbnail') || '';var gDescription = getContentByMetaTagName('og:description') || getContentByMetaTagName('description') || '';gIconImage=encodeURIComponent(gIconImage);webkit.messageHandlers.callbackHandler.postMessage(gCoverImage + '|' + gIconImage + '|' + gDescription);"
+        if #available(iOS 8.0, *) {
+            let contentController = WKUserContentController();
+            let jsCode = "function getContentByMetaTagName(c) {for (var b = document.getElementsByTagName('meta'), a = 0; a < b.length; a++) {if (c == b[a].name || c == b[a].getAttribute('property')) { return b[a].content; }} return '';} var gCoverImage = getContentByMetaTagName('og:image') || '';var gIconImage = getContentByMetaTagName('thumbnail') || '';var gDescription = getContentByMetaTagName('og:description') || getContentByMetaTagName('description') || '';gIconImage=encodeURIComponent(gIconImage);webkit.messageHandlers.callbackHandler.postMessage(gCoverImage + '|' + gIconImage + '|' + gDescription);"
             //var jsCode = "var gCoverImage = document.querySelector('meta[property=\"og:image\"]').getAttribute('content') || '';var gIconImage = document.querySelector('meta[property=\"thumbnail\"]').getAttribute('content') || gCoverImage;var gDescription = document.querySelector('meta[property=\"og:description\"]').getAttribute('content') || '';gIconImage=encodeURIComponent(gIconImage);webkit.messageHandlers.callbackHandler.postMessage(gCoverImage + '|' + gIconImage + '|' + gDescription);"
-            var userScript = WKUserScript(
+            let userScript = WKUserScript(
                 source: jsCode,
                 injectionTime: WKUserScriptInjectionTime.AtDocumentEnd,
                 forMainFrameOnly: true
@@ -53,7 +53,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
                 self,
                 name: "callbackHandler"
             )
-            var config = WKWebViewConfiguration()
+            let config = WKWebViewConfiguration()
             config.userContentController = contentController
             self.webView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.mainScreen().bounds.width, height: UIScreen.mainScreen().bounds.height - 44), configuration: config)
             self.containerView.addSubview(webView!)
@@ -70,6 +70,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     }
     
     // message sent back to native app
+    @available(iOS 8.0, *)
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
         if(message.name == "callbackHandler") {
             let infoForShare = message.body as! String
@@ -83,10 +84,10 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        var url = NSURL(string:webPageUrl)
-        var req = NSURLRequest(URL:url!)
-        if supportWK == true {
-            if let selfWebView = self.webView {
+        let url = NSURL(string:webPageUrl)
+        let req = NSURLRequest(URL:url!)
+        if #available(iOS 8.0, *) {
+            if let _ = self.webView {
                 self.webView!.loadRequest(req)
             }
             progressView.frame = CGRectMake(0,0,UIScreen.mainScreen().bounds.width,10)
@@ -99,13 +100,16 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     }
     
     
-    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if context != &myContext {
             super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
             return
         }
         if keyPath == "estimatedProgress" {
-            if let progress: Float = change[NSKeyValueChangeNewKey]?.floatValue {
+            
+            if let progress0 = self.webView?.estimatedProgress {
+            //if let progress: Float = change[NSKeyValueChangeNewKey]?.floatValue {
+                let progress = Float(progress0)
                 self.progressView.setProgress(progress, animated: true)
                 if progress == 1.0 {
                     self.progressView.hidden = true
@@ -113,20 +117,22 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
                     self.progressView.hidden = false
                 }
                 if let selfWebViewUrl = self.webView!.URL {
-                    webPageUrl = self.webView!.URL!.absoluteString!
+                    webPageUrl = self.webView!.URL!.absoluteString
                     webPageTitle = self.webView!.title!
                 }
             }
             return
         }
         if keyPath == "canGoBack" {
-            if let canGoBack = change[NSKeyValueChangeNewKey]?.boolValue {
+            if let canGoBack = self.webView?.canGoBack {
+            //if let canGoBack = change[NSKeyValueChangeNewKey]!.boolValue {
                 backBarButton.enabled = canGoBack
             }
             return
         }
         if keyPath == "canGoForward" {
-            if let canGoForward = change[NSKeyValueChangeNewKey]?.boolValue {
+            if let canGoForward = self.webView?.canGoForward {
+            //if let canGoForward = change[NSKeyValueChangeNewKey]?.boolValue {
                 forwardBarButton.enabled = canGoForward
             }
             return
@@ -134,6 +140,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     }
     
     // this handles target=_blank links by opening them in the same view
+    @available(iOS 8.0, *)
     func webView(webView: WKWebView, createWebViewWithConfiguration configuration: WKWebViewConfiguration, forNavigationAction navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
         if navigationAction.targetFrame == nil {
             webView.loadRequest(navigationAction.request)
@@ -154,7 +161,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     }
 
     @IBAction func goForward(sender: AnyObject) {
-        if supportWK == true {
+        if #available(iOS 8.0, *) {
             webView!.goForward()
         } else {
             containerView.goForward()
@@ -167,7 +174,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         let wcMoment = WeChatMoment()
         let openInSafari = OpenInSafari()
         var url = NSURL(string:webPageUrl)
-        if supportWK == true {
+        if #available(iOS 8.0, *) {
             url = webView?.URL
         } else {
             url = containerView.request?.URL
@@ -195,11 +202,11 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         }
     }
     
-    override func supportedInterfaceOrientations() -> Int {
+    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
         if UIScreen.mainScreen().bounds.width > 700 {
-            return Int(UIInterfaceOrientationMask.All.rawValue)
+            return UIInterfaceOrientationMask.All
         } else {
-            return Int(UIInterfaceOrientationMask.Portrait.rawValue)
+            return UIInterfaceOrientationMask.Portrait
         }
     }
     
