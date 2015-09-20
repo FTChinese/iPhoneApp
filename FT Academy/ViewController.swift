@@ -10,7 +10,8 @@ import UIKit
 import WebKit
 
 class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate {
-
+    
+    
     var webView: WKWebView?
     var uiWebView: UIWebView?
     weak var timer: NSTimer?
