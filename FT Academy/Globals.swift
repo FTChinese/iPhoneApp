@@ -18,7 +18,7 @@ var webPageTitle = ""
 var webPageDescription = ""
 var webPageImage = ""
 var webPageImageIcon = ""
-var supportWK = false
+//var supportWK = false
 enum WebViewStatus {
     case ViewToLoad
     case ViewLoaded
@@ -26,6 +26,7 @@ enum WebViewStatus {
     case WebViewDisplayed
     case WebViewWarned
 }
+/*
 func checkWKSupport() {
     switch UIDevice.currentDevice().systemVersion.compare("8.0.0", options: NSStringCompareOptions.NumericSearch) {
     case .OrderedSame, .OrderedDescending:
@@ -34,6 +35,7 @@ func checkWKSupport() {
         supportWK = false
     }
 }
+*/
 func shareToWeChat(originalUrlString : String) {
     let originalURL = originalUrlString
     var queryStringDictionary = ["url":""]

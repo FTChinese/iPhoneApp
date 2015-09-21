@@ -12,6 +12,7 @@ import WebKit
 
 
 class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler{
+    
     @IBOutlet weak var containerView: UIWebView!
     var webView: WKWebView?
     var myContext = 0
@@ -38,7 +39,6 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         webPageDescription = webPageDescription0
         webPageImage = webPageImage0
         webPageImageIcon = webPageImageIcon0
-        checkWKSupport()
         if #available(iOS 8.0, *) {
             let contentController = WKUserContentController();
             let jsCode = "function getContentByMetaTagName(c) {for (var b = document.getElementsByTagName('meta'), a = 0; a < b.length; a++) {if (c == b[a].name || c == b[a].getAttribute('property')) { return b[a].content; }} return '';} var gCoverImage = getContentByMetaTagName('og:image') || '';var gIconImage = getContentByMetaTagName('thumbnail') || '';var gDescription = getContentByMetaTagName('og:description') || getContentByMetaTagName('description') || '';gIconImage=encodeURIComponent(gIconImage);webkit.messageHandlers.callbackHandler.postMessage(gCoverImage + '|' + gIconImage + '|' + gDescription);"
@@ -153,7 +153,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     }
     
     @IBAction func goBack(sender: AnyObject) {
-        if supportWK == true {
+        if #available(iOS 8.0, *) {
             webView!.goBack()
         } else {
             containerView.goBack()
@@ -195,7 +195,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     }
     
     @IBAction func reload(sender: AnyObject) {
-        if supportWK == true {
+        if #available(iOS 8.0, *) {
             webView!.reload()
         } else {
             containerView.reload()
@@ -221,6 +221,6 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     override func prefersStatusBarHidden() -> Bool {
         return true
     }
-    
+
 }
 

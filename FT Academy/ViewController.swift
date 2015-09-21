@@ -11,7 +11,6 @@ import WebKit
 
 class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate {
     
-    
     var webView: WKWebView?
     var uiWebView: UIWebView?
     weak var timer: NSTimer?
@@ -31,7 +30,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     override func loadView() {
         super.loadView()
         pageStatus = .ViewToLoad
-        checkWKSupport()
         if #available(iOS 8.0, *) {
             self.webView = WKWebView()
             self.view = self.webView
@@ -89,7 +87,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     func loadFromLocal() {
         let url = NSURL(string:startUrl)
         let req = NSURLRequest(URL:url!)
-        if supportWK == true { //WKWebView doesn't support manifest. Load from a statice HTML file.
+        if #available(iOS 8.0, *) { //WKWebView doesn't support manifest. Load from a statice HTML file.
             //self.webView!.loadRequest(req)
             
             let templatepath = NSBundle.mainBundle().pathForResource("index", ofType: "html")!
