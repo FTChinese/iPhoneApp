@@ -42,7 +42,6 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         if #available(iOS 8.0, *) {
             let contentController = WKUserContentController();
             let jsCode = "function getContentByMetaTagName(c) {for (var b = document.getElementsByTagName('meta'), a = 0; a < b.length; a++) {if (c == b[a].name || c == b[a].getAttribute('property')) { return b[a].content; }} return '';} var gCoverImage = getContentByMetaTagName('og:image') || '';var gIconImage = getContentByMetaTagName('thumbnail') || '';var gDescription = getContentByMetaTagName('og:description') || getContentByMetaTagName('description') || '';gIconImage=encodeURIComponent(gIconImage);webkit.messageHandlers.callbackHandler.postMessage(gCoverImage + '|' + gIconImage + '|' + gDescription);"
-            //var jsCode = "var gCoverImage = document.querySelector('meta[property=\"og:image\"]').getAttribute('content') || '';var gIconImage = document.querySelector('meta[property=\"thumbnail\"]').getAttribute('content') || gCoverImage;var gDescription = document.querySelector('meta[property=\"og:description\"]').getAttribute('content') || '';gIconImage=encodeURIComponent(gIconImage);webkit.messageHandlers.callbackHandler.postMessage(gCoverImage + '|' + gIconImage + '|' + gDescription);"
             let userScript = WKUserScript(
                 source: jsCode,
                 injectionTime: WKUserScriptInjectionTime.AtDocumentEnd,

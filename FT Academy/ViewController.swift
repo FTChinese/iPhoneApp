@@ -108,15 +108,22 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(false)
         if pageStatus == .WebViewDisplayed || pageStatus == .WebViewWarned {
-            //Code to deal with white screen when back from other scene
-            //this code is magical in that it doesn't add new code if the white screen is not displayed
-            //yet it reload the page from local file when white screen is displayed
-            loadFromLocal()
+            //Deal with white screen when back from other scene
+            self.webView?.evaluateJavaScript("document.querySelector('body').innerHTML") { (result, error) in
+                if error != nil {
+                    print("an error occored! Need to refresh the web app! ")
+                    self.loadFromLocal()
+                } else {
+                    print("js run successfully!")
+                }
+            }
+            
             NSLog("back from other scene!")
         } else {
             NSLog("first time load!")
         }
     }
+    
     
     func resetTimer(seconds: NSTimeInterval) {
         timer?.invalidate()
