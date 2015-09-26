@@ -12,7 +12,7 @@ import SafariServices
 
 class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, SFSafariViewControllerDelegate {
     
-    var webView: WKWebView?
+    //var webView: WKWebView?
     var uiWebView: UIWebView?
     weak var timer: NSTimer?
     var pageStatus: WebViewStatus?
@@ -32,9 +32,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         super.loadView()
         pageStatus = .ViewToLoad
         if #available(iOS 8.0, *) {
-            self.webView = WKWebView()
-            self.view = self.webView
-            self.webView!.navigationDelegate = self
+            var webView: WKWebView?
+            webView = WKWebView()
+            self.view = webView
+            webView!.navigationDelegate = self
         } else {
             self.uiWebView = UIWebView()
             self.view = self.uiWebView
@@ -97,7 +98,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             let s = try! NSString(contentsOfFile:templatepath, encoding:NSUTF8StringEncoding)
             //let ss = "<content>"
             //s = s.stringByReplacingOccurrencesOfString("<content>", withString:ss)
-            self.webView!.loadHTMLString(s as String, baseURL:base)
+            //self.webView!.loadHTMLString(s as String, baseURL:base)
+            let webView = self.view as! WKWebView
+            webView.loadHTMLString(s as String, baseURL:base)
 
         } else {
             //UI Web View supports manifest
@@ -119,12 +122,15 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     
     func checkBlankPage() {
-        self.webView?.evaluateJavaScript("document.querySelector('body').innerHTML") { (result, error) in
-            if error != nil {
-                print("an error occored! Need to refresh the web app! ")
-                self.loadFromLocal()
-            } else {
-                print("js run successfully!")
+        if #available(iOS 8.0, *) {
+            let webView = self.view as! WKWebView
+            webView.evaluateJavaScript("document.querySelector('body').innerHTML") { (result, error) in
+                if error != nil {
+                    print("an error occored! Need to refresh the web app! ")
+                    self.loadFromLocal()
+                } else {
+                    print("js run successfully!")
+                }
             }
         }
     }

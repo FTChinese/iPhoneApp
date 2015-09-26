@@ -13,21 +13,19 @@ import WebKit
 class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler{
     
     @IBOutlet weak var containerView: UIWebView!
-    var webView: WKWebView?
+    @IBOutlet weak var backBarButton: UIBarButtonItem!
+    @IBOutlet weak var forwardBarButton: UIBarButtonItem!
+    var subWKView: UIView?
     var myContext = 0
     let progressView = UIProgressView(progressViewStyle: UIProgressViewStyle.Default)
-
-    
-    @IBOutlet weak var backBarButton: UIBarButtonItem!
-    
-    @IBOutlet weak var forwardBarButton: UIBarButtonItem!
     
     
     deinit {
         if #available(iOS 8.0, *) {
-            self.webView?.removeObserver(self, forKeyPath: "estimatedProgress")
-            self.webView?.removeObserver(self, forKeyPath: "canGoBack")
-            self.webView?.removeObserver(self, forKeyPath: "canGoForward")
+            let webView = subWKView as! WKWebView
+            webView.removeObserver(self, forKeyPath: "estimatedProgress")
+            webView.removeObserver(self, forKeyPath: "canGoBack")
+            webView.removeObserver(self, forKeyPath: "canGoForward")
         }
     }
     
@@ -53,14 +51,16 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
             )
             let config = WKWebViewConfiguration()
             config.userContentController = contentController
-            self.webView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.mainScreen().bounds.width, height: UIScreen.mainScreen().bounds.height - 44), configuration: config)
-            self.containerView.addSubview(webView!)
+            var webView: WKWebView!
+            webView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.mainScreen().bounds.width, height: UIScreen.mainScreen().bounds.height - 44), configuration: config)
+            self.containerView.addSubview(webView)
             self.containerView.clipsToBounds = true
-            self.webView?.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: &myContext)
-            self.webView?.addObserver(self, forKeyPath: "canGoBack", options: .New, context: &myContext)
-            self.webView?.addObserver(self, forKeyPath: "canGoForward", options: .New, context: &myContext)
-            self.webView!.navigationDelegate = self
-            self.webView!.UIDelegate = self
+            webView.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: &myContext)
+            webView.addObserver(self, forKeyPath: "canGoBack", options: .New, context: &myContext)
+            webView.addObserver(self, forKeyPath: "canGoForward", options: .New, context: &myContext)
+            webView.navigationDelegate = self
+            webView.UIDelegate = self
+            self.subWKView = webView
         } else {
             containerView.delegate = self
         }
@@ -85,9 +85,8 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         let url = NSURL(string:webPageUrl)
         let req = NSURLRequest(URL:url!)
         if #available(iOS 8.0, *) {
-            if let _ = self.webView {
-                self.webView!.loadRequest(req)
-            }
+            let webView = self.subWKView as! WKWebView
+            webView.loadRequest(req)
             progressView.frame = CGRectMake(0,0,UIScreen.mainScreen().bounds.width,10)
             self.containerView.addSubview(progressView)
             backBarButton.enabled = false
@@ -98,15 +97,23 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     }
     
     
+    
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if context != &myContext {
             super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
             return
         }
-        if keyPath == "estimatedProgress" {
+        
+        if #available(iOS 8.0, *) {
             
-            if let progress0 = self.webView?.estimatedProgress {
-            //if let progress: Float = change[NSKeyValueChangeNewKey]?.floatValue {
+        } else {
+            // Fallback on earlier versions
+        }
+        
+        if keyPath == "estimatedProgress" {
+            if #available(iOS 8.0, *) {
+                let webView = self.subWKView as! WKWebView
+                let progress0 = webView.estimatedProgress
                 let progress = Float(progress0)
                 self.progressView.setProgress(progress, animated: true)
                 if progress == 1.0 {
@@ -114,9 +121,9 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
                 } else {
                     self.progressView.hidden = false
                 }
-                if let selfWebViewUrl = self.webView!.URL {
-                    webPageUrl = self.webView!.URL!.absoluteString
-                    webPageTitle = self.webView!.title!
+                if let _ = webView.URL {
+                    webPageUrl = webView.URL!.absoluteString
+                    webPageTitle = webView.title!
                     if webPageTitle == "" {
                         webPageTitle = webPageTitle0
                     }
@@ -125,15 +132,17 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
             return
         }
         if keyPath == "canGoBack" {
-            if let canGoBack = self.webView?.canGoBack {
-            //if let canGoBack = change[NSKeyValueChangeNewKey]!.boolValue {
+            if #available(iOS 8.0, *) {
+                let webView = self.subWKView as! WKWebView
+                let canGoBack = webView.canGoBack
                 backBarButton.enabled = canGoBack
             }
             return
         }
         if keyPath == "canGoForward" {
-            if let canGoForward = self.webView?.canGoForward {
-            //if let canGoForward = change[NSKeyValueChangeNewKey]?.boolValue {
+            if #available(iOS 8.0, *) {
+                let webView = self.subWKView as! WKWebView
+                let canGoForward = webView.canGoForward
                 forwardBarButton.enabled = canGoForward
             }
             return
@@ -155,7 +164,8 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     
     @IBAction func goBack(sender: AnyObject) {
         if #available(iOS 8.0, *) {
-            webView!.goBack()
+            let webView = self.subWKView as! WKWebView
+            webView.goBack()
         } else {
             containerView.goBack()
         }
@@ -163,7 +173,8 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
 
     @IBAction func goForward(sender: AnyObject) {
         if #available(iOS 8.0, *) {
-            webView!.goForward()
+            let webView = self.subWKView as! WKWebView
+            webView.goForward()
         } else {
             containerView.goForward()
         }
@@ -175,7 +186,8 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         let openInSafari = OpenInSafari()
         var url = NSURL(string:webPageUrl)
         if #available(iOS 8.0, *) {
-            url = webView?.URL
+            let webView = self.subWKView as! WKWebView
+            url = webView.URL
         } else {
             url = containerView.request?.URL
         }
@@ -195,7 +207,8 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     
     @IBAction func reload(sender: AnyObject) {
         if #available(iOS 8.0, *) {
-            webView!.reload()
+            let webView = self.subWKView as! WKWebView
+            webView.reload()
         } else {
             containerView.reload()
         }
@@ -220,6 +233,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     override func prefersStatusBarHidden() -> Bool {
         return true
     }
+
 
 }
 
