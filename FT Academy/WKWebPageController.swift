@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 import WebKit
 
-
 class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler{
     
     @IBOutlet weak var containerView: UIWebView!
@@ -118,6 +117,9 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
                 if let selfWebViewUrl = self.webView!.URL {
                     webPageUrl = self.webView!.URL!.absoluteString
                     webPageTitle = self.webView!.title!
+                    if webPageTitle == "" {
+                        webPageTitle = webPageTitle0
+                    }
                 }
             }
             return
@@ -168,7 +170,6 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     }
     
     @IBAction func share(sender: AnyObject) {
-        //UIApplication.sharedApplication().openURL(url!)
         let wcActivity = WeChatActivity()
         let wcMoment = WeChatMoment()
         let openInSafari = OpenInSafari()
@@ -178,8 +179,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         } else {
             url = containerView.request?.URL
         }
-        if let myWebsite = url
-        {
+        if let myWebsite = url {
             let shareData = DataForShare()
             let objectsToShare = [shareData, myWebsite]
             let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcMoment, openInSafari])

@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		50159E451B98A70B00F22FFC /* ShareToWeChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E441B98A70B00F22FFC /* ShareToWeChat.swift */; };
-		50159E471B9B147500F22FFC /* ShareCustomization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E461B9B147500F22FFC /* ShareCustomization.swift */; };
+		50159E471B9B147500F22FFC /* DataForShare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E461B9B147500F22FFC /* DataForShare.swift */; };
 		50159E491B9B249900F22FFC /* ShareToMoment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E481B9B249900F22FFC /* ShareToMoment.swift */; };
 		50159E4B1B9B2ED900F22FFC /* OpenInSafari.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E4A1B9B2ED900F22FFC /* OpenInSafari.swift */; };
 		50159E5D1BA05EBD00F22FFC /* ftcicon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 50159E5C1BA05EBD00F22FFC /* ftcicon.jpg */; };
@@ -45,7 +45,7 @@
 
 /* Begin PBXFileReference section */
 		50159E441B98A70B00F22FFC /* ShareToWeChat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareToWeChat.swift; sourceTree = "<group>"; };
-		50159E461B9B147500F22FFC /* ShareCustomization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareCustomization.swift; sourceTree = "<group>"; };
+		50159E461B9B147500F22FFC /* DataForShare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataForShare.swift; sourceTree = "<group>"; };
 		50159E481B9B249900F22FFC /* ShareToMoment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareToMoment.swift; sourceTree = "<group>"; };
 		50159E4A1B9B2ED900F22FFC /* OpenInSafari.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInSafari.swift; sourceTree = "<group>"; };
 		50159E5C1BA05EBD00F22FFC /* ftcicon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ftcicon.jpg; sourceTree = "<group>"; };
@@ -141,7 +141,7 @@
 				50256CA01A4B9D0B005950B9 /* ViewController.swift */,
 				50256CA21A4B9D0B005950B9 /* Main.storyboard */,
 				50256CC41A4C1916005950B9 /* WKWebPageController.swift */,
-				50159E461B9B147500F22FFC /* ShareCustomization.swift */,
+				50159E461B9B147500F22FFC /* DataForShare.swift */,
 				50159E441B98A70B00F22FFC /* ShareToWeChat.swift */,
 				50159E4A1B9B2ED900F22FFC /* OpenInSafari.swift */,
 				50159E481B9B249900F22FFC /* ShareToMoment.swift */,
@@ -295,7 +295,7 @@
 				50159E4B1B9B2ED900F22FFC /* OpenInSafari.swift in Sources */,
 				50873CCC1A503A880027955A /* GoogleAdMob.m in Sources */,
 				50256CA11A4B9D0B005950B9 /* ViewController.swift in Sources */,
-				50159E471B9B147500F22FFC /* ShareCustomization.swift in Sources */,
+				50159E471B9B147500F22FFC /* DataForShare.swift in Sources */,
 				50256C9F1A4B9D0B005950B9 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

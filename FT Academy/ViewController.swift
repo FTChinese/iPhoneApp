@@ -8,8 +8,9 @@
 
 import UIKit
 import WebKit
+import SafariServices
 
-class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate {
+class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, SFSafariViewControllerDelegate {
     
     var webView: WKWebView?
     var uiWebView: UIWebView?
@@ -109,18 +110,22 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         super.viewWillAppear(false)
         if pageStatus == .WebViewDisplayed || pageStatus == .WebViewWarned {
             //Deal with white screen when back from other scene
-            self.webView?.evaluateJavaScript("document.querySelector('body').innerHTML") { (result, error) in
-                if error != nil {
-                    print("an error occored! Need to refresh the web app! ")
-                    self.loadFromLocal()
-                } else {
-                    print("js run successfully!")
-                }
-            }
-            
+            checkBlankPage()
             NSLog("back from other scene!")
         } else {
             NSLog("first time load!")
+        }
+    }
+    
+    
+    func checkBlankPage() {
+        self.webView?.evaluateJavaScript("document.querySelector('body').innerHTML") { (result, error) in
+            if error != nil {
+                print("an error occored! Need to refresh the web app! ")
+                self.loadFromLocal()
+            } else {
+                print("js run successfully!")
+            }
         }
     }
     
@@ -233,8 +238,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
         let wcMoment = WeChatMoment()
         let openInSafari = OpenInSafari()
         let url = NSURL(string:webPageUrl)
-        if let myWebsite = url
-        {
+        if let myWebsite = url {
             let shareData = DataForShare()
             let objectsToShare = [shareData, myWebsite]
             let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcMoment, openInSafari])
@@ -265,9 +269,56 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate 
     
     func openInView(urlString : String) {
         webPageUrl = urlString
-        self.performSegueWithIdentifier("WKWebPageSegue", sender: nil)
+        if #available(iOS 9.0, *) {
+            // use the safariview for iOS 9
+            if urlString.rangeOfString("http://www.ftchinese.com") == nil {
+                //when opening an outside url which we have no control over
+                let url = NSURL(string:urlString)
+                let webVC = SFSafariViewController(URL: url!)
+                webVC.delegate = self
+                self.presentViewController(webVC, animated: true, completion: nil)
+            } else {
+                //when opening a url on a page that I can control
+                self.performSegueWithIdentifier("WKWebPageSegue", sender: nil)
+            }
+        } else {
+            // Fallback on earlier versions
+            self.performSegueWithIdentifier("WKWebPageSegue", sender: nil)
+        }
     }
     
+    @available(iOS 9.0, *)
+    func safariViewControllerDidFinish(controller: SFSafariViewController) {
+        controller.dismissViewControllerAnimated(true, completion: nil)
+        checkBlankPage()
+    }
+    
+    
+    @available(iOS 9.0, *)
+    func safariViewController(controller: SFSafariViewController, didCompleteInitialLoad didLoadSuccessfully: Bool) {
+        if didLoadSuccessfully == false {
+            print("Page did not load!")
+            //controller.dismissViewControllerAnimated(true, completion: nil)
+        } else {
+            print("Page Load Successful!")
+        }
+    }
+    
+    
+    @available(iOS 9.0, *)
+    func safariViewController(controler: SFSafariViewController, activityItemsForURL: NSURL, title: String?) -> [UIActivity] {
+        webPageUrl = activityItemsForURL.absoluteString
+        //http://www.chaumet.cn/?utm_source=FTCMobile-HPFullscreen
+        //the title for the above page, which is not utf-8, cannot be captured
+        webPageTitle = title!
+        if webPageTitle == "" {
+            webPageTitle = webPageTitle0
+        }
+        //print("page title: \(webPageTitle), page url: \(webPageUrl)")
+        let wcActivity = WeChatActivity()
+        let wcMoment = WeChatMoment()
+        return [wcActivity, wcMoment]
+    }
 
     /*
     func webView(webView: UIWebView, shouldStartLoadWithRequest r: NSURLRequest, navigationType nt: UIWebViewNavigationType) -> Bool {

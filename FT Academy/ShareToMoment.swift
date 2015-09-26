@@ -1,18 +1,9 @@
-//
-//  Whatsapp.swift
-//  Send2Phone
-//
-//  Created by Sohel Siddique on 3/27/15.
-//  Copyright (c) 2015 Zuzis. All rights reserved.
-//
-
 import UIKit
 
 class WeChatMoment : UIActivity{
     
     override init() {
         self.text = ""
-        
     }
     
     var text:String?
@@ -55,13 +46,6 @@ class WeChatMoment : UIActivity{
     }
     
     override func performActivity() {
-        //webPageUrl = "http%-7A%2F%2Fm.ftchinese.com%2Fstory%2F001063730"
         shareToWeChat("ftcweixin://?url=\(webPageUrl)&title=\(webPageTitle)&description=\(webPageDescription)&img=\(webPageImageIcon)&to=moment")
     }
-    
-    
-    
-    
-    
-    
 }
