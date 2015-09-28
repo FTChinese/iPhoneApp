@@ -28,6 +28,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         print("main view is being deinitialized")
     }
     
+    
     override func loadView() {
         super.loadView()
         pageStatus = .ViewToLoad
