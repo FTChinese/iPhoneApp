@@ -20,10 +20,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     //var startUrl = "http://olizh.github.io/?10#isInSWIFT"
     let startUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
     //let startUrl = "http://m.ftchinese.com/"
-    //let startUrl = "http://192.168.253.2:9000?isInSWIFT&iOSShareWechat&gShowStatusBar"
+    //let startUrl = "http://192.168.3.100:9000?isInSWIFT&iOSShareWechat&gShowStatusBar"
     //let startUrl = "http://m.corp.ftchinese.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
     let overlayView = UIView()
-
+    
     deinit {
         print("main view is being deinitialized")
     }
@@ -37,6 +37,17 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             webView = WKWebView()
             self.view = webView
             webView!.navigationDelegate = self
+            
+            NSNotificationCenter.defaultCenter().addObserverForName("statusBarSelected", object: nil, queue: nil) { event in
+                //print("status bar clicked")
+                webView!.evaluateJavaScript("scrollToTop()") { (result, error) in
+                    if error != nil {
+                        print("an error occored when trying to scroll to Top! ")
+                    } else {
+                        print("scrolled to Top!")
+                    }
+                }
+            }
         } else {
             self.uiWebView = UIWebView()
             self.view = self.uiWebView
@@ -64,7 +75,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1/3, constant: 1))
         view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 266))
         view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 210))
-
+        
         let label = UILabel(frame: CGRectMake(0, 0, 441, 21))
         label.center = CGPointMake(160, 284)
         label.textAlignment = NSTextAlignment.Center
@@ -78,7 +89,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 441))
         view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 21))
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         pageStatus = .ViewLoaded
@@ -91,7 +102,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         let url = NSURL(string:startUrl)
         let req = NSURLRequest(URL:url!)
         if #available(iOS 8.0, *) { //WKWebView doesn't support manifest. Load from a statice HTML file.
-            //self.webView!.loadRequest(req)
+            let webView = self.view as! WKWebView
+            
+            //webView.loadRequest(req)
             
             let templatepath = NSBundle.mainBundle().pathForResource("index", ofType: "html")!
             //let base = NSURL.fileURLWithPath(templatepath)!
@@ -100,9 +113,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             //let ss = "<content>"
             //s = s.stringByReplacingOccurrencesOfString("<content>", withString:ss)
             //self.webView!.loadHTMLString(s as String, baseURL:base)
-            let webView = self.view as! WKWebView
+            
             webView.loadHTMLString(s as String, baseURL:base)
-
+            
+            
         } else {
             //UI Web View supports manifest
             //Need more experiments to decide whether it's necessary to load from local file
@@ -142,7 +156,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         let nextTimer = NSTimer.scheduledTimerWithTimeInterval(seconds, target: self, selector: "handleIdleEvent:", userInfo: nil, repeats: false)
         timer = nextTimer
     }
-
+    
     func handleIdleEvent(timer: NSTimer) {
         // do whatever you want when idle after certain period of time
         displayWebView()
@@ -156,7 +170,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             setNeedsStatusBarAppearanceUpdate()
         }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         NSLog("memory warning in main view!")
@@ -186,7 +200,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             return UIInterfaceOrientationMask.Portrait
         }
     }
-
+    
     override func shouldAutorotate() -> Bool {
         if UIScreen.mainScreen().bounds.width > 700 {
             return true
@@ -194,7 +208,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             return false
         }
     }
-
+    
     @available(iOS 8.0, *)
     func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: ((WKNavigationActionPolicy) -> Void)) {
         let urlString = navigationAction.request.URL!.absoluteString
@@ -326,23 +340,25 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         let wcMoment = WeChatMoment()
         return [wcActivity, wcMoment]
     }
-
+    
+    
+    
     /*
     func webView(webView: UIWebView, shouldStartLoadWithRequest r: NSURLRequest, navigationType nt: UIWebViewNavigationType) -> Bool {
-        if r.URL.scheme == "play" {
-            println("user would like to hear the podcast")
-            return false
-        }
-        if nt == .LinkClicked { // disable link-clicking
-            if self.canNavigate {
-                return true
-            }
-            println("user would like to navigation to \(r.URL)")
-            // this is how you would open in Mobile Safari
-            // UIApplication.sharedApplication().openURL(r.URL)
-            return false
-        }
-        return true
+    if r.URL.scheme == "play" {
+    println("user would like to hear the podcast")
+    return false
+    }
+    if nt == .LinkClicked { // disable link-clicking
+    if self.canNavigate {
+    return true
+    }
+    println("user would like to navigation to \(r.URL)")
+    // this is how you would open in Mobile Safari
+    // UIApplication.sharedApplication().openURL(r.URL)
+    return false
+    }
+    return true
     }
     */
     

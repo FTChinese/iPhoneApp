@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "50256C981A4B9D0B005950B9"
-               BuildableName = "FT Academy.app"
-               BlueprintName = "FT Academy"
-               ReferencedContainer = "container:FT Academy.xcodeproj">
+               BuildableName = "FT&#x4e2d;&#x6587;&#x7f51;.app"
+               BlueprintName = "FT&#x4e2d;&#x6587;&#x7f51;"
+               ReferencedContainer = "container:FT&#x4e2d;&#x6587;&#x7f51;.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "50256CAD1A4B9D0B005950B9"
-               BuildableName = "FT AcademyTests.xctest"
-               BlueprintName = "FT AcademyTests"
-               ReferencedContainer = "container:FT Academy.xcodeproj">
+               BuildableName = "FT&#x4e2d;&#x6587;&#x7f51;.xctest"
+               BlueprintName = "FT&#x4e2d;&#x6587;&#x7f51;Tests"
+               ReferencedContainer = "container:FT&#x4e2d;&#x6587;&#x7f51;.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,9 +47,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "50256CAD1A4B9D0B005950B9"
-               BuildableName = "FT AcademyTests.xctest"
-               BlueprintName = "FT AcademyTests"
-               ReferencedContainer = "container:FT Academy.xcodeproj">
+               BuildableName = "FT&#x4e2d;&#x6587;&#x7f51;.xctest"
+               BlueprintName = "FT&#x4e2d;&#x6587;&#x7f51;Tests"
+               ReferencedContainer = "container:FT&#x4e2d;&#x6587;&#x7f51;.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -57,9 +57,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "50256C981A4B9D0B005950B9"
-            BuildableName = "FT Academy.app"
-            BlueprintName = "FT Academy"
-            ReferencedContainer = "container:FT Academy.xcodeproj">
+            BuildableName = "FT&#x4e2d;&#x6587;&#x7f51;.app"
+            BlueprintName = "FT&#x4e2d;&#x6587;&#x7f51;"
+            ReferencedContainer = "container:FT&#x4e2d;&#x6587;&#x7f51;.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -80,9 +80,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "50256C981A4B9D0B005950B9"
-            BuildableName = "FT Academy.app"
-            BlueprintName = "FT Academy"
-            ReferencedContainer = "container:FT Academy.xcodeproj">
+            BuildableName = "FT&#x4e2d;&#x6587;&#x7f51;.app"
+            BlueprintName = "FT&#x4e2d;&#x6587;&#x7f51;"
+            ReferencedContainer = "container:FT&#x4e2d;&#x6587;&#x7f51;.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -99,9 +99,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "50256C981A4B9D0B005950B9"
-            BuildableName = "FT Academy.app"
-            BlueprintName = "FT Academy"
-            ReferencedContainer = "container:FT Academy.xcodeproj">
+            BuildableName = "FT&#x4e2d;&#x6587;&#x7f51;.app"
+            BlueprintName = "FT&#x4e2d;&#x6587;&#x7f51;"
+            ReferencedContainer = "container:FT&#x4e2d;&#x6587;&#x7f51;.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
