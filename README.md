@@ -1,6 +1,6 @@
 # FTChinese iPhone App
 
-This is SWIFT source code of the new FTChinese iPhone app. 
+This is SWIFT source code of the new FTChinese iPhone and iPad app. 
 
 It does these things: 
 
