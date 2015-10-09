@@ -1,4 +1,4 @@
-# FTChinese iPhone App
+# FTChinese iOS news App
 
 This is SWIFT source code of the new FTChinese iPhone and iPad app. 
 
