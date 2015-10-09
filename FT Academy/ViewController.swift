@@ -18,10 +18,13 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     var pageStatus: WebViewStatus?
     //var startUrl = "http://m.ftchinese.com/mba-2014.html#iOSShareWechat&gShowStatusBar"
     //var startUrl = "http://olizh.github.io/?10#isInSWIFT"
-    let startUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
+    var startUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
+    let iPadStartUrl = "http://app005.ftmailbox.com/ipad-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
     //let startUrl = "http://m.ftchinese.com/"
     //let startUrl = "http://192.168.3.100:9000?isInSWIFT&iOSShareWechat&gShowStatusBar"
     //let startUrl = "http://m.corp.ftchinese.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
+    
+    
     let overlayView = UIView()
     
     deinit {
@@ -32,6 +35,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     override func loadView() {
         super.loadView()
         pageStatus = .ViewToLoad
+        let p = NSBundle.mainBundle().infoDictionary?["CFBundleName"] as! String
+        if p == "FT中文网-iPad" {
+            startUrl = iPadStartUrl
+        }
         if #available(iOS 8.0, *) {
             var webView: WKWebView?
             webView = WKWebView()
@@ -194,7 +201,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     //On mobile phone, lock the screen to portrait only
     override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        if UIScreen.mainScreen().bounds.width > 700 {
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
             return UIInterfaceOrientationMask.All
         } else {
             return UIInterfaceOrientationMask.Portrait
@@ -202,7 +209,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     override func shouldAutorotate() -> Bool {
-        if UIScreen.mainScreen().bounds.width > 700 {
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
             return true
         } else {
             return false
@@ -264,7 +271,13 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             let objectsToShare = [shareData, myWebsite]
             let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcMoment, openInSafari])
             activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList]
-            self.presentViewController(activityVC, animated: true, completion: nil)
+            if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+                //self.presentViewController(controller, animated: true, completion: nil)
+                let popup: UIPopoverController = UIPopoverController(contentViewController: activityVC)
+                popup.presentPopoverFromRect(CGRectMake(self.view.frame.size.width / 2, self.view.frame.size.height / 4, 0, 0), inView: self.view, permittedArrowDirections: UIPopoverArrowDirection.Any, animated: true)
+            } else {
+                self.presentViewController(activityVC, animated: true, completion: nil)
+            }
         }
     }
     

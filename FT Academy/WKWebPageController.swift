@@ -196,7 +196,15 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
             let objectsToShare = [shareData, myWebsite]
             let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcMoment, openInSafari])
             activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList]
-            self.presentViewController(activityVC, animated: true, completion: nil)
+            if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+                //self.presentViewController(controller, animated: true, completion: nil)
+                let popup: UIPopoverController = UIPopoverController(contentViewController: activityVC)
+                popup.presentPopoverFromRect(CGRectMake(self.view.frame.size.width / 2, self.view.frame.size.height / 4, 0, 0), inView: self.view, permittedArrowDirections: UIPopoverArrowDirection.Any, animated: true)
+            } else {
+                self.presentViewController(activityVC, animated: true, completion: nil)
+            }
+            
+            
         }
     }
     
@@ -215,7 +223,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     }
     
     override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        if UIScreen.mainScreen().bounds.width > 700 {
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
             return UIInterfaceOrientationMask.All
         } else {
             return UIInterfaceOrientationMask.Portrait
@@ -223,7 +231,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     }
     
     override func shouldAutorotate() -> Bool {
-        if UIScreen.mainScreen().bounds.width > 700 {
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
             return true
         } else {
             return false
