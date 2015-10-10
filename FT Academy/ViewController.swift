@@ -13,7 +13,7 @@ import SafariServices
 class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, SFSafariViewControllerDelegate {
     
     //var webView: WKWebView?
-    var uiWebView: UIWebView?
+    var uiWebView: UIWebView!
     weak var timer: NSTimer?
     var pageStatus: WebViewStatus?
     //var startUrl = "http://m.ftchinese.com/mba-2014.html#iOSShareWechat&gShowStatusBar"
@@ -30,6 +30,36 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     deinit {
         print("main view is being deinitialized")
     }
+    
+    
+
+    func checkConnectionType() {
+        let statusType = IJReachability().connectedToNetworkOfType()
+        var connectionType = ""
+        switch statusType {
+        case .WWAN:
+            connectionType = "data"
+        case .WiFi:
+            connectionType =  "wifi"
+        case .NotConnected:
+            connectionType =  "no"
+        }
+        let jsCode = "window.gConnectionType = '\(connectionType)';"
+        if #available(iOS 8.0, *) { //WKWebView doesn't support manifest. Load from a statice HTML file.
+            let webView = self.view as! WKWebView
+            webView.evaluateJavaScript(jsCode) { (result, error) in
+                if error != nil {
+                    print("an error occored when trying update connection type! ")
+                } else {
+                    print("updated connection type! ")
+                }
+            }
+        } else {
+            uiWebView.stringByEvaluatingJavaScriptFromString(jsCode)
+            print("updated connection type on iOS 7")
+        }
+    }
+
     
     
     override func loadView() {
@@ -110,9 +140,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         let req = NSURLRequest(URL:url!)
         if #available(iOS 8.0, *) { //WKWebView doesn't support manifest. Load from a statice HTML file.
             let webView = self.view as! WKWebView
-            
             //webView.loadRequest(req)
-            
             let templatepath = NSBundle.mainBundle().pathForResource("index", ofType: "html")!
             //let base = NSURL.fileURLWithPath(templatepath)!
             let base = NSURL(string: startUrl)
@@ -120,9 +148,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             //let ss = "<content>"
             //s = s.stringByReplacingOccurrencesOfString("<content>", withString:ss)
             //self.webView!.loadHTMLString(s as String, baseURL:base)
-            
             webView.loadHTMLString(s as String, baseURL:base)
-            
             
         } else {
             //UI Web View supports manifest
@@ -180,7 +206,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        NSLog("memory warning in main view!")
+        print("memory warning in main view!")
         pageStatus = .WebViewWarned
     }
     
@@ -190,10 +216,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     override func prefersStatusBarHidden() -> Bool {
         if pageStatus != .WebViewDisplayed {
-            NSLog ("hide status bar")
+            print ("hide status bar")
             return true
         } else {
-            NSLog ("show status bar")
+            print ("show status bar")
             //self.prefersStatusBarHidden = false
             return false
         }
@@ -213,6 +239,30 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             return true
         } else {
             return false
+        }
+    }
+    
+    //iOS 7 link clicked
+    func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+        let urlString = request.URL!.absoluteString
+        if (urlString != startUrl && urlString != "about:blank") {
+            resetTimer(1.2)
+        }
+        if request.URL!.scheme == "ftcweixin" {
+            shareToWeChat(urlString)
+            return false
+        }  else if request.URL!.scheme == "iosaction" {
+            turnOnActionSheet(urlString)
+            return false
+        } else if navigationType == .LinkClicked{
+            if urlString.rangeOfString("mailto:") != nil{
+                UIApplication.sharedApplication().openURL(request.URL!)
+            } else {
+                openInView (urlString)
+            }
+            return false
+        } else {
+            return true
         }
     }
     
@@ -281,25 +331,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
-    func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
-        let urlString = request.URL!.absoluteString
-        if (urlString != startUrl && urlString != "about:blank") {
-            resetTimer(1.2)
-        }
-        if request.URL!.scheme == "ftcweixin" {
-            shareToWeChat(urlString)
-            return false
-        } else if navigationType == .LinkClicked{
-            if urlString.rangeOfString("mailto:") != nil{
-                UIApplication.sharedApplication().openURL(request.URL!)
-            } else {
-                openInView (urlString)
-            }
-            return false
-        } else {
-            return true
-        }
-    }
+
     
     func openInView(urlString : String) {
         webPageUrl = urlString

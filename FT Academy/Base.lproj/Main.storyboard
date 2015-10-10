@@ -8,7 +8,7 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="FT_Academy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="FT中文网" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -28,7 +28,7 @@
         <!--Web Page Controller-->
         <scene sceneID="0SU-aU-9lE">
             <objects>
-                <viewController id="zfb-r0-mCC" customClass="WKWebPageController" customModule="FT_Academy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="zfb-r0-mCC" customClass="WKWebPageController" customModule="FT中文网" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="q8g-sd-dLJ"/>
                         <viewControllerLayoutGuide type="bottom" id="zy6-az-tb3"/>
