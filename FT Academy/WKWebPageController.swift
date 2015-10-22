@@ -253,7 +253,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         //            return UIInterfaceOrientationMask.Portrait
         //        }
         if webPageUrl.rangeOfString("d=landscape") != nil {
-            print("d=landscape")
+            //print("d=landscape")
             return UIInterfaceOrientationMask.Landscape
         } else if webPageUrl.rangeOfString("d=portrait") != nil {
             return UIInterfaceOrientationMask.Portrait

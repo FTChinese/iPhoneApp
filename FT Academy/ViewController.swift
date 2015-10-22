@@ -196,7 +196,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         } else {
             //print("try to update connection type on iOS 7")
             let _ = uiWebView.stringByEvaluatingJavaScriptFromString(jsCode)
-            print("updated connection type on iOS 7")
+            //print("updated connection type on iOS 7")
         }
     }
     
@@ -226,7 +226,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        print("memory warning in main view!")
+        //print("memory warning in main view!")
         pageStatus = .WebViewWarned
     }
     
