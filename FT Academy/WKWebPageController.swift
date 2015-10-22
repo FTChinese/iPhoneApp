@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import WebKit
 
-class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler{
+class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler, UIScrollViewDelegate{
     
     @IBOutlet weak var containerView: UIWebView!
     @IBOutlet weak var backBarButton: UIBarButtonItem!
@@ -38,6 +38,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         webPageImageIcon = webPageImageIcon0
         if #available(iOS 8.0, *) {
             let contentController = WKUserContentController();
+            //get page information if it follows opengraph
             let jsCode = "function getContentByMetaTagName(c) {for (var b = document.getElementsByTagName('meta'), a = 0; a < b.length; a++) {if (c == b[a].name || c == b[a].getAttribute('property')) { return b[a].content; }} return '';} var gCoverImage = getContentByMetaTagName('og:image') || '';var gIconImage = getContentByMetaTagName('thumbnail') || '';var gDescription = getContentByMetaTagName('og:description') || getContentByMetaTagName('description') || '';gIconImage=encodeURIComponent(gIconImage);webkit.messageHandlers.callbackHandler.postMessage(gCoverImage + '|' + gIconImage + '|' + gDescription);"
             let userScript = WKUserScript(
                 source: jsCode,
@@ -60,12 +61,25 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
             webView.addObserver(self, forKeyPath: "canGoForward", options: .New, context: &myContext)
             webView.navigationDelegate = self
             webView.UIDelegate = self
+            webView.scrollView.delegate = self
             self.subWKView = webView
+            
         } else {
             containerView.delegate = self
+            containerView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
         }
-
+        
     }
+    
+    //there's a bug on iOS 9 so that you can't set decelerationRate directly on webView
+    //http://stackoverflow.com/questions/31369538/cannot-change-wkwebviews-scroll-rate-on-ios-9-beta
+    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        if #available(iOS 8.0, *) {
+            scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
+        }
+    }
+    
+    
     
     // message sent back to native app
     @available(iOS 8.0, *)
@@ -102,12 +116,6 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         if context != &myContext {
             super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
             return
-        }
-        
-        if #available(iOS 8.0, *) {
-            
-        } else {
-            // Fallback on earlier versions
         }
         
         if keyPath == "estimatedProgress" {
@@ -170,7 +178,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
             containerView.goBack()
         }
     }
-
+    
     @IBAction func goForward(sender: AnyObject) {
         if #available(iOS 8.0, *) {
             let webView = self.subWKView as! WKWebView
@@ -190,6 +198,12 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
             url = webView.URL
         } else {
             url = containerView.request?.URL
+            webPageTitle = containerView.stringByEvaluatingJavaScriptFromString("document.title")!
+            let jsCode = "function getContentByMetaTagName(c) {for (var b = document.getElementsByTagName('meta'), a = 0; a < b.length; a++) {if (c == b[a].name || c == b[a].getAttribute('property')) { return b[a].content; }} return '';}"
+            let _ = containerView.stringByEvaluatingJavaScriptFromString(jsCode)
+            webPageDescription = containerView.stringByEvaluatingJavaScriptFromString("getContentByMetaTagName('og:description') || getContentByMetaTagName('description') || ''")!
+            webPageImage = containerView.stringByEvaluatingJavaScriptFromString("getContentByMetaTagName('og:image') || ''")!
+            webPageImageIcon = containerView.stringByEvaluatingJavaScriptFromString("encodeURIComponent(getContentByMetaTagName('og:thumbnail') || '')")!
         }
         if let myWebsite = url {
             let shareData = DataForShare()
@@ -203,8 +217,6 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
             } else {
                 self.presentViewController(activityVC, animated: true, completion: nil)
             }
-            
-            
         }
     }
     
@@ -241,7 +253,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     override func prefersStatusBarHidden() -> Bool {
         return true
     }
-
-
+    
+    
 }
 

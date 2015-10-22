@@ -28,12 +28,12 @@ enum WebViewStatus {
 }
 /*
 func checkWKSupport() {
-    switch UIDevice.currentDevice().systemVersion.compare("8.0.0", options: NSStringCompareOptions.NumericSearch) {
-    case .OrderedSame, .OrderedDescending:
-        supportWK = true
-    case .OrderedAscending:
-        supportWK = false
-    }
+switch UIDevice.currentDevice().systemVersion.compare("8.0.0", options: NSStringCompareOptions.NumericSearch) {
+case .OrderedSame, .OrderedDescending:
+supportWK = true
+case .OrderedAscending:
+supportWK = false
+}
 }
 */
 func shareToWeChat(originalUrlString : String) {

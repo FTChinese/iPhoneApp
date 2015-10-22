@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Appex. All rights reserved.
 //
 
+/*
 import Foundation
 import SystemConfiguration
 
@@ -80,3 +81,4 @@ public class IJReachability {
     }
     
 }
+*/
