@@ -12,25 +12,19 @@ import SafariServices
 
 class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, SFSafariViewControllerDelegate {
     
-    //var webView: WKWebView?
     var uiWebView: UIWebView!
     weak var timer: NSTimer?
     var pageStatus: WebViewStatus?
-    //var startUrl = "http://m.ftchinese.com/mba-2014.html#iOSShareWechat&gShowStatusBar"
-    //var startUrl = "http://olizh.github.io/?10#isInSWIFT"
     var startUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
     let iPadStartUrl = "http://app005.ftmailbox.com/ipad-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
-    //let startUrl = "http://m.ftchinese.com/"
-    //let startUrl = "http://192.168.3.100:9000?isInSWIFT&iOSShareWechat&gShowStatusBar"
-    //let startUrl = "http://m.corp.ftchinese.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
-    
+    //var startUrl = "http://192.168.253.2:9000?isInSWIFT&iOSShareWechat&gShowStatusBar"
     
     let overlayView = UIView()
     //    let reachability = Reachability.reachabilityForInternetConnection()
     //    var reachabilityNotifierOn = false
-    //
+    
     deinit {
-        print("main view is being deinitialized")
+        //print("main view is being deinitialized")
     }
     
     override func loadView() {
@@ -48,9 +42,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             NSNotificationCenter.defaultCenter().addObserverForName("statusBarSelected", object: nil, queue: nil) { event in
                 webView!.evaluateJavaScript("scrollToTop()") { (result, error) in
                     if error != nil {
-                        print("an error occored when trying to scroll to Top! ")
+                        //print("an error occored when trying to scroll to Top! ")
                     } else {
-                        print("scrolled to Top!")
+                        //print("scrolled to Top!")
                     }
                 }
             }
@@ -107,8 +101,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     
     func loadFromLocal() {
-        let url = NSURL(string:startUrl)
-        let req = NSURLRequest(URL:url!)
+        
+        //let url = NSURL(string:startUrl)
+        //let req = NSURLRequest(URL:url!)
         let templatepath = NSBundle.mainBundle().pathForResource("index", ofType: "html")!
         //let base = NSURL.fileURLWithPath(templatepath)!
         let base = NSURL(string: startUrl)
@@ -122,11 +117,12 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             //self.webView!.loadHTMLString(s as String, baseURL:base)
             webView.loadHTMLString(s as String, baseURL:base)
         } else {
-            uiWebView?.loadRequest(req)
-            //uiWebView.loadHTMLString(s as String, baseURL: base)
+            //uiWebView?.loadRequest(req)
+            uiWebView.loadHTMLString(s as String, baseURL: base)
         }
-        //checkConnectionType()
+        checkConnectionType()
         //uiWebView.loadHTMLString(s as String, baseURL: base)
+        
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -134,9 +130,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         if pageStatus == .WebViewDisplayed || pageStatus == .WebViewWarned {
             //Deal with white screen when back from other scene
             checkBlankPage()
-            NSLog("back from other scene!")
+            //print("back from other scene!")
         } else {
-            NSLog("first time load!")
+            //print("first time load!")
         }
         //checkConnectionType()
         //turnOnReachabilityNotifier()
@@ -146,115 +142,67 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         super.viewWillDisappear(false)
         //turnOffReachabilityNotifier()
     }
+    
     func checkBlankPage() {
         if #available(iOS 8.0, *) {
             let webView = self.view as! WKWebView
             webView.evaluateJavaScript("document.querySelector('body').innerHTML") { (result, error) in
                 if error != nil {
-                    print("an error occored! Need to refresh the web app! ")
+                    //print("an error occored! Need to refresh the web app! ")
                     self.loadFromLocal()
                 } else {
+                    self.checkConnectionType()
                     //self.turnOnReachabilityNotifier()
-                    print("js run successfully!")
+                    //print("js run successfully!")
                 }
             }
         } else {
             if let _ = uiWebView.stringByEvaluatingJavaScriptFromString("document.querySelector('body').innerHTML") {
                 //self.turnOnReachabilityNotifier()
+                checkConnectionType()
                 
             } else {
                 self.loadFromLocal()
             }
         }
     }
-    /*
-    func turnOnReachabilityNotifier() {
-    if reachabilityNotifierOn == false {
-    NSNotificationCenter.defaultCenter().addObserver(self,
-    selector: "reachabilityChanged:",
-    name: ReachabilityChangedNotification,
-    object: reachability)
     
-    reachability!.startNotifier()
-    reachabilityNotifierOn = true
-    print("start listen to reachability")
-    }
-    }
-    
-    func turnOffReachabilityNotifier() {
-    if reachabilityNotifierOn == true {
-    reachability!.stopNotifier()
-    NSNotificationCenter.defaultCenter().removeObserver(self,
-    name: ReachabilityChangedNotification,
-    object: reachability)
-    reachabilityNotifierOn = false
-    print("stopped listen to reachability")
-    }
-    }
-    
-    
-    
-    
-    func reachabilityChanged(note: NSNotification) {
-    let reachability = note.object as! Reachability
-    var connectionType = "unknown"
-    if reachability.isReachable() {
-    if reachability.isReachableViaWiFi() {
-    connectionType = "wifi"
-    } else {
-    connectionType = "data"
-    }
-    } else {
-    connectionType = "no"
-    }
-    updateConnectionToWeb(connectionType)
-    }
     
     func checkConnectionType() {
-    var connectionType = "unknown"
-    if reachability!.isReachableViaWiFi() {
-    //print("Reachable via WiFi")
-    connectionType =  "wifi"
-    } else if reachability!.isReachableViaWWAN() {
-    connectionType = "data"
-    } else {
-    connectionType =  "no"
-    }
-    updateConnectionToWeb(connectionType)
-    /*
-    let statusType = IJReachability().connectedToNetworkOfType()
-    var connectionType = "unknown"
-    switch statusType {
-    case .WWAN:
-    connectionType = "data"
-    case .WiFi:
-    connectionType =  "wifi"
-    case .NotConnected:
-    connectionType =  "no"
-    }
-    updateConnectionToWeb(connectionType)
-    */
+        let statusType = IJReachability().connectedToNetworkOfType()
+        var connectionType = "unknown"
+        switch statusType {
+        case .WWAN:
+            connectionType = "data"
+        case .WiFi:
+            connectionType =  "wifi"
+        case .NotConnected:
+            connectionType =  "no"
+        }
+        updateConnectionToWeb(connectionType)
     }
     
     func updateConnectionToWeb(connectionType: String) {
-    let jsCode = "window.gConnectionType = '\(connectionType)';"
-    if #available(iOS 8.0, *) { //WKWebView doesn't support manifest. Load from a statice HTML file.
-    let webView = self.view as! WKWebView
-    webView.evaluateJavaScript(jsCode) { (result, error) in
-    if error != nil {
-    print("an error occored when trying update connection type! ")
-    } else {
-    print("updated connection type! ")
-    }
-    }
-    } else {
-    //print("try to update connection type on iOS 7")
-    let _ = uiWebView.stringByEvaluatingJavaScriptFromString(jsCode)
-    print("updated connection type on iOS 7")
-    }
+        let jsCode = "window.gConnectionType = '\(connectionType)';"
+        if #available(iOS 8.0, *) { //WKWebView doesn't support manifest. Load from a statice HTML file.
+            let webView = self.view as! WKWebView
+            webView.evaluateJavaScript(jsCode) { (result, error) in
+                //                if error != nil {
+                //                    print("an error occored when trying update connection type! ")
+                //                } else {
+                //                    print("updated connection type! ")
+                //                }
+            }
+        } else {
+            //print("try to update connection type on iOS 7")
+            let _ = uiWebView.stringByEvaluatingJavaScriptFromString(jsCode)
+            print("updated connection type on iOS 7")
+        }
     }
     
-    */
+    
+    
+    
     
     func resetTimer(seconds: NSTimeInterval) {
         timer?.invalidate()
@@ -288,10 +236,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     override func prefersStatusBarHidden() -> Bool {
         if pageStatus != .WebViewDisplayed {
-            print ("hide status bar")
+            //print ("hide status bar")
             return true
         } else {
-            print ("show status bar")
+            //print ("show status bar")
             //self.prefersStatusBarHidden = false
             return false
         }
@@ -435,10 +383,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     @available(iOS 9.0, *)
     func safariViewController(controller: SFSafariViewController, didCompleteInitialLoad didLoadSuccessfully: Bool) {
         if didLoadSuccessfully == false {
-            print("Page did not load!")
+            //print("Page did not load!")
             //controller.dismissViewControllerAnimated(true, completion: nil)
         } else {
-            print("Page Load Successful!")
+            //print("Page Load Successful!")
         }
     }
     
@@ -477,6 +425,95 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     return true
     }
+    */
+    
+    /*
+    func turnOnReachabilityNotifier() {
+    if reachabilityNotifierOn == false {
+    NSNotificationCenter.defaultCenter().addObserver(self,
+    selector: "reachabilityChanged:",
+    name: ReachabilityChangedNotification,
+    object: reachability)
+    
+    reachability!.startNotifier()
+    reachabilityNotifierOn = true
+    print("start listen to reachability")
+    }
+    }
+    
+    func turnOffReachabilityNotifier() {
+    if reachabilityNotifierOn == true {
+    reachability!.stopNotifier()
+    NSNotificationCenter.defaultCenter().removeObserver(self,
+    name: ReachabilityChangedNotification,
+    object: reachability)
+    reachabilityNotifierOn = false
+    print("stopped listen to reachability")
+    }
+    }
+    
+    
+    
+    
+    func reachabilityChanged(note: NSNotification) {
+    let reachability = note.object as! Reachability
+    var connectionType = "unknown"
+    if reachability.isReachable() {
+    if reachability.isReachableViaWiFi() {
+    connectionType = "wifi"
+    } else {
+    connectionType = "data"
+    }
+    } else {
+    connectionType = "no"
+    }
+    updateConnectionToWeb(connectionType)
+    }
+    
+    func checkConnectionType() {
+    var connectionType = "unknown"
+    if reachability!.isReachableViaWiFi() {
+    //print("Reachable via WiFi")
+    connectionType =  "wifi"
+    } else if reachability!.isReachableViaWWAN() {
+    connectionType = "data"
+    } else {
+    connectionType =  "no"
+    }
+    updateConnectionToWeb(connectionType)
+    /*
+    let statusType = IJReachability().connectedToNetworkOfType()
+    var connectionType = "unknown"
+    switch statusType {
+    case .WWAN:
+    connectionType = "data"
+    case .WiFi:
+    connectionType =  "wifi"
+    case .NotConnected:
+    connectionType =  "no"
+    }
+    updateConnectionToWeb(connectionType)
+    */
+    }
+    
+    func updateConnectionToWeb(connectionType: String) {
+    let jsCode = "window.gConnectionType = '\(connectionType)';"
+    if #available(iOS 8.0, *) { //WKWebView doesn't support manifest. Load from a statice HTML file.
+    let webView = self.view as! WKWebView
+    webView.evaluateJavaScript(jsCode) { (result, error) in
+    if error != nil {
+    print("an error occored when trying update connection type! ")
+    } else {
+    print("updated connection type! ")
+    }
+    }
+    } else {
+    //print("try to update connection type on iOS 7")
+    let _ = uiWebView.stringByEvaluatingJavaScriptFromString(jsCode)
+    print("updated connection type on iOS 7")
+    }
+    }
+    
     */
     
 }

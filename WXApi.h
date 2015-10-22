@@ -6,7 +6,6 @@
 //  Copyright (c) 2012年 Tencent. All rights reserved.
 //
 
-#import <SystemConfiguration/SystemConfiguration.h>
 #import <Foundation/Foundation.h>
 #import "WXApiObject.h"
 

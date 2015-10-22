@@ -23,7 +23,7 @@ class WeChatActivity : UIActivity{
         return "微信好友"
     }
     
-
+    
     override class func activityCategory() -> UIActivityCategory{
         return UIActivityCategory.Action
     }
@@ -44,7 +44,7 @@ class WeChatActivity : UIActivity{
     override func canPerformWithActivityItems(activityItems: [AnyObject]) -> Bool {
         return true;
     }
-
+    
     override func performActivity() {
         shareToWeChat("ftcweixin://?url=\(webPageUrl)&title=\(webPageTitle)&description=\(webPageDescription)&img=\(webPageImageIcon)&to=chat")
     }

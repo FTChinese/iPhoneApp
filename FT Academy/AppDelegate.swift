@@ -20,6 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         //GoogleConversionPing.pingWithConversionId ("993907328", label: "35JGCOi9xAQQgKX32QM", value: "0", isRepeatable: false)
+        
         WXApi.registerApp("wxc1bc20ee7478536a", withDescription: "FT中文网")
         
         //NSLog("wechat register!")
@@ -37,10 +38,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         //NSNotificationCenter.defaultCenter().addObserver(self, selector:"checkForReachability:", name: kReachabilityChangedNotification, object: nil);
         
-        /*
-        self.reachability = Reachability.reachabilityForInternetConnection();
-        self.reachability.startNotifier();
-        */
         
         /*
         let reachability = Reachability.reachabilityForInternetConnection()
@@ -77,7 +74,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        print ("application did become active")
+        //print ("application did become active")
         let rootViewController = self.window!.rootViewController as! ViewController
         rootViewController.checkBlankPage()
     }

@@ -24,7 +24,17 @@ class DataForShare: NSObject, UIActivityItemSource {
         if(activityType == UIActivityTypeMail){
             textForShare = webPageDescription
         } else if(activityType == UIActivityTypePostToWeibo || activityType == UIActivityTypePostToTwitter){
-            textForShare = "【" + webPageTitle + "】" + webPageDescription + "（分享自 @FT中文网）"
+            textForShare = "【" + webPageTitle + "】" + webPageDescription
+            let textForShareCredit = "（分享自 @FT中文网）"
+            let textForShareLimit = 140
+            let textForShareTailCount = textForShareCredit.characters.count + url.characters.count
+            if textForShare.characters.count + textForShareTailCount > textForShareLimit {
+                let index = textForShare.startIndex.advancedBy(textForShareLimit - textForShareTailCount - 3)
+                textForShare = textForShare.substringToIndex(index) + "..."
+            }
+            textForShare = textForShare + "（分享自 @FT中文网）"
+            //            print(textForShare.characters.count)
+            //            print(url.characters.count)
         } else {
             textForShare = webPageTitle
         }
@@ -44,21 +54,21 @@ class DataForShare: NSObject, UIActivityItemSource {
         thumbnailImageForActivityType activityType: String?,
         suggestedSize size: CGSize) -> UIImage? {
             var image : UIImage
-//            if queryStringDictionary["img"] != nil {
-//                var imgUrl = queryStringDictionary["img"]
-//                if imgUrl!.rangeOfString("https://image.webservices.ft.com") == nil{
-//                    imgUrl = "https://image.webservices.ft.com/v1/images/raw/\(imgUrl!)?source=ftchinese&width=72&height=72"
-//                }
-//                let url = NSURL(string: imgUrl!)
-//                let data = NSData(contentsOfURL: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check
-//                if (data == nil) {
-//                    image = UIImage(named: "ftcicon.jpg")!
-//                } else {
-//                    image = UIImage(data: data!)!
-//                }
-//            } else {
-//                image = UIImage(named: "ftcicon.jpg")!
-//            }
+            //            if queryStringDictionary["img"] != nil {
+            //                var imgUrl = queryStringDictionary["img"]
+            //                if imgUrl!.rangeOfString("https://image.webservices.ft.com") == nil{
+            //                    imgUrl = "https://image.webservices.ft.com/v1/images/raw/\(imgUrl!)?source=ftchinese&width=72&height=72"
+            //                }
+            //                let url = NSURL(string: imgUrl!)
+            //                let data = NSData(contentsOfURL: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check
+            //                if (data == nil) {
+            //                    image = UIImage(named: "ftcicon.jpg")!
+            //                } else {
+            //                    image = UIImage(data: data!)!
+            //                }
+            //            } else {
+            //                image = UIImage(named: "ftcicon.jpg")!
+            //            }
             //print("width: \(size.width); height: \(size.height)")
             image = UIImage(named: "ftcicon.jpg")!
             image = image.resizableImageWithCapInsets(UIEdgeInsetsZero)

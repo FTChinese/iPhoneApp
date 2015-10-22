@@ -53,7 +53,19 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
             let config = WKWebViewConfiguration()
             config.userContentController = contentController
             var webView: WKWebView!
-            webView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.mainScreen().bounds.width, height: UIScreen.mainScreen().bounds.height - 44), configuration: config)
+            var longLine = UIScreen.mainScreen().bounds.width
+            var shortLine = UIScreen.mainScreen().bounds.height
+            if longLine < shortLine {
+                longLine = UIScreen.mainScreen().bounds.height
+                shortLine = UIScreen.mainScreen().bounds.width
+            }
+            if webPageUrl.rangeOfString("d=landscape") != nil {
+                webView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: longLine, height: shortLine - 44), configuration: config)
+            } else if webPageUrl.rangeOfString("d=portrait") != nil {
+                webView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: shortLine, height: longLine - 44), configuration: config)
+            } else {
+                webView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.mainScreen().bounds.width, height: UIScreen.mainScreen().bounds.height - 44), configuration: config)
+            }
             self.containerView.addSubview(webView)
             self.containerView.clipsToBounds = true
             webView.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: &myContext)
@@ -235,7 +247,17 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     }
     
     override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+        //        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+        //            return UIInterfaceOrientationMask.All
+        //        } else {
+        //            return UIInterfaceOrientationMask.Portrait
+        //        }
+        if webPageUrl.rangeOfString("d=landscape") != nil {
+            print("d=landscape")
+            return UIInterfaceOrientationMask.Landscape
+        } else if webPageUrl.rangeOfString("d=portrait") != nil {
+            return UIInterfaceOrientationMask.Portrait
+        } else if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
             return UIInterfaceOrientationMask.All
         } else {
             return UIInterfaceOrientationMask.Portrait
@@ -243,11 +265,16 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     }
     
     override func shouldAutorotate() -> Bool {
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-            return true
-        } else {
-            return false
-        }
+        //        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+        //            return true
+        //        } else {
+        //            return false
+        //        }
+        //        if webPageUrl.rangeOfString("d=landscapge") != nil || webPageUrl.rangeOfString("d=portrait") {
+        //            return true
+        //        }
+        
+        return true
     }
     
     override func prefersStatusBarHidden() -> Bool {
