@@ -215,7 +215,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
             let _ = containerView.stringByEvaluatingJavaScriptFromString(jsCode)
             webPageDescription = containerView.stringByEvaluatingJavaScriptFromString("getContentByMetaTagName('og:description') || getContentByMetaTagName('description') || ''")!
             webPageImage = containerView.stringByEvaluatingJavaScriptFromString("getContentByMetaTagName('og:image') || ''")!
-            webPageImageIcon = containerView.stringByEvaluatingJavaScriptFromString("encodeURIComponent(getContentByMetaTagName('og:thumbnail') || '')")!
+            webPageImageIcon = containerView.stringByEvaluatingJavaScriptFromString("encodeURIComponent(getContentByMetaTagName('thumbnail') || '')")!
         }
         if let myWebsite = url {
             let shareData = DataForShare()

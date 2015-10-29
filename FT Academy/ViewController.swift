@@ -334,12 +334,13 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         webPageImageIcon = queryStringDictionary["img"]!
         let wcActivity = WeChatActivity()
         let wcMoment = WeChatMoment()
+        let wcFav = WeChatFav()
         let openInSafari = OpenInSafari()
         let url = NSURL(string:webPageUrl)
         if let myWebsite = url {
             let shareData = DataForShare()
             let objectsToShare = [shareData, myWebsite]
-            let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcMoment, openInSafari])
+            let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcMoment, wcFav, openInSafari])
             activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList]
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                 //self.presentViewController(controller, animated: true, completion: nil)
