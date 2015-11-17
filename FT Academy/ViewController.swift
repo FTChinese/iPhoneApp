@@ -102,8 +102,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     func loadFromLocal() {
         
-        //let url = NSURL(string:startUrl)
-        //let req = NSURLRequest(URL:url!)
+//        let url = NSURL(string:startUrl)
+//        let req = NSURLRequest(URL:url!)
         let templatepath = NSBundle.mainBundle().pathForResource("index", ofType: "html")!
         //let base = NSURL.fileURLWithPath(templatepath)!
         let base = NSURL(string: startUrl)
@@ -113,8 +113,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         if #available(iOS 8.0, *) {
             let webView = self.view as! WKWebView
             //webView.loadRequest(req)
-            //s = s.stringByReplacingOccurrencesOfString("<content>", withString:ss)
-            //self.webView!.loadHTMLString(s as String, baseURL:base)
             webView.loadHTMLString(s as String, baseURL:base)
         } else {
             //uiWebView?.loadRequest(req)
