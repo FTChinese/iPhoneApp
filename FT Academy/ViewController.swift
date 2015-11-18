@@ -79,7 +79,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         let label = UILabel(frame: CGRectMake(0, 0, 441, 21))
         label.center = CGPointMake(160, 284)
         label.textAlignment = NSTextAlignment.Center
-        label.text = "努力加载中..."
+        label.text = "英国《金融时报》中文网"
         label.textColor = UIColor.whiteColor()
         self.overlayView.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -95,7 +95,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         pageStatus = .ViewLoaded
         loadFromLocal()
         pageStatus = .WebViewLoading
-        resetTimer(5.0)
+        resetTimer(1.0)
     }
     
     
