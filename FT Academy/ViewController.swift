@@ -95,7 +95,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         pageStatus = .ViewLoaded
         loadFromLocal()
         pageStatus = .WebViewLoading
-        resetTimer(1.0)
+        resetTimer(1.5)
     }
     
     
