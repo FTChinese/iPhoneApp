@@ -16,7 +16,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     weak var timer: NSTimer?
     var pageStatus: WebViewStatus?
     var startUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
+    
     let iPadStartUrl = "http://app005.ftmailbox.com/ipad-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
+    //let iPadStartUrl = "http://m.ftchinese.com"
     //var startUrl = "http://192.168.253.2:9000?isInSWIFT&iOSShareWechat&gShowStatusBar"
     
     let overlayView = UIView()
@@ -30,10 +32,13 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     override func loadView() {
         super.loadView()
         pageStatus = .ViewToLoad
-        let p = NSBundle.mainBundle().infoDictionary?["CFBundleName"] as! String
-        if p == "FT中文网-iPad" {
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
             startUrl = iPadStartUrl
         }
+//        let p = NSBundle.mainBundle().infoDictionary?["CFBundleName"] as! String
+//        if p == "FT中文网-iPad" {
+//            startUrl = iPadStartUrl
+//        }
         if #available(iOS 8.0, *) {
             var webView: WKWebView?
             webView = WKWebView()
@@ -95,7 +100,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         pageStatus = .ViewLoaded
         loadFromLocal()
         pageStatus = .WebViewLoading
-        resetTimer(1.5)
+        resetTimer(3)
     }
     
     

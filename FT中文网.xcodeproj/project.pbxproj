@@ -343,8 +343,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				50C34C161BC664AD00C8A8CB /* FT中文网HD */,
 				50256C981A4B9D0B005950B9 /* FT中文网 */,
+				50C34C161BC664AD00C8A8CB /* FT中文网HD */,
 				50256CAD1A4B9D0B005950B9 /* FT中文网Tests */,
 			);
 		};
