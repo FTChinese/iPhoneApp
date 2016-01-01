@@ -25,6 +25,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     //    let reachability = Reachability.reachabilityForInternetConnection()
     //    var reachabilityNotifierOn = false
     
+     
     deinit {
         //print("main view is being deinitialized")
     }
@@ -124,8 +125,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             uiWebView.loadHTMLString(s as String, baseURL: base)
         }
         checkConnectionType()
-        //uiWebView.loadHTMLString(s as String, baseURL: base)
-        
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -170,6 +169,46 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
+    func openNotification(action: String, id: String) {
+        let jsCode: String
+        switch(action) {
+        case "story":
+            jsCode = "readstory('\(id)')"
+            break;
+        default:
+            jsCode = ""
+            break;
+        }
+        
+        
+        if #available(iOS 8.0, *) {
+            let webView = self.view as! WKWebView
+            webView.evaluateJavaScript(jsCode) { (result, error) in
+                /*
+                if error != nil {
+                    
+                    let alert = UIAlertController(title: "Alert", message: "Message", preferredStyle: UIAlertControllerStyle.Alert)
+                    alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+                    self.presentViewController(alert, animated: true, completion: nil)
+                    
+                    let _ = self.setTimeout(5.0, block: { () -> Void in
+                        webView.evaluateJavaScript(jsCode) { (result, error) in
+                        }
+                    })
+                }
+                */
+            }
+        } else {
+            if let _ = self.uiWebView.stringByEvaluatingJavaScriptFromString(jsCode) {
+                /*
+                let _ = self.setTimeout(3, block: { () -> Void in
+                    let _ = self.uiWebView.stringByEvaluatingJavaScriptFromString(jsCode)
+                })
+                */
+            }
+        }
+    }
+    
     
     func checkConnectionType() {
         let statusType = IJReachability().connectedToNetworkOfType()
@@ -202,9 +241,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             //print("updated connection type on iOS 7")
         }
     }
-    
-    
-    
     
     
     func resetTimer(seconds: NSTimeInterval) {

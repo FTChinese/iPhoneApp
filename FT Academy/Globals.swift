@@ -36,6 +36,12 @@ supportWK = false
 }
 }
 */
+
+func ltzAbbrev() -> String {
+    return NSTimeZone.localTimeZone().abbreviation!
+}
+
+
 func shareToWeChat(originalUrlString : String) {
     let originalURL = originalUrlString
     var queryStringDictionary = ["url":""]
@@ -98,6 +104,10 @@ func shareToWeChat(originalUrlString : String) {
         req.scene = 1
     }
     WXApi.sendReq(req)
+}
+
+func setTimeout(delay:NSTimeInterval, block:()->Void) -> NSTimer {
+    return NSTimer.scheduledTimerWithTimeInterval(delay, target: NSBlockOperation(block: block), selector: "main", userInfo: nil, repeats: false)
 }
 
 extension UIColor {
