@@ -62,10 +62,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // if launched from a tap on a notification
         if let launchOptions = launchOptions {
             if let userInfo = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey] {
-                if let action = userInfo["action"], id = userInfo["id"] {
+                if let action = userInfo["action"], id = userInfo["id"], title = userInfo["aps"]!!["alert"] {
                     let rootViewController = self.window!.rootViewController as! ViewController
                     let _ = setTimeout(5.0, block: { () -> Void in
-                        rootViewController.openNotification(action as! String, id: id as! String)
+                        rootViewController.openNotification(action as! String, id: id as! String, title: title as! String)
                     })
                     
                 }
@@ -193,13 +193,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let rootViewController = self.window!.rootViewController as! ViewController
             if ( application.applicationState == .Inactive || application.applicationState == .Background  )
             {
-                rootViewController.openNotification(notiAction as! String, id: id as! String)
+                rootViewController.openNotification(notiAction as! String, id: id as! String, title: title)
             } else {
                 if #available(iOS 8.0, *) {
                     let alert = UIAlertController(title: title, message: lead, preferredStyle: UIAlertControllerStyle.Alert)
                     alert.addAction(UIAlertAction(title: "去看看", style: .Default, handler: { (action: UIAlertAction!) in
                         //let rootViewController = self.window!.rootViewController as! ViewController
-                        rootViewController.openNotification(notiAction as! String, id: id as! String)
+                        rootViewController.openNotification(notiAction as! String, id: id as! String, title: title)
                     }))
                     alert.addAction(UIAlertAction(title: "不感兴趣", style: UIAlertActionStyle.Default, handler: nil))
                     rootViewController.presentViewController(alert, animated: true, completion: nil)
