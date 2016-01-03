@@ -167,7 +167,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     func openNotification(action: String, id: String, title: String) {
-        let jsCode: String
+        var jsCode: String
         switch(action) {
         case "story":
             jsCode = "readstory('\(id)')"
@@ -193,6 +193,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             break
         }
         if jsCode != "" {
+            jsCode = "ga('set', 'campaignName', \(action));ga('set', 'campaignSource', 'Apple Push Service');ga('set', 'campaignMedium', 'Push Notification');\(jsCode);ga('send','event', 'Tap Notification', '\(action)', '\(id)');"
             if #available(iOS 8.0, *) {
                 let webView = self.view as! WKWebView
                 webView.evaluateJavaScript(jsCode) { (result, error) in
