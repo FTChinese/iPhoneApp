@@ -171,41 +171,35 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         switch(action) {
         case "story":
             jsCode = "readstory('\(id)')"
-            break
         case "tag":
             jsCode = "showchannel('/index.php/ft/tag/\(id)?i=2', '\(title)')"
-            break
         case "channel":
             jsCode = "showchannel('/index.php/ft/channel/phonetemplate.html?channel=\(id)', '\(title)')"
-            break
         case "video":
             jsCode = "watchVideo('\(id)','\(title)')"
-            break
         case "photo":
             jsCode = ""
             openInView ("http://www.ftchinese.com/photonews/\(id)?i=3&d=landscape")
-            return
         case "gym":
             jsCode = "showSlide('/index.php/ft/interactive/\(id)?i=2', '\(title)', 0)"
-            break
         case "special":
             jsCode = ""
             openInView ("http://www.ftchinese.com/interactive/\(id)")
-            return
         case "page":
             jsCode = ""
             openInView ("\(id)")
-            return
         default:
             jsCode = ""
             break
         }
-        if #available(iOS 8.0, *) {
-            let webView = self.view as! WKWebView
-            webView.evaluateJavaScript(jsCode) { (result, error) in
-            }
-        } else {
-            if let _ = self.uiWebView.stringByEvaluatingJavaScriptFromString(jsCode) {
+        if jsCode != "" {
+            if #available(iOS 8.0, *) {
+                let webView = self.view as! WKWebView
+                webView.evaluateJavaScript(jsCode) { (result, error) in
+                }
+            } else {
+                if let _ = self.uiWebView.stringByEvaluatingJavaScriptFromString(jsCode) {
+                }
             }
         }
     }

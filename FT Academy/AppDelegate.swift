@@ -14,8 +14,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     //var reachability:IJReachability!
     
-    
-    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
@@ -50,7 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             
             let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: categories as? Set<UIUserNotificationCategory>)
-*/
+            */
             let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil)
             UIApplication.sharedApplication().registerUserNotificationSettings(settings)
             UIApplication.sharedApplication().registerForRemoteNotifications()
@@ -71,10 +69,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             }
         }
-        
-        
-
-        
         
         //NSLog("wechat register!")
         /*
@@ -104,7 +98,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         */
         
         
-        
         return true
     }
     
@@ -123,26 +116,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } else {
             deviceType = "phone"
         }
-        
-        print( deviceTokenString )
-        print(timeZone)
-        
-
-        
+        //print( deviceTokenString )
+        //print(timeZone)
         let url = NSURL(string: "https://backyard.ftchinese.com/push/iphone-collect.php")
         let request = NSMutableURLRequest(URL:url!)
         request.HTTPMethod = "POST"
-        let postString = "d=\(deviceToken)&t=\(timeZone)&s=\(status)&p=\(preference)&dt=\(deviceType)"
+        let postString = "d=\(deviceTokenString)&t=\(timeZone)&s=\(status)&p=\(preference)&dt=\(deviceType)"
         request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding)
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
             let urlContent = NSString(data: data!, encoding: NSUTF8StringEncoding) as NSString!
             print("Data: \(urlContent)")
         })
-        
         task.resume()
-        
-        
     }
     
     
@@ -165,13 +151,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         switch(identifier!) {
             case "ACTION_1":
                 print("ACTION_1")
-                break;
             case "ACTION_2":
                 print("ACTION_2")
-                break;
         default:
             print("other")
-            break;
+            break
         }
     }
     */
@@ -181,8 +165,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //print("did receive remote")
         //print(userInfo)
         var title = "为您推荐"
-        if let _ = userInfo["aps"]!["alert"] {
-            title = userInfo["aps"]!["alert"] as! String
+        if let _ = userInfo["aps"]?["alert"] {
+            title = userInfo["aps"]?["alert"] as! String
         }
         var lead = ""
         if let _ = userInfo["lead"] {
@@ -232,7 +216,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } else {
             // Fallback on earlier versions
         }
-*/
+        */
         UIApplication.sharedApplication().applicationIconBadgeNumber = 0
     }
     
@@ -240,7 +224,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     }
-    
     
     func applicationWillEnterForeground(application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
@@ -269,7 +252,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             NSNotificationCenter.defaultCenter().postNotificationName("statusBarSelected", object: nil)
         }
     }
-    
-    
 }
 

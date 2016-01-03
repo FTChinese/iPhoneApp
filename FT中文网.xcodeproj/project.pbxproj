@@ -192,12 +192,11 @@
 		50256C9B1A4B9D0B005950B9 /* FT中文网 */ = {
 			isa = PBXGroup;
 			children = (
-				50159E5C1BA05EBD00F22FFC /* ftcicon.jpg */,
 				50256C9E1A4B9D0B005950B9 /* AppDelegate.swift */,
-				50256CC21A4BFAE7005950B9 /* Globals.swift */,
 				50256CA01A4B9D0B005950B9 /* ViewController.swift */,
-				50256CA21A4B9D0B005950B9 /* Main.storyboard */,
 				50256CC41A4C1916005950B9 /* WKWebPageController.swift */,
+				50256CA21A4B9D0B005950B9 /* Main.storyboard */,
+				50256CC21A4BFAE7005950B9 /* Globals.swift */,
 				50159E461B9B147500F22FFC /* DataForShare.swift */,
 				50159E441B98A70B00F22FFC /* WeChatActivity.swift */,
 				50159E4A1B9B2ED900F22FFC /* OpenInSafari.swift */,
@@ -218,6 +217,7 @@
 		50256C9C1A4B9D0B005950B9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				50159E5C1BA05EBD00F22FFC /* ftcicon.jpg */,
 				50256C9D1A4B9D0B005950B9 /* Info.plist */,
 				50A677261A4EBFBC002B347F /* index.html */,
 				50604A621A5552F1003803E6 /* webview.html */,
