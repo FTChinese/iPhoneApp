@@ -12,8 +12,6 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
-    //var reachability:IJReachability!
-    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
@@ -70,7 +68,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
         
-        //NSLog("wechat register!")
+
         /*
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         [GoogleConversionPing pingWithConversionId:@"993907328"
@@ -81,21 +79,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         });
         */
         
-        //let statusType = IJReachability().connectedToNetworkOfType()
-        
+
         //NSNotificationCenter.defaultCenter().addObserver(self, selector:"checkForReachability:", name: kReachabilityChangedNotification, object: nil);
-        
-        
-        /*
-        let reachability = Reachability.reachabilityForInternetConnection()
-        
-        NSNotificationCenter.defaultCenter().addObserver(self,
-        selector: "reachabilityChanged:",
-        name: ReachabilityChangedNotification,
-        object: reachability)
-        
-        reachability!.startNotifier()
-        */
         
         
         return true
@@ -116,8 +101,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } else {
             deviceType = "phone"
         }
-        //print( deviceTokenString )
-        //print(timeZone)
         let url = NSURL(string: "https://backyard.ftchinese.com/push/iphone-collect.php")
         let request = NSMutableURLRequest(URL:url!)
         request.HTTPMethod = "POST"
@@ -162,8 +145,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
         UIApplication.sharedApplication().applicationIconBadgeNumber = 0
-        //print("did receive remote")
-        //print(userInfo)
         var title = "为您推荐"
         if let _ = userInfo["aps"]?["alert"] {
             title = userInfo["aps"]?["alert"] as! String

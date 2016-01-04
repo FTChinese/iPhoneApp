@@ -16,15 +16,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     weak var timer: NSTimer?
     var pageStatus: WebViewStatus?
     var startUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
-    
     let iPadStartUrl = "http://app005.ftmailbox.com/ipad-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
-    //let iPadStartUrl = "http://m.ftchinese.com"
-    //var startUrl = "http://192.168.253.2:9000?isInSWIFT&iOSShareWechat&gShowStatusBar"
-    
     let overlayView = UIView()
-    //    let reachability = Reachability.reachabilityForInternetConnection()
-    //    var reachabilityNotifierOn = false
-    
     
     deinit {
         //print("main view is being deinitialized")
@@ -129,17 +122,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         if pageStatus == .WebViewDisplayed || pageStatus == .WebViewWarned {
             //Deal with white screen when back from other scene
             checkBlankPage()
-            //print("back from other scene!")
-        } else {
-            //print("first time load!")
         }
-        //checkConnectionType()
-        //turnOnReachabilityNotifier()
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(false)
-        //turnOffReachabilityNotifier()
     }
     
     func checkBlankPage() {
@@ -147,25 +134,21 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             let webView = self.view as! WKWebView
             webView.evaluateJavaScript("document.querySelector('body').innerHTML") { (result, error) in
                 if error != nil {
-                    //print("an error occored! Need to refresh the web app! ")
                     self.loadFromLocal()
                 } else {
                     self.checkConnectionType()
-                    //self.turnOnReachabilityNotifier()
-                    //print("js run successfully!")
                 }
             }
         } else {
             if let _ = uiWebView.stringByEvaluatingJavaScriptFromString("document.querySelector('body').innerHTML") {
-                //self.turnOnReachabilityNotifier()
                 checkConnectionType()
-                
             } else {
                 self.loadFromLocal()
             }
         }
     }
     
+    //when user tap on a remote notification
     func openNotification(action: String, id: String, title: String) {
         var jsCode: String
         switch(action) {
@@ -222,19 +205,12 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     func updateConnectionToWeb(connectionType: String) {
         let jsCode = "window.gConnectionType = '\(connectionType)';"
-        if #available(iOS 8.0, *) { //WKWebView doesn't support manifest. Load from a statice HTML file.
+        if #available(iOS 8.0, *) {
             let webView = self.view as! WKWebView
             webView.evaluateJavaScript(jsCode) { (result, error) in
-                //                if error != nil {
-                //                    print("an error occored when trying update connection type! ")
-                //                } else {
-                //                    print("updated connection type! ")
-                //                }
             }
         } else {
-            //print("try to update connection type on iOS 7")
             let _ = uiWebView.stringByEvaluatingJavaScriptFromString(jsCode)
-            //print("updated connection type on iOS 7")
         }
     }
     
@@ -261,7 +237,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        //print("memory warning in main view!")
         pageStatus = .WebViewWarned
     }
     
@@ -271,11 +246,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     override func prefersStatusBarHidden() -> Bool {
         if pageStatus != .WebViewDisplayed {
-            //print ("hide status bar")
             return true
         } else {
-            //print ("show status bar")
-            //self.prefersStatusBarHidden = false
             return false
         }
     }
@@ -321,12 +293,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
 
-    
+    //iOS 8 link clicked
     @available(iOS 8.0, *)
     func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: ((WKNavigationActionPolicy) -> Void)) {
         let urlString = navigationAction.request.URL!.absoluteString
         if (urlString != startUrl && urlString != "about:blank") {
-            //displayWebView()
             resetTimer(1.2)
         }
         if navigationAction.request.URL!.scheme == "ftcweixin" {
@@ -379,7 +350,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcMoment, wcFav, openInSafari])
             activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList]
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-                //self.presentViewController(controller, animated: true, completion: nil)
                 let popup: UIPopoverController = UIPopoverController(contentViewController: activityVC)
                 popup.presentPopoverFromRect(CGRectMake(self.view.frame.size.width / 2, self.view.frame.size.height / 4, 0, 0), inView: self.view, permittedArrowDirections: UIPopoverArrowDirection.Any, animated: true)
             } else {
@@ -387,8 +357,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             }
         }
     }
-    
-    
     
     func openInView(urlString : String) {
         webPageUrl = urlString
@@ -437,7 +405,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         if webPageTitle == "" {
             webPageTitle = webPageTitle0
         }
-        //print("page title: \(webPageTitle), page url: \(webPageUrl)")
         let wcActivity = WeChatActivity()
         let wcMoment = WeChatMoment()
         return [wcActivity, wcMoment]
@@ -464,94 +431,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     */
     
-    /*
-    func turnOnReachabilityNotifier() {
-    if reachabilityNotifierOn == false {
-    NSNotificationCenter.defaultCenter().addObserver(self,
-    selector: "reachabilityChanged:",
-    name: ReachabilityChangedNotification,
-    object: reachability)
-    
-    reachability!.startNotifier()
-    reachabilityNotifierOn = true
-    print("start listen to reachability")
-    }
-    }
-    
-    func turnOffReachabilityNotifier() {
-    if reachabilityNotifierOn == true {
-    reachability!.stopNotifier()
-    NSNotificationCenter.defaultCenter().removeObserver(self,
-    name: ReachabilityChangedNotification,
-    object: reachability)
-    reachabilityNotifierOn = false
-    print("stopped listen to reachability")
-    }
-    }
-    
-    
-    
-    
-    func reachabilityChanged(note: NSNotification) {
-    let reachability = note.object as! Reachability
-    var connectionType = "unknown"
-    if reachability.isReachable() {
-    if reachability.isReachableViaWiFi() {
-    connectionType = "wifi"
-    } else {
-    connectionType = "data"
-    }
-    } else {
-    connectionType = "no"
-    }
-    updateConnectionToWeb(connectionType)
-    }
-    
-    func checkConnectionType() {
-    var connectionType = "unknown"
-    if reachability!.isReachableViaWiFi() {
-    //print("Reachable via WiFi")
-    connectionType =  "wifi"
-    } else if reachability!.isReachableViaWWAN() {
-    connectionType = "data"
-    } else {
-    connectionType =  "no"
-    }
-    updateConnectionToWeb(connectionType)
-    /*
-    let statusType = IJReachability().connectedToNetworkOfType()
-    var connectionType = "unknown"
-    switch statusType {
-    case .WWAN:
-    connectionType = "data"
-    case .WiFi:
-    connectionType =  "wifi"
-    case .NotConnected:
-    connectionType =  "no"
-    }
-    updateConnectionToWeb(connectionType)
-    */
-    }
-    
-    func updateConnectionToWeb(connectionType: String) {
-    let jsCode = "window.gConnectionType = '\(connectionType)';"
-    if #available(iOS 8.0, *) { //WKWebView doesn't support manifest. Load from a statice HTML file.
-    let webView = self.view as! WKWebView
-    webView.evaluateJavaScript(jsCode) { (result, error) in
-    if error != nil {
-    print("an error occored when trying update connection type! ")
-    } else {
-    print("updated connection type! ")
-    }
-    }
-    } else {
-    //print("try to update connection type on iOS 7")
-    let _ = uiWebView.stringByEvaluatingJavaScriptFromString(jsCode)
-    print("updated connection type on iOS 7")
-    }
-    }
-    
-    */
-    
+        
 }
 

@@ -106,7 +106,6 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     }
     
     override func viewDidLoad() {
-        
         super.viewDidLoad()
         let url = NSURL(string:webPageUrl)
         let req = NSURLRequest(URL:url!)
@@ -123,13 +122,11 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     }
     
     
-    
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if context != &myContext {
             super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
             return
         }
-        
         if keyPath == "estimatedProgress" {
             if #available(iOS 8.0, *) {
                 let webView = self.subWKView as! WKWebView
@@ -247,40 +244,28 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     }
     
     override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        //        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-        //            return UIInterfaceOrientationMask.All
-        //        } else {
-        //            return UIInterfaceOrientationMask.Portrait
-        //        }
         if webPageUrl.rangeOfString("d=landscape") != nil {
-            //print("d=landscape")
             return UIInterfaceOrientationMask.Landscape
         } else if webPageUrl.rangeOfString("d=portrait") != nil {
             return UIInterfaceOrientationMask.Portrait
         } else if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-            return UIInterfaceOrientationMask.All
+            if UIScreen.mainScreen().bounds.width > UIScreen.mainScreen().bounds.height {
+                return UIInterfaceOrientationMask.Landscape
+            } else {
+                return UIInterfaceOrientationMask.Portrait
+            }
         } else {
             return UIInterfaceOrientationMask.Portrait
         }
     }
     
     override func shouldAutorotate() -> Bool {
-        //        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-        //            return true
-        //        } else {
-        //            return false
-        //        }
-        //        if webPageUrl.rangeOfString("d=landscapge") != nil || webPageUrl.rangeOfString("d=portrait") {
-        //            return true
-        //        }
-        
         return true
     }
     
     override func prefersStatusBarHidden() -> Bool {
         return true
     }
-    
     
 }
 
