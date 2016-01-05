@@ -176,7 +176,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             break
         }
         if jsCode != "" {
-            jsCode = "ga('set', 'campaignName', \(action));ga('set', 'campaignSource', 'Apple Push Service');ga('set', 'campaignMedium', 'Push Notification');\(jsCode);ga('send','event', 'Tap Notification', '\(action)', '\(id)');"
+            jsCode = "try{ga('set', 'campaignName', '\(action)');ga('set', 'campaignSource', 'Apple Push Service');ga('set', 'campaignMedium', 'Push Notification');}catch(ignore){}\(jsCode);ga('send','event', 'Tap Notification', '\(action)', '\(id)');"
             if #available(iOS 8.0, *) {
                 let webView = self.view as! WKWebView
                 webView.evaluateJavaScript(jsCode) { (result, error) in
@@ -343,7 +343,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         let wcMoment = WeChatMoment()
         let wcFav = WeChatFav()
         let openInSafari = OpenInSafari()
-        let url = NSURL(string:webPageUrl)
+        let ccodeInActionSheet = ccode["actionsheet"]! as String
+        let urlWithCCode = "\(webPageUrl)#ccode=\(ccodeInActionSheet)"
+        let url = NSURL(string: urlWithCCode)
         if let myWebsite = url {
             let shareData = DataForShare()
             let objectsToShare = [shareData, myWebsite]

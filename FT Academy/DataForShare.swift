@@ -10,9 +10,9 @@
 import UIKit
 
 class DataForShare: NSObject, UIActivityItemSource {
-    var url : String = webPageUrl
-    var lead : String = webPageDescription
-    var imageCover : String = webPageImage
+    var url: String = webPageUrl
+    var lead: String = webPageDescription
+    var imageCover: String = webPageImage
     
     func activityViewControllerPlaceholderItem(activityViewController: UIActivityViewController) -> AnyObject {
         return webPageTitle;

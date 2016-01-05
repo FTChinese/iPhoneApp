@@ -8,6 +8,13 @@
 
 import Foundation
 import UIKit
+
+// campaign codes that changes every year
+let ccode = [
+    "wechat": "2G168002",
+    "actionsheet": "iosaction"
+]
+
 let webPageUrl0 = "http://m.ftchinese.com/"
 let webPageTitle0 = "来自FT中文网iOS应用的分享"
 let webPageDescription0 = "本链接分享自FT中文网的iOS应用，FT中文网是英国《金融时报》旗下唯一中文网站。"
@@ -26,7 +33,6 @@ enum WebViewStatus {
     case WebViewDisplayed
     case WebViewWarned
 }
-
 
 func ltzAbbrev() -> String {
     return NSTimeZone.localTimeZone().abbreviation!
@@ -82,7 +88,7 @@ func shareToWeChat(originalUrlString : String) {
     image = image.resizableImageWithCapInsets(UIEdgeInsetsZero)
     message.setThumbImage(image)
     let webpageObj = WXWebpageObject()
-    webpageObj.webpageUrl = queryStringDictionary["url"]
+    webpageObj.webpageUrl = "\(queryStringDictionary["url"]!)#ccode=\(ccode["wechat"]!)"
     message.mediaObject = webpageObj
     let req = SendMessageToWXReq()
     req.bText = false
