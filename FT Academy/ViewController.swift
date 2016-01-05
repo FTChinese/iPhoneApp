@@ -432,7 +432,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     return true
     }
     */
-    
-        
+
 }
 

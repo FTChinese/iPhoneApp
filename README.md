@@ -7,7 +7,7 @@ It does these things:
 1. Support iOS 7 and above. 
 2. Seamless launch experience, dealing with the white screen when loading a web view. 
 3. After launching, the app opens a single-page app. 
-4. On iOS 8 and above, it uses the new WKWebView, which claims to offer vast performance improvements. 
+4. On iOS 8 and above, it uses the new WKWebView, which offers vast performance improvements. 
 5. On iOS 7, it falls back to UIWebView. 
 6. Since WKWebView doesn't support manifest, it starts the page from an HTML file in the app bundle. This way, the user will see something even when launching for the first time with no internet. 
 7. Clicking advertisement or outside link, which the FTChinese team have no control over, will launch the new Safari view in iOS 9 and above. This falls back to WKWebView on iOS 8 and UIWebView on iOS 7.  
