@@ -12,6 +12,10 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
+    var deviceTokenSent = false
+    var deviceTokenString = ""
+    let deviceTokenUrl = "https://backyard.ftchinese.com/push/iphone-collect.php"
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
@@ -89,9 +93,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application( application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData ) {
         let characterSet: NSCharacterSet = NSCharacterSet( charactersInString: "<>" )
-        let deviceTokenString: String = ( deviceToken.description as NSString )
+        self.deviceTokenString = ( deviceToken.description as NSString )
             .stringByTrimmingCharactersInSet( characterSet )
             .stringByReplacingOccurrencesOfString( " ", withString: "" ) as String
+        sendDeviceToken()
+    }
+    
+    func sendDeviceToken() {
         let timeZone = ltzAbbrev()
         let status = "start"
         let preference = ""
@@ -101,19 +109,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } else {
             deviceType = "phone"
         }
-        let url = NSURL(string: "https://backyard.ftchinese.com/push/iphone-collect.php")
+        let url = NSURL(string: self.deviceTokenUrl)
         let request = NSMutableURLRequest(URL:url!)
         request.HTTPMethod = "POST"
-        let postString = "d=\(deviceTokenString)&t=\(timeZone)&s=\(status)&p=\(preference)&dt=\(deviceType)"
+        let postString = "d=\(self.deviceTokenString)&t=\(timeZone)&s=\(status)&p=\(preference)&dt=\(deviceType)"
         request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding)
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
-            let urlContent = NSString(data: data!, encoding: NSUTF8StringEncoding) as NSString!
-            print("Data: \(urlContent)")
+            if data != nil {
+                self.deviceTokenSent = true
+//                let urlContent = NSString(data: data!, encoding: NSUTF8StringEncoding) as NSString!
+//                print("Data: \(urlContent)")
+            } else {
+//                print("failed to send token: \(self.deviceTokenString)! ")
+            }
         })
         task.resume()
     }
-    
     
     func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
         let characterSet: NSCharacterSet = NSCharacterSet( charactersInString: "<>" )
@@ -216,6 +228,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIApplication.sharedApplication().applicationIconBadgeNumber = 0
         let rootViewController = self.window!.rootViewController as! ViewController
         rootViewController.checkBlankPage()
+        if self.deviceTokenSent == false && self.deviceTokenString != "" {
+            sendDeviceToken()
+        }
     }
     
     func applicationWillTerminate(application: UIApplication) {
