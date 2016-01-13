@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var deviceTokenSent = false
     var deviceTokenString = ""
-    let deviceTokenUrl = "https://backyard.ftchinese.com/push/iphone-collect.php"
+    let deviceTokenUrl = "http://noti.ftacademy.cn/iphone-collect.php"
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
