@@ -353,8 +353,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				50C34C161BC664AD00C8A8CB /* FT中文网HD */,
 				50256C981A4B9D0B005950B9 /* FT中文网 */,
+				50C34C161BC664AD00C8A8CB /* FT中文网HD */,
 				50256CAD1A4B9D0B005950B9 /* FT中文网Tests */,
 			);
 		};
@@ -578,7 +578,7 @@
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ft.ftchinese.mobile;
 				PRODUCT_NAME = "FT中文网";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "94b51cf4-0edc-41b8-b4b1-e97ba5450aac";
 				SWIFT_OBJC_BRIDGING_HEADER = "FT Academy/FT Academy-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -602,7 +602,7 @@
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ft.ftchinese.mobile;
 				PRODUCT_NAME = "FT中文网";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "94b51cf4-0edc-41b8-b4b1-e97ba5450aac";
 				SWIFT_OBJC_BRIDGING_HEADER = "FT Academy/FT Academy-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = "arm64 armv7 armv7s";

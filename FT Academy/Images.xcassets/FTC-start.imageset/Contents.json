@@ -2,8 +2,8 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x",
-      "filename" : "FTC-start.png"
+      "filename" : "FTC-start.png",
+      "scale" : "1x"
     },
     {
       "idiom" : "universal",
