@@ -228,6 +228,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIApplication.sharedApplication().applicationIconBadgeNumber = 0
         let rootViewController = self.window!.rootViewController as! ViewController
         rootViewController.checkBlankPage()
+        // send deviceToken only once
         if self.deviceTokenSent == false && self.deviceTokenString != "" {
             sendDeviceToken()
         }
