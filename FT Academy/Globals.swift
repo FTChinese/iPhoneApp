@@ -50,7 +50,6 @@ func shareToWeChat(originalUrlString : String) {
             let pairValue = (keyValuePair as! NSString).substringFromIndex(stringSeparate+1)
             queryStringDictionary[pairKey] = pairValue
         }
-        
     }
     if WXApi.isWXAppInstalled() == false {
         if #available(iOS 8.0, *) {
@@ -70,13 +69,17 @@ func shareToWeChat(originalUrlString : String) {
     message.title = queryStringDictionary["title"]
     message.description = queryStringDictionary["description"]
     var image : UIImage
-    if queryStringDictionary["img"] != nil {
+    
+    // get image data from internet can slow up the process
+    // use the default icon now until we figure out a better way
+    if queryStringDictionary["img"] != nil && 1>2 {
         var imgUrl = queryStringDictionary["img"]
         if imgUrl!.rangeOfString("https://image.webservices.ft.com") == nil{
             imgUrl = "https://image.webservices.ft.com/v1/images/raw/\(imgUrl!)?source=ftchinese&width=72&height=72"
         }
         let url = NSURL(string: imgUrl!)
-        let data = NSData(contentsOfURL: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check
+        // make sure your image in this url does exist, otherwise unwrap in a if let check
+        let data = NSData(contentsOfURL: url!)
         if (data == nil) {
             image = UIImage(named: "ftcicon.jpg")!
         } else {
@@ -85,22 +88,26 @@ func shareToWeChat(originalUrlString : String) {
     } else {
         image = UIImage(named: "ftcicon.jpg")!
     }
-    image = image.resizableImageWithCapInsets(UIEdgeInsetsZero)
-    message.setThumbImage(image)
-    let webpageObj = WXWebpageObject()
-    webpageObj.webpageUrl = "\(queryStringDictionary["url"]!)#ccode=\(ccode["wechat"]!)"
-    message.mediaObject = webpageObj
-    let req = SendMessageToWXReq()
-    req.bText = false
-    req.message = message
-    if queryStringDictionary["to"] == "chat" {
-        req.scene = 0
-    } else if queryStringDictionary["to"] == "fav" {
-        req.scene = 2
-    } else {
-        req.scene = 1
-    }
-    WXApi.sendReq(req)
+    
+    
+    //let _ = setTimeout(2.0, block: { () -> Void in
+        image = image.resizableImageWithCapInsets(UIEdgeInsetsZero)
+        message.setThumbImage(image)
+        let webpageObj = WXWebpageObject()
+        webpageObj.webpageUrl = "\(queryStringDictionary["url"]!)#ccode=\(ccode["wechat"]!)"
+        message.mediaObject = webpageObj
+        let req = SendMessageToWXReq()
+        req.bText = false
+        req.message = message
+        if queryStringDictionary["to"] == "chat" {
+            req.scene = 0
+        } else if queryStringDictionary["to"] == "fav" {
+            req.scene = 2
+        } else {
+            req.scene = 1
+        }
+        WXApi.sendReq(req)
+    //})
 }
 
 func setTimeout(delay:NSTimeInterval, block:()->Void) -> NSTimer {

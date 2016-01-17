@@ -13,6 +13,8 @@ import SafariServices
 class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, SFSafariViewControllerDelegate {
     
     var uiWebView: UIWebView!
+    @available(iOS 8.0, *)
+    lazy var webView: WKWebView? = { return nil }()
     weak var timer: NSTimer?
     var pageStatus: WebViewStatus?
     var startUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
@@ -31,12 +33,12 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
         
         if #available(iOS 8.0, *) {
-            var webView: WKWebView!
-            webView = WKWebView()
-            self.view = webView
-            webView!.navigationDelegate = self
+            //var webView: WKWebView!
+            self.webView = WKWebView()
+            self.view = self.webView
+            self.webView!.navigationDelegate = self
             NSNotificationCenter.defaultCenter().addObserverForName("statusBarSelected", object: nil, queue: nil) { event in
-                webView!.evaluateJavaScript("scrollToTop()") { (result, error) in
+                self.webView!.evaluateJavaScript("scrollToTop()") { (result, error) in
                     if error != nil {
                         //print("an error occored when trying to scroll to Top! ")
                     } else {
@@ -107,9 +109,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         //let ss = "<content>"
         
         if #available(iOS 8.0, *) {
-            let webView = self.view as! WKWebView
+            //let webView = self.view as! WKWebView
             //webView.loadRequest(req)
-            webView.loadHTMLString(s as String, baseURL:base)
+            self.webView!.loadHTMLString(s as String, baseURL:base)
         } else {
             //uiWebView?.loadRequest(req)
             uiWebView.loadHTMLString(s as String, baseURL: base)
@@ -131,8 +133,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     func checkBlankPage() {
         if #available(iOS 8.0, *) {
-            let webView = self.view as! WKWebView
-            webView.evaluateJavaScript("document.querySelector('body').innerHTML") { (result, error) in
+            //let webView = self.view as! WKWebView
+            self.webView!.evaluateJavaScript("document.querySelector('body').innerHTML") { (result, error) in
                 if error != nil {
                     self.loadFromLocal()
                 } else {
@@ -178,8 +180,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         if jsCode != "" {
             jsCode = "try{ga('set', 'campaignName', '\(action)');ga('set', 'campaignSource', 'Apple Push Service');ga('set', 'campaignMedium', 'Push Notification');}catch(ignore){}\(jsCode);ga('send','event', 'Tap Notification', '\(action)', '\(id)');"
             if #available(iOS 8.0, *) {
-                let webView = self.view as! WKWebView
-                webView.evaluateJavaScript(jsCode) { (result, error) in
+                //let webView = self.view as! WKWebView
+                self.webView!.evaluateJavaScript(jsCode) { (result, error) in
                 }
             } else {
                 if let _ = self.uiWebView.stringByEvaluatingJavaScriptFromString(jsCode) {
@@ -206,8 +208,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     func updateConnectionToWeb(connectionType: String) {
         let jsCode = "window.gConnectionType = '\(connectionType)';"
         if #available(iOS 8.0, *) {
-            let webView = self.view as! WKWebView
-            webView.evaluateJavaScript(jsCode) { (result, error) in
+            //let webView = self.view as! WKWebView
+            self.webView!.evaluateJavaScript(jsCode) { (result, error) in
             }
         } else {
             let _ = uiWebView.stringByEvaluatingJavaScriptFromString(jsCode)
