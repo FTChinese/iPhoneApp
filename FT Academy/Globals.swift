@@ -72,6 +72,7 @@ func shareToWeChat(originalUrlString : String) {
     
     // get image data from internet can slow up the process
     // use the default icon now until we figure out a better way
+    // http://stackoverflow.com/questions/24231680/loading-image-from-url/28942299
     if queryStringDictionary["img"] != nil && 1>2 {
         var imgUrl = queryStringDictionary["img"]
         if imgUrl!.rangeOfString("https://image.webservices.ft.com") == nil{
