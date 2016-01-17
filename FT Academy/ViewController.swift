@@ -31,7 +31,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
         
         if #available(iOS 8.0, *) {
-            var webView: WKWebView?
+            var webView: WKWebView!
             webView = WKWebView()
             self.view = webView
             webView!.navigationDelegate = self
