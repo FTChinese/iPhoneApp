@@ -97,6 +97,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             .stringByTrimmingCharactersInSet( characterSet )
             .stringByReplacingOccurrencesOfString( " ", withString: "" ) as String
         sendDeviceToken()
+        //print(self.deviceTokenString)
     }
     
     func sendDeviceToken() {

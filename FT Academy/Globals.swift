@@ -70,32 +70,49 @@ func shareToWeChat(originalUrlString : String) {
     message.description = queryStringDictionary["description"]
     var image : UIImage
     
+    var shareOption = ""
+    
     // get image data from internet can slow up the process
     // use the default icon now until we figure out a better way
     // http://stackoverflow.com/questions/24231680/loading-image-from-url/28942299
-    if queryStringDictionary["img"] != nil && 1>2 {
-        var imgUrl = queryStringDictionary["img"]
-        if imgUrl!.rangeOfString("https://image.webservices.ft.com") == nil{
-            imgUrl = "https://image.webservices.ft.com/v1/images/raw/\(imgUrl!)?source=ftchinese&width=72&height=72"
-        }
-        let url = NSURL(string: imgUrl!)
-        // make sure your image in this url does exist, otherwise unwrap in a if let check
-        let data = NSData(contentsOfURL: url!)
-        if (data == nil) {
-            image = UIImage(named: "ftcicon.jpg")!
+    if queryStringDictionary["img"] != nil {
+        
+        let abTest = (0.0...1.0).random()
+        if abTest > 0.5 {
+            var imgUrl = queryStringDictionary["img"]
+            if imgUrl!.rangeOfString("https://image.webservices.ft.com") == nil{
+                imgUrl = "https://image.webservices.ft.com/v1/images/raw/\(imgUrl!)?source=ftchinese&width=72&height=72"
+            }
+            let url = NSURL(string: imgUrl!)
+            // make sure your image in this url does exist, otherwise unwrap in a if let check
+            let data = NSData(contentsOfURL: url!)
+            if (data == nil) {
+                image = UIImage(named: "ftcicon.jpg")!
+            } else {
+                image = UIImage(data: data!)!
+            }
+            shareOption = "thumbnail"
+            //queryStringDictionary["url"] = "\(queryStringDictionary["url"])?shareicon=thumbnail"
+            //print("share thumbnail")
         } else {
-            image = UIImage(data: data!)!
+            image = UIImage(named: "ftcicon.jpg")!
+            shareOption = "logo"
+            //queryStringDictionary["url"] = "\(queryStringDictionary["url"])?shareicon=logo"
+            //print("share logo")
         }
+
     } else {
         image = UIImage(named: "ftcicon.jpg")!
     }
+    
+
     
     
     //let _ = setTimeout(2.0, block: { () -> Void in
         image = image.resizableImageWithCapInsets(UIEdgeInsetsZero)
         message.setThumbImage(image)
         let webpageObj = WXWebpageObject()
-        webpageObj.webpageUrl = "\(queryStringDictionary["url"]!)#ccode=\(ccode["wechat"]!)"
+        webpageObj.webpageUrl = "\(queryStringDictionary["url"]!)?shareicon=\(shareOption)#ccode=\(ccode["wechat"]!)"
         message.mediaObject = webpageObj
         let req = SendMessageToWXReq()
         req.bText = false
@@ -125,5 +142,13 @@ extension UIColor {
     }
     convenience init(netHex:Int) {
         self.init(red:(netHex >> 16) & 0xff, green:(netHex >> 8) & 0xff, blue:netHex & 0xff)
+    }
+}
+
+extension IntervalType {
+    public func random() -> Bound {
+        let range = (self.end as! Double) - (self.start as! Double)
+        let randomValue = (Double(arc4random_uniform(UINT32_MAX)) / Double(UINT32_MAX)) * range + (self.start as! Double)
+        return randomValue as! Bound
     }
 }
