@@ -70,11 +70,14 @@ func shareToWeChat(originalUrlString : String) {
     message.description = queryStringDictionary["description"]
     var image : UIImage
     
+    /*
     var shareOption = ""
     
     // get image data from internet can slow up the process
     // use the default icon now until we figure out a better way
     // http://stackoverflow.com/questions/24231680/loading-image-from-url/28942299
+    
+    
     if queryStringDictionary["img"] != nil {
         
         let abTest = (0.0...1.0).random()
@@ -104,7 +107,15 @@ func shareToWeChat(originalUrlString : String) {
     } else {
         image = UIImage(named: "ftcicon.jpg")!
     }
+    */
     
+    
+    
+    if weChatShareIcon != nil {
+        image = weChatShareIcon!
+    } else {
+        image = UIImage(named: "ftcicon.jpg")!
+    }
 
     
     
@@ -112,7 +123,8 @@ func shareToWeChat(originalUrlString : String) {
         image = image.resizableImageWithCapInsets(UIEdgeInsetsZero)
         message.setThumbImage(image)
         let webpageObj = WXWebpageObject()
-        webpageObj.webpageUrl = "\(queryStringDictionary["url"]!)?shareicon=\(shareOption)#ccode=\(ccode["wechat"]!)"
+        //webpageObj.webpageUrl = "\(queryStringDictionary["url"]!)?shareicon=\(shareOption)#ccode=\(ccode["wechat"]!)"
+        webpageObj.webpageUrl = "\(queryStringDictionary["url"]!)#ccode=\(ccode["wechat"]!)"
         message.mediaObject = webpageObj
         let req = SendMessageToWXReq()
         req.bText = false
@@ -126,6 +138,29 @@ func shareToWeChat(originalUrlString : String) {
         }
         WXApi.sendReq(req)
     //})
+}
+
+var weChatShareIcon = UIImage(named: "ftcicon.jpg")
+
+func getDataFromUrl(url:NSURL, completion: ((data: NSData?, response: NSURLResponse?, error: NSError? ) -> Void)) {
+    NSURLSession.sharedSession().dataTaskWithURL(url) { (data, response, error) in
+        completion(data: data, response: response, error: error)
+        }.resume()
+}
+
+
+func updateWeChatShareIcon(url: NSURL) {
+    print("Download Started")
+    print("lastPathComponent: " + (url.lastPathComponent ?? ""))
+    weChatShareIcon = UIImage(named: "ftcicon.jpg")
+    getDataFromUrl(url) { (data, response, error)  in
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            guard let data = data where error == nil else { return }
+            print(response?.suggestedFilename ?? "")
+            print("Download Finished")
+            weChatShareIcon = UIImage(data: data)
+        }
+    }
 }
 
 func setTimeout(delay:NSTimeInterval, block:()->Void) -> NSTimer {

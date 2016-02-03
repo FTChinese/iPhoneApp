@@ -3,7 +3,7 @@
 //
 
 
-#import "GoogleAdMob.h"
+// #import "GoogleAdMob.h"
 #import "WXApi.h"
 #import "WXApiObject.h"
 

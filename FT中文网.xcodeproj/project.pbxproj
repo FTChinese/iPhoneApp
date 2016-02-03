@@ -25,7 +25,6 @@
 		50357D161BE10ED100D388EB /* WeChatFav.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50357D151BE10ED100D388EB /* WeChatFav.swift */; };
 		50357D171BE10ED100D388EB /* WeChatFav.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50357D151BE10ED100D388EB /* WeChatFav.swift */; };
 		50604A631A5552F2003803E6 /* webview.html in Resources */ = {isa = PBXBuildFile; fileRef = 50604A621A5552F1003803E6 /* webview.html */; };
-		50873CCC1A503A880027955A /* GoogleAdMob.m in Sources */ = {isa = PBXBuildFile; fileRef = 50873CCB1A503A880027955A /* GoogleAdMob.m */; };
 		50982C7E1BC7A7C800907575 /* IJReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50982C7D1BC7A7C800907575 /* IJReachability.swift */; };
 		50982C7F1BC7A7C800907575 /* IJReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50982C7D1BC7A7C800907575 /* IJReachability.swift */; };
 		50982C801BC7A7C800907575 /* IJReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50982C7D1BC7A7C800907575 /* IJReachability.swift */; };
@@ -35,7 +34,6 @@
 		50C34C1A1BC664AD00C8A8CB /* WKWebPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50256CC41A4C1916005950B9 /* WKWebPageController.swift */; };
 		50C34C1B1BC664AD00C8A8CB /* WeChatMoment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E481B9B249900F22FFC /* WeChatMoment.swift */; };
 		50C34C1C1BC664AD00C8A8CB /* OpenInSafari.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E4A1B9B2ED900F22FFC /* OpenInSafari.swift */; };
-		50C34C1D1BC664AD00C8A8CB /* GoogleAdMob.m in Sources */ = {isa = PBXBuildFile; fileRef = 50873CCB1A503A880027955A /* GoogleAdMob.m */; };
 		50C34C1E1BC664AD00C8A8CB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50256CA01A4B9D0B005950B9 /* ViewController.swift */; };
 		50C34C1F1BC664AD00C8A8CB /* DataForShare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E461B9B147500F22FFC /* DataForShare.swift */; };
 		50C34C201BC664AD00C8A8CB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50256C9E1A4B9D0B005950B9 /* AppDelegate.swift */; };
@@ -96,8 +94,6 @@
 		50357D151BE10ED100D388EB /* WeChatFav.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeChatFav.swift; sourceTree = "<group>"; };
 		50604A621A5552F1003803E6 /* webview.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = webview.html; path = supporting/webview.html; sourceTree = "<group>"; };
 		50873CC91A503A870027955A /* FT Academy-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FT Academy-Bridging-Header.h"; sourceTree = "<group>"; };
-		50873CCA1A503A880027955A /* GoogleAdMob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleAdMob.h; sourceTree = "<group>"; };
-		50873CCB1A503A880027955A /* GoogleAdMob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleAdMob.m; sourceTree = "<group>"; };
 		50982C7D1BC7A7C800907575 /* IJReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IJReachability.swift; sourceTree = "<group>"; };
 		50A677261A4EBFBC002B347F /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = index.html; path = supporting/index.html; sourceTree = "<group>"; };
 		50C34C341BC664AD00C8A8CB /* FT中文网.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FT中文网.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -206,8 +202,6 @@
 				50256CA51A4B9D0B005950B9 /* Images.xcassets */,
 				50256CA71A4B9D0B005950B9 /* LaunchScreen.xib */,
 				50256C9C1A4B9D0B005950B9 /* Supporting Files */,
-				50873CCA1A503A880027955A /* GoogleAdMob.h */,
-				50873CCB1A503A880027955A /* GoogleAdMob.m */,
 				50873CC91A503A870027955A /* FT Academy-Bridging-Header.h */,
 			);
 			name = "FT中文网";
@@ -406,7 +400,6 @@
 				50256CC51A4C1916005950B9 /* WKWebPageController.swift in Sources */,
 				50159E491B9B249900F22FFC /* WeChatMoment.swift in Sources */,
 				50159E4B1B9B2ED900F22FFC /* OpenInSafari.swift in Sources */,
-				50873CCC1A503A880027955A /* GoogleAdMob.m in Sources */,
 				50256CA11A4B9D0B005950B9 /* ViewController.swift in Sources */,
 				50982C7F1BC7A7C800907575 /* IJReachability.swift in Sources */,
 				50159E471B9B147500F22FFC /* DataForShare.swift in Sources */,
@@ -433,7 +426,6 @@
 				50C34C1A1BC664AD00C8A8CB /* WKWebPageController.swift in Sources */,
 				50C34C1B1BC664AD00C8A8CB /* WeChatMoment.swift in Sources */,
 				50C34C1C1BC664AD00C8A8CB /* OpenInSafari.swift in Sources */,
-				50C34C1D1BC664AD00C8A8CB /* GoogleAdMob.m in Sources */,
 				50C34C1E1BC664AD00C8A8CB /* ViewController.swift in Sources */,
 				50982C7E1BC7A7C800907575 /* IJReachability.swift in Sources */,
 				50C34C1F1BC664AD00C8A8CB /* DataForShare.swift in Sources */,

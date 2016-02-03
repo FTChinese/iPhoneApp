@@ -229,6 +229,15 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
                 self.presentViewController(activityVC, animated: true, completion: nil)
             }
         }
+        
+        
+        if webPageImageIcon.rangeOfString("https://image.webservices.ft.com") == nil{
+            webPageImageIcon = "https://image.webservices.ft.com/v1/images/raw/\(webPageImageIcon)?source=ftchinese&width=72&height=72"
+        }
+        if let imgUrl = NSURL(string: webPageImageIcon) {
+            updateWeChatShareIcon(imgUrl)
+        }
+        
     }
     
     
