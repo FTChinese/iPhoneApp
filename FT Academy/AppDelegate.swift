@@ -111,10 +111,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             .stringByTrimmingCharactersInSet( characterSet )
             .stringByReplacingOccurrencesOfString( " ", withString: "" ) as String
         sendDeviceToken()
-        //print(self.deviceTokenString)
+        print(self.deviceTokenString)
     }
     
     func sendDeviceToken() {
+        let bundleID: String
+        if let _ = NSBundle.mainBundle().bundleIdentifier {
+            bundleID = NSBundle.mainBundle().bundleIdentifier!
+        } else {
+            bundleID = ""
+        }
+        let appNumber: String
+        if bundleID == "com.ft.ftchinese.ipad" {
+            appNumber = "1"
+        } else if bundleID == "com.ft.ftchinese.mobile" {
+            appNumber = "2"
+        } else {
+            appNumber = "0"
+        }
         let timeZone = ltzAbbrev()
         let status = "start"
         let preference = ""
@@ -127,7 +141,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let url = NSURL(string: self.deviceTokenUrl)
         let request = NSMutableURLRequest(URL:url!)
         request.HTTPMethod = "POST"
-        let postString = "d=\(self.deviceTokenString)&t=\(timeZone)&s=\(status)&p=\(preference)&dt=\(deviceType)"
+        let postString = "d=\(self.deviceTokenString)&t=\(timeZone)&s=\(status)&p=\(preference)&dt=\(deviceType)&a=\(appNumber)"
+        print(postString)
         request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding)
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
