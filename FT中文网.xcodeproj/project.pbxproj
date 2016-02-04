@@ -29,6 +29,7 @@
 		5039A4B41C61FAD40008F2AD /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5039A4B11C61FAD40008F2AD /* README.txt */; };
 		5039A4B51C61FAD40008F2AD /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5039A4B11C61FAD40008F2AD /* README.txt */; };
 		5039A4B71C61FB170008F2AD /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5039A4B61C61FB170008F2AD /* AdSupport.framework */; };
+		5039A4B81C6208780008F2AD /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5039A4B61C61FB170008F2AD /* AdSupport.framework */; };
 		50604A631A5552F2003803E6 /* webview.html in Resources */ = {isa = PBXBuildFile; fileRef = 50604A621A5552F1003803E6 /* webview.html */; };
 		50982C7E1BC7A7C800907575 /* IJReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50982C7D1BC7A7C800907575 /* IJReachability.swift */; };
 		50982C7F1BC7A7C800907575 /* IJReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50982C7D1BC7A7C800907575 /* IJReachability.swift */; };
@@ -151,6 +152,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5039A4B81C6208780008F2AD /* AdSupport.framework in Frameworks */,
 				50E5E6F31BD8A2BA00F4A33E /* CoreTelephony.framework in Frameworks */,
 				50C34C221BC664AD00C8A8CB /* libsqlite3.dylib in Frameworks */,
 				50C34C231BC664AD00C8A8CB /* libz.dylib in Frameworks */,
@@ -702,6 +704,7 @@
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/GoogleConversionTrackingSDK-iOS-3.3.1",
 				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ft.ftchinese.ipad;
 				PRODUCT_NAME = "FT中文网";
 				PROVISIONING_PROFILE = "";
@@ -729,6 +732,7 @@
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/GoogleConversionTrackingSDK-iOS-3.3.1",
 				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ft.ftchinese.ipad;
 				PRODUCT_NAME = "FT中文网";
 				PROVISIONING_PROFILE = "";

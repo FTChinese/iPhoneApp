@@ -21,6 +21,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         //GoogleConversionPing.pingWithConversionId ("993907328", label: "35JGCOi9xAQQgKX32QM", value: "0", isRepeatable: false)
         
+        
+        // ftchinese iOS激活
+        // Google iOS first open tracking snippet
+        // Add this code to your application delegate's
+        // application:didFinishLaunchingWithOptions: method.
+        
+        //[ACTConversionReporter reportWithConversionID:@"937693643" label:@"TvNTCJmOiGMQy6OQvwM" value:@"0.00" isRepeatable:NO];
+        
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+            ACTConversionReporter.reportWithConversionID("937693643", label: "Qe7aCL-Kx2MQy6OQvwM", value: "1.00", isRepeatable: false)
+        } else {
+            ACTConversionReporter.reportWithConversionID("937693643", label: "TvNTCJmOiGMQy6OQvwM", value: "1.00", isRepeatable: false)
+        }
+        
+        
         WXApi.registerApp("wxc1bc20ee7478536a", withDescription: "FT中文网")
         UIApplication.sharedApplication().applicationIconBadgeNumber = 0
 
@@ -67,7 +82,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     let _ = setTimeout(5.0, block: { () -> Void in
                         rootViewController.openNotification(action as! String, id: id as! String, title: title as! String)
                     })
-                    
                 }
             }
         }
