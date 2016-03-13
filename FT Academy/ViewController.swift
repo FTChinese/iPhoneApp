@@ -28,6 +28,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     override func loadView() {
         super.loadView()
+        //print("load view")
         pageStatus = .ViewToLoad
         if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
             startUrl = iPadStartUrl

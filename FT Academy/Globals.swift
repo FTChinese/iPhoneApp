@@ -14,7 +14,7 @@ let ccode = [
     "wechat": "2G168002",
     "actionsheet": "iosaction"
 ]
-
+let p=0
 let webPageUrl0 = "http://m.ftchinese.com/"
 let webPageTitle0 = "来自FT中文网iOS应用的分享"
 let webPageDescription0 = "本链接分享自FT中文网的iOS应用，FT中文网是英国《金融时报》旗下唯一中文网站。"

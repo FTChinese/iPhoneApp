@@ -29,14 +29,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         //[ACTConversionReporter reportWithConversionID:@"937693643" label:@"TvNTCJmOiGMQy6OQvwM" value:@"0.00" isRepeatable:NO];
         
+        
+        //print("launched with options! ")
+        
+
         if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
             ACTConversionReporter.reportWithConversionID("937693643", label: "Qe7aCL-Kx2MQy6OQvwM", value: "1.00", isRepeatable: false)
         } else {
             ACTConversionReporter.reportWithConversionID("937693643", label: "TvNTCJmOiGMQy6OQvwM", value: "1.00", isRepeatable: false)
         }
         
-        
         WXApi.registerApp("wxc1bc20ee7478536a", withDescription: "FT中文网")
+        
         UIApplication.sharedApplication().applicationIconBadgeNumber = 0
 
         
@@ -100,7 +104,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         //NSNotificationCenter.defaultCenter().addObserver(self, selector:"checkForReachability:", name: kReachabilityChangedNotification, object: nil);
         
-        
+
         return true
     }
     
