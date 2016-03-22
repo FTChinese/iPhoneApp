@@ -159,16 +159,16 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         case "story":
             jsCode = "readstory('\(id)')"
         case "tag":
-            jsCode = "showchannel('/index.php/ft/tag/\(id)?i=2', '\(title)')"
+            jsCode = "showchannel('/index.php/ft/tag/\(id)?i=2', '\(id)')"
         case "channel":
-            jsCode = "showchannel('/index.php/ft/channel/phonetemplate.html?channel=\(id)', '\(title)')"
+            jsCode = "showchannel('/index.php/ft/channel/phonetemplate.html?channel=\(id)', '\(id)')"
         case "video":
-            jsCode = "watchVideo('\(id)','\(title)')"
+            jsCode = "watchVideo('\(id)','视频')"
         case "photo":
             jsCode = ""
             openInView ("http://www.ftchinese.com/photonews/\(id)?i=3&d=landscape")
         case "gym":
-            jsCode = "showSlide('/index.php/ft/interactive/\(id)?i=2', '\(title)', 0)"
+            jsCode = "showSlide('/index.php/ft/interactive/\(id)?i=2', 'FT商学院', 0)"
         case "special":
             jsCode = ""
             openInView ("http://www.ftchinese.com/interactive/\(id)")
@@ -344,7 +344,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         webPageImage = queryStringDictionary["img"]!
         webPageImageIcon = queryStringDictionary["img"]!
         let wcActivity = WeChatActivity()
-        let wcMoment = WeChatMoment()
+        let wcCircle = WeChatMoment()
         let wcFav = WeChatFav()
         let openInSafari = OpenInSafari()
         let ccodeInActionSheet = ccode["actionsheet"]! as String
@@ -353,7 +353,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         if let myWebsite = url {
             let shareData = DataForShare()
             let objectsToShare = [shareData, myWebsite]
-            let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcMoment, wcFav, openInSafari])
+            let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcCircle, wcFav, openInSafari])
             activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList]
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                 let popup: UIPopoverController = UIPopoverController(contentViewController: activityVC)

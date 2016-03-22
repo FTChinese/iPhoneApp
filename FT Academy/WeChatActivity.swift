@@ -25,7 +25,7 @@ class WeChatActivity : UIActivity{
     
     
     override class func activityCategory() -> UIActivityCategory{
-        return UIActivityCategory.Action
+        return UIActivityCategory.Share
     }
     
     func getURLFromMessage(message:String)-> NSURL
