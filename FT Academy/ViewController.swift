@@ -221,7 +221,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     func resetTimer(seconds: NSTimeInterval) {
         timer?.invalidate()
-        let nextTimer = NSTimer.scheduledTimerWithTimeInterval(seconds, target: self, selector: "handleIdleEvent:", userInfo: nil, repeats: false)
+        let nextTimer = NSTimer.scheduledTimerWithTimeInterval(seconds, target: self, selector: #selector(ViewController.handleIdleEvent(_:)), userInfo: nil, repeats: false)
         timer = nextTimer
     }
     

@@ -164,7 +164,7 @@ func updateWeChatShareIcon(url: NSURL) {
 }
 
 func setTimeout(delay:NSTimeInterval, block:()->Void) -> NSTimer {
-    return NSTimer.scheduledTimerWithTimeInterval(delay, target: NSBlockOperation(block: block), selector: "main", userInfo: nil, repeats: false)
+    return NSTimer.scheduledTimerWithTimeInterval(delay, target: NSBlockOperation(block: block), selector: #selector(NSOperation.main), userInfo: nil, repeats: false)
 }
 
 extension UIColor {
