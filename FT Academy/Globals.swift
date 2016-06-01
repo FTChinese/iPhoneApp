@@ -124,7 +124,12 @@ func shareToWeChat(originalUrlString : String) {
         message.setThumbImage(image)
         let webpageObj = WXWebpageObject()
         //webpageObj.webpageUrl = "\(queryStringDictionary["url"]!)?shareicon=\(shareOption)#ccode=\(ccode["wechat"]!)"
-        webpageObj.webpageUrl = "\(queryStringDictionary["url"]!)#ccode=\(ccode["wechat"]!)"
+    
+        var shareUrl = queryStringDictionary["url"]!
+        if shareUrl.rangeOfString("story/[0-9]+$", options: .RegularExpressionSearch) != nil {
+            shareUrl = shareUrl + "?full=y"
+        }
+        webpageObj.webpageUrl = "\(shareUrl)#ccode=\(ccode["wechat"]!)"
         message.mediaObject = webpageObj
         let req = SendMessageToWXReq()
         req.bText = false
