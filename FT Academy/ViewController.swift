@@ -334,6 +334,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 queryStringDictionary[pairKey] = pairValue.stringByRemovingPercentEncoding
             }
         }
+        print(queryStringDictionary)
         webPageUrl = queryStringDictionary["url"]!.stringByRemovingPercentEncoding!
         webPageTitle = queryStringDictionary["title"]!
         if queryStringDictionary["description"] != nil {
@@ -341,8 +342,14 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         } else {
             webPageDescription = webPageDescription0
         }
-        webPageImage = queryStringDictionary["img"]!
-        webPageImageIcon = queryStringDictionary["img"]!
+        if queryStringDictionary["img"] != nil {
+            webPageImage = queryStringDictionary["img"]!
+        } else {
+            webPageImage = webPageImageIcon0
+        }
+        
+        webPageImageIcon = webPageImage
+
         let wcActivity = WeChatActivity()
         let wcCircle = WeChatMoment()
         let wcFav = WeChatFav()
