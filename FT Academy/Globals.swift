@@ -25,6 +25,10 @@ var webPageTitle = ""
 var webPageDescription = ""
 var webPageImage = ""
 var webPageImageIcon = ""
+var postString = ""
+var deviceTokenSent = false
+var deviceTokenString = ""
+let deviceTokenUrl = "http://noti.ftacademy.cn/iphone-collect.php"
 
 enum WebViewStatus {
     case ViewToLoad

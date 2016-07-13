@@ -12,9 +12,7 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
-    var deviceTokenSent = false
-    var deviceTokenString = ""
-    let deviceTokenUrl = "http://noti.ftacademy.cn/iphone-collect.php"
+
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
@@ -111,14 +109,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application( application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData ) {
         let characterSet: NSCharacterSet = NSCharacterSet( charactersInString: "<>" )
-        self.deviceTokenString = ( deviceToken.description as NSString )
+        deviceTokenString = ( deviceToken.description as NSString )
             .stringByTrimmingCharactersInSet( characterSet )
             .stringByReplacingOccurrencesOfString( " ", withString: "" ) as String
-        sendDeviceToken()
-        print(self.deviceTokenString)
+        saveDeviceInfo()
+        print(postString)
+        //sendDeviceToken()
+        //print(self.deviceTokenString)
     }
     
-    func sendDeviceToken() {
+    func saveDeviceInfo() {
         let bundleID: String
         if let _ = NSBundle.mainBundle().bundleIdentifier {
             bundleID = NSBundle.mainBundle().bundleIdentifier!
@@ -142,16 +142,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } else {
             deviceType = "phone"
         }
-        let url = NSURL(string: self.deviceTokenUrl)
+        postString = "d=\(deviceTokenString)&t=\(timeZone)&s=\(status)&p=\(preference)&dt=\(deviceType)&a=\(appNumber)"
+    }
+    
+    func sendDeviceToken() {
+
+
+        let url = NSURL(string: deviceTokenUrl)
         let request = NSMutableURLRequest(URL:url!)
         request.HTTPMethod = "POST"
-        let postString = "d=\(self.deviceTokenString)&t=\(timeZone)&s=\(status)&p=\(preference)&dt=\(deviceType)&a=\(appNumber)"
-        print(postString)
+        //print(postString)
         request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding)
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
             if data != nil {
-                self.deviceTokenSent = true
+                deviceTokenSent = true
 //                let urlContent = NSString(data: data!, encoding: NSUTF8StringEncoding) as NSString!
 //                print("Data: \(urlContent)")
             } else {
@@ -263,8 +268,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let rootViewController = self.window!.rootViewController as! ViewController
         rootViewController.checkBlankPage()
         // send deviceToken only once
-        if self.deviceTokenSent == false && self.deviceTokenString != "" {
-            sendDeviceToken()
+        if deviceTokenSent == false && deviceTokenString != "" {
+            //sendDeviceToken()
         }
     }
     

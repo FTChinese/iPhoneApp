@@ -119,6 +119,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             uiWebView.loadHTMLString(s as String, baseURL: base)
         }
         checkConnectionType()
+        
+        
+        // get the current userid and save it
+        
+        
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -236,6 +241,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             pageStatus = .WebViewDisplayed
             //trigger prefersStatusBarHidden
             setNeedsStatusBarAppearanceUpdate()
+            getUserId()
         }
     }
     
@@ -430,6 +436,80 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         return [wcActivity, wcMoment]
     }
     
+    
+
+    
+    // MARK: NSCoding
+    
+//    var users = [User]()
+//    
+//    func saveUsers() {
+//        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(users, toFile: User.ArchiveURL.path!)
+//        if !isSuccessfulSave {
+//            print ("Failed to save meals...")
+//        } else {
+//            print ("save user id \(users[0].userid)")
+//        }
+//    }
+//    
+//    func loadUsers() -> [User]? {
+//        print ("load from saved Users")
+//        return NSKeyedUnarchiver.unarchiveObjectWithFile(User.ArchiveURL.path!) as? [User]
+//    }
+//    
+//    
+//    func updateUserId(userId: String) {
+//        if let savedUsers = loadUsers() {
+//            users = savedUsers
+//        } else {
+//            let user1 = User(userid: "")!
+//            users += [user1]
+//        }
+//        users[0].userid = userId
+//        saveUsers()
+//    }
+    
+    func getUserId() {
+        var userId = ""
+        if #available(iOS 8.0, *) {
+            self.webView!.evaluateJavaScript("getCookie('USER_ID')") { (result, error) in
+                if error != nil {
+                    print ("error running js")
+                    //self.loadFromLocal()
+                } else {
+                    //get the user id
+                    let resultString = result as? String
+                    if resultString != nil {
+                        userId = resultString!
+                        //print ("the cookie value is \(resultString!)")
+                        //self.updateUserId(resultString!)
+                    } else {
+                        //print ("cookie is not available")
+                    }
+                    self.sendToken(userId)
+                }
+            }
+        } else {
+            if let uId = uiWebView.stringByEvaluatingJavaScriptFromString("getCookie('USER_ID')") {
+                if uId != "null" && uId != "" {
+                    userId = uId
+                }
+                self.sendToken(userId)
+            }
+        }
+
+
+        
+    }
+    
+    func sendToken(userId: String) {
+        var userIdString = ""
+        if userId != "" {
+            userIdString = "&u=\(userId)"
+        }
+        print ("user id is: \(userIdString)")
+                print ("post sting is \(postString)")
+    }
     
     
     /*
