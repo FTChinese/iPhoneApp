@@ -500,16 +500,17 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     func sendToken(userId: String) {
-        if userId != deviceUserId {
+        
+        var userIdString = userId
+        if userId != "" {
+            userIdString = "&u=\(userId)"
+        }
+        print ("useridstring: \(userIdString), deviceUserId: \(deviceUserId)")
+        if userIdString != deviceUserId {
             deviceTokenSent = false
-            deviceUserId = userId
+            deviceUserId = userIdString
         }
         if deviceTokenSent == false {
-            if userId != "" {
-                deviceUserId = "&u=\(userId)"
-            } else {
-                deviceUserId = ""
-            }
             sendDeviceToken()
         }
     }
