@@ -113,8 +113,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             .stringByTrimmingCharactersInSet( characterSet )
             .stringByReplacingOccurrencesOfString( " ", withString: "" ) as String
         saveDeviceInfo()
-        print(postString)
-        //sendDeviceToken()
+        //print(postString)
+        sendDeviceToken()
         //print(self.deviceTokenString)
     }
     
@@ -145,26 +145,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         postString = "d=\(deviceTokenString)&t=\(timeZone)&s=\(status)&p=\(preference)&dt=\(deviceType)&a=\(appNumber)"
     }
     
-    func sendDeviceToken() {
 
-
-        let url = NSURL(string: deviceTokenUrl)
-        let request = NSMutableURLRequest(URL:url!)
-        request.HTTPMethod = "POST"
-        //print(postString)
-        request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding)
-        let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
-            if data != nil {
-                deviceTokenSent = true
-//                let urlContent = NSString(data: data!, encoding: NSUTF8StringEncoding) as NSString!
-//                print("Data: \(urlContent)")
-            } else {
-//                print("failed to send token: \(self.deviceTokenString)! ")
-            }
-        })
-        task.resume()
-    }
     
     func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
         let characterSet: NSCharacterSet = NSCharacterSet( charactersInString: "<>" )
@@ -255,6 +236,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        let rootViewController = self.window!.rootViewController as! ViewController
+        rootViewController.getUserId()
     }
     
     func applicationWillEnterForeground(application: UIApplication) {
@@ -268,9 +251,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let rootViewController = self.window!.rootViewController as! ViewController
         rootViewController.checkBlankPage()
         // send deviceToken only once
-        if deviceTokenSent == false && deviceTokenString != "" {
-            //sendDeviceToken()
-        }
+        sendDeviceToken()
+        
     }
     
     func applicationWillTerminate(application: UIApplication) {

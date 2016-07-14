@@ -28,6 +28,7 @@ var webPageImageIcon = ""
 var postString = ""
 var deviceTokenSent = false
 var deviceTokenString = ""
+var deviceUserId = "no"
 let deviceTokenUrl = "http://noti.ftacademy.cn/iphone-collect.php"
 
 enum WebViewStatus {
@@ -36,6 +37,28 @@ enum WebViewStatus {
     case WebViewLoading
     case WebViewDisplayed
     case WebViewWarned
+}
+
+func sendDeviceToken() {
+    if postString != "" && deviceUserId != "no" && deviceTokenSent == false {
+        let url = NSURL(string: deviceTokenUrl)
+        let request = NSMutableURLRequest(URL:url!)
+        let postStringFinal = "\(postString)\(deviceUserId)"
+        request.HTTPMethod = "POST"
+        //print(postString)
+        request.HTTPBody = postStringFinal.dataUsingEncoding(NSUTF8StringEncoding)
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
+            if data != nil {
+                deviceTokenSent = true
+                                let urlContent = NSString(data: data!, encoding: NSUTF8StringEncoding) as NSString!
+                                print("Data to \(postStringFinal): \(urlContent)")
+            } else {
+                                print("failed to send token: \(deviceTokenString)! ")
+            }
+        })
+        task.resume()
+    }
 }
 
 func ltzAbbrev() -> String {
