@@ -102,7 +102,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         //NSNotificationCenter.defaultCenter().addObserver(self, selector:"checkForReachability:", name: kReachabilityChangedNotification, object: nil);
         
-
+        NBSAppAgent.startWithAppID("b0224d21cef84b09a3be22c405ff86c2");
         return true
     }
     

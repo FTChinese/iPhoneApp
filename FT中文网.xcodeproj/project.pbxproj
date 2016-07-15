@@ -31,6 +31,10 @@
 		5039A4B71C61FB170008F2AD /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5039A4B61C61FB170008F2AD /* AdSupport.framework */; };
 		5039A4B81C6208780008F2AD /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5039A4B61C61FB170008F2AD /* AdSupport.framework */; };
 		50604A631A5552F2003803E6 /* webview.html in Resources */ = {isa = PBXBuildFile; fileRef = 50604A621A5552F1003803E6 /* webview.html */; };
+		506DBFC51D387C6D00BD8C3D /* tingyunApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 506DBFC41D387C6D00BD8C3D /* tingyunApp.framework */; };
+		506DBFC61D387C6D00BD8C3D /* tingyunApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 506DBFC41D387C6D00BD8C3D /* tingyunApp.framework */; };
+		506DBFC81D387D2300BD8C3D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 506DBFC71D387D2300BD8C3D /* Security.framework */; };
+		506DBFCA1D387D4500BD8C3D /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 506DBFC91D387D4500BD8C3D /* libz.tbd */; };
 		50982C7E1BC7A7C800907575 /* IJReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50982C7D1BC7A7C800907575 /* IJReachability.swift */; };
 		50982C7F1BC7A7C800907575 /* IJReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50982C7D1BC7A7C800907575 /* IJReachability.swift */; };
 		50982C801BC7A7C800907575 /* IJReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50982C7D1BC7A7C800907575 /* IJReachability.swift */; };
@@ -108,6 +112,10 @@
 		5039A4B11C61FAD40008F2AD /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		5039A4B61C61FB170008F2AD /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		50604A621A5552F1003803E6 /* webview.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = webview.html; path = supporting/webview.html; sourceTree = "<group>"; };
+		506DBFC41D387C6D00BD8C3D /* tingyunApp.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = tingyunApp.framework; sourceTree = "<group>"; };
+		506DBFC71D387D2300BD8C3D /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		506DBFC91D387D4500BD8C3D /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		506DBFCB1D387F2100BD8C3D /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		50873CC91A503A870027955A /* FT Academy-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FT Academy-Bridging-Header.h"; sourceTree = "<group>"; };
 		50982C7D1BC7A7C800907575 /* IJReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IJReachability.swift; sourceTree = "<group>"; };
 		50A677261A4EBFBC002B347F /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = index.html; path = supporting/index.html; sourceTree = "<group>"; };
@@ -131,6 +139,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				506DBFCA1D387D4500BD8C3D /* libz.tbd in Frameworks */,
+				506DBFC81D387D2300BD8C3D /* Security.framework in Frameworks */,
 				5039A4B71C61FB170008F2AD /* AdSupport.framework in Frameworks */,
 				50E5E6F21BD8A21B00F4A33E /* CoreTelephony.framework in Frameworks */,
 				50FC07EC1A53A589006EE23F /* libsqlite3.dylib in Frameworks */,
@@ -142,6 +152,7 @@
 				5039A4B21C61FAD40008F2AD /* libGoogleConversionTracking.a in Frameworks */,
 				50256CBF1A4BF7E4005950B9 /* WebKit.framework in Frameworks */,
 				50FC07E21A539BF3006EE23F /* libWeChatSDK.a in Frameworks */,
+				506DBFC51D387C6D00BD8C3D /* tingyunApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -167,6 +178,7 @@
 				5039A4B31C61FAD40008F2AD /* libGoogleConversionTracking.a in Frameworks */,
 				50C34C281BC664AD00C8A8CB /* WebKit.framework in Frameworks */,
 				50C34C291BC664AD00C8A8CB /* libWeChatSDK.a in Frameworks */,
+				506DBFC61D387C6D00BD8C3D /* tingyunApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -176,6 +188,9 @@
 		50256C901A4B9D0B005950B9 = {
 			isa = PBXGroup;
 			children = (
+				506DBFCB1D387F2100BD8C3D /* PrefixHeader.pch */,
+				506DBFC91D387D4500BD8C3D /* libz.tbd */,
+				506DBFC71D387D2300BD8C3D /* Security.framework */,
 				5039A4B61C61FB170008F2AD /* AdSupport.framework */,
 				5039A4AA1C61FAD40008F2AD /* GoogleConversionTrackingSDK-iOS-3.3.1 */,
 				50E5E6F11BD8A21B00F4A33E /* CoreTelephony.framework */,
@@ -226,6 +241,7 @@
 				50256CA71A4B9D0B005950B9 /* LaunchScreen.xib */,
 				50256C9C1A4B9D0B005950B9 /* Supporting Files */,
 				50873CC91A503A870027955A /* FT Academy-Bridging-Header.h */,
+				506DBFC41D387C6D00BD8C3D /* tingyunApp.framework */,
 			);
 			name = "FT中文网";
 			path = "FT Academy";
@@ -619,7 +635,8 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/FT Academy";
+				GCC_PREFIX_HEADER = "FT中文网/PrefixHeader.pch";
 				INFOPLIST_FILE = "FT Academy/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -647,7 +664,8 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/FT Academy";
+				GCC_PREFIX_HEADER = "FT中文网/PrefixHeader.pch";
 				INFOPLIST_FILE = "FT Academy/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -704,7 +722,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/FT Academy";
 				INFOPLIST_FILE = "FT中文网HD.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -732,7 +750,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/FT Academy";
 				INFOPLIST_FILE = "FT中文网HD.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
