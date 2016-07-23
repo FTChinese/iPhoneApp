@@ -365,7 +365,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         let url = NSURL(string: urlWithCCode)
         if let myWebsite = url {
             let shareData = DataForShare()
-            let objectsToShare = [shareData, myWebsite]
+            let image = UIImage(named: "ftcicon.jpg")!
+            let objectsToShare = [shareData, myWebsite, image]
             let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcCircle, wcFav, openInSafari])
             activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList]
             if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
