@@ -340,7 +340,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 queryStringDictionary[pairKey] = pairValue.stringByRemovingPercentEncoding
             }
         }
-        print(queryStringDictionary)
+        //weChatShareIcon = UIImage(named: "ftcicon.jpg")!
+        //print(queryStringDictionary)
         webPageUrl = queryStringDictionary["url"]!.stringByRemovingPercentEncoding!
         webPageTitle = queryStringDictionary["title"]!
         if queryStringDictionary["description"] != nil {
@@ -375,6 +376,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             } else {
                 self.presentViewController(activityVC, animated: true, completion: nil)
             }
+//            let imageNew = UIImage(named: "WeChatFav")!
+//            objectsToShare = [shareData, myWebsite, imageNew]
+//            activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcCircle, wcFav, openInSafari])
+//            self.presentViewController(activityVC, animated: true, completion: nil)
         }
         
         if webPageImageIcon.rangeOfString("https://image.webservices.ft.com") == nil{
