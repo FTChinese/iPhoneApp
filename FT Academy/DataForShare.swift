@@ -9,6 +9,7 @@
 
 import UIKit
 
+
 class DataForShare: NSObject, UIActivityItemSource {
     var url: String = webPageUrl
     var lead: String = webPageDescription
@@ -21,9 +22,9 @@ class DataForShare: NSObject, UIActivityItemSource {
     func activityViewController(activityViewController: UIActivityViewController, itemForActivityType activityType: String) -> AnyObject? {
         //Sina Weibo cannot handle arrays. It's either text or image
         var textForShare = ""
-        if(activityType == UIActivityTypeMail){
+        if activityType == UIActivityTypeMail {
             textForShare = webPageDescription
-        } else if(activityType == UIActivityTypePostToWeibo || activityType == UIActivityTypePostToTwitter){
+        } else if activityType == UIActivityTypePostToWeibo || activityType == UIActivityTypePostToTwitter {
             textForShare = "【" + webPageTitle + "】" + webPageDescription
             let textForShareCredit = "（分享自 @FT中文网）"
             let textForShareLimit = 140
@@ -33,8 +34,9 @@ class DataForShare: NSObject, UIActivityItemSource {
                 textForShare = textForShare.substringToIndex(index) + "..."
             }
             textForShare = textForShare + "（分享自 @FT中文网）"
-            //            print(textForShare.characters.count)
-            //            print(url.characters.count)
+        } else if activityType == "com.tencent.xin.sharetimeline" {
+            textForShare = webPageTitle
+            //textForShare = ["title": webPageTitle, "description": "TEZT FOR SHARE"]
         } else {
             textForShare = webPageTitle
         }
@@ -74,4 +76,5 @@ class DataForShare: NSObject, UIActivityItemSource {
             image = image.resizableImageWithCapInsets(UIEdgeInsetsZero)
             return image
     }
+    
 }

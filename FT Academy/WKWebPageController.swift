@@ -218,7 +218,8 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         }
         if let myWebsite = url {
             let shareData = DataForShare()
-            let image = UIImage(named: "ftcicon.jpg")!
+            //let image = UIImage(named: "ftcicon.jpg")!
+            let image = ShareImageActivityProvider(placeholderItem: UIImage(named: "ftcicon.jpg")!)
             let objectsToShare = [shareData, myWebsite, image]
             //let objectsToShare = [shareData, myWebsite]
             let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcMoment, openInSafari])
