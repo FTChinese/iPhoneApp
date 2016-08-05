@@ -34,9 +34,8 @@ class DataForShare: NSObject, UIActivityItemSource {
                 textForShare = textForShare.substringToIndex(index) + "..."
             }
             textForShare = textForShare + "（分享自 @FT中文网）"
-        } else if activityType == "com.tencent.xin.sharetimeline" {
-            textForShare = webPageTitle
-            //textForShare = ["title": webPageTitle, "description": "TEZT FOR SHARE"]
+//        } else if activityType == "com.tencent.xin.sharetimeline" {
+//            textForShare = webPageTitle
         } else {
             textForShare = webPageTitle
         }
