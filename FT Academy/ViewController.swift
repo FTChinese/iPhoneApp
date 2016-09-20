@@ -18,7 +18,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     weak var timer: NSTimer?
     var pageStatus: WebViewStatus?
     var startUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
-    //var startUrl = "https://www.ft.com/"
+    //var startUrl = "https://backyard.ftchinese.com/"
     //var startUrl = "http://192.168.253.25:9000/?isInSWIFT&iOSShareWechat&gShowStatusBar"
     let iPadStartUrl = "http://app005.ftmailbox.com/ipad-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
     let overlayView = UIView()
@@ -112,8 +112,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         //let ss = "<content>"
         
         if #available(iOS 8.0, *) {
-            //let webView = self.view as! WKWebView
-            //webView.loadRequest(req)
+//            let webView = self.view as! WKWebView
+//            webView.loadRequest(req)
             self.webView!.loadHTMLString(s as String, baseURL:base)
         } else {
             //uiWebView?.loadRequest(req)
