@@ -56,6 +56,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
         
         //Add an overlay onto the webview to deal with white screen
+        adOverlayView()
+    }
+    
+    // if there's no ad to load
+    func normalOverlayView() {
         overlayView.backgroundColor = UIColor(netHex:0x002F5F)
         overlayView.frame = self.view.bounds
         self.view.addSubview(overlayView)
@@ -91,20 +96,47 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 21))
     }
     
+    
+    // if there's ad image to load
+    func adOverlayView() {
+        overlayView.backgroundColor = UIColor(netHex:0xFFFFFF)
+        overlayView.frame = self.view.bounds
+        self.view.addSubview(overlayView)
+        overlayView.translatesAutoresizingMaskIntoConstraints = false
+        view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Leading, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Trailing, multiplier: 1, constant: 0))
+        
+        let screenWidth = UIScreen.mainScreen().bounds.width
+        let screenHeight = UIScreen.mainScreen().bounds.height
+        let imageName = "Radio.jpg"
+        let image = UIImage(named: imageName)
+        let imageView = UIImageView(image: image!)
+        imageView.frame = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
+        imageView.contentMode = .ScaleAspectFit
+        self.overlayView.addSubview(imageView)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        //        view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
+        //        view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1/3, constant: 1))
+        view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: screenWidth))
+        view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: screenHeight))
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         pageStatus = .ViewLoaded
         loadFromLocal()
         pageStatus = .WebViewLoading
-        resetTimer(3)
+        resetTimer(6)
     }
     
     
     
     func loadFromLocal() {
         
-//        let url = NSURL(string:startUrl)
-//        let req = NSURLRequest(URL:url!)
+        //        let url = NSURL(string:startUrl)
+        //        let req = NSURLRequest(URL:url!)
         let templatepath = NSBundle.mainBundle().pathForResource("index", ofType: "html")!
         //let base = NSURL.fileURLWithPath(templatepath)!
         let base = NSURL(string: startUrl)
@@ -112,8 +144,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         //let ss = "<content>"
         
         if #available(iOS 8.0, *) {
-//            let webView = self.view as! WKWebView
-//            webView.loadRequest(req)
+            //            let webView = self.view as! WKWebView
+            //            webView.loadRequest(req)
             self.webView!.loadHTMLString(s as String, baseURL:base)
         } else {
             //uiWebView?.loadRequest(req)
@@ -303,7 +335,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             return true
         }
     }
-
+    
     //iOS 8 link clicked
     @available(iOS 8.0, *)
     func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: ((WKNavigationActionPolicy) -> Void)) {
@@ -357,7 +389,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
         
         webPageImageIcon = webPageImage
-
+        
         let wcActivity = WeChatActivity()
         let wcCircle = WeChatMoment()
         let wcFav = WeChatFav()
@@ -378,10 +410,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             } else {
                 self.presentViewController(activityVC, animated: true, completion: nil)
             }
-//            let imageNew = UIImage(named: "WeChatFav")!
-//            objectsToShare = [shareData, myWebsite, imageNew]
-//            activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcCircle, wcFav, openInSafari])
-//            self.presentViewController(activityVC, animated: true, completion: nil)
+            //            let imageNew = UIImage(named: "WeChatFav")!
+            //            objectsToShare = [shareData, myWebsite, imageNew]
+            //            activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcCircle, wcFav, openInSafari])
+            //            self.presentViewController(activityVC, animated: true, completion: nil)
         }
         
         if webPageImageIcon.rangeOfString("https://image.webservices.ft.com") == nil{
@@ -445,37 +477,37 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     
-
+    
     
     // MARK: NSCoding
     
-//    var users = [User]()
-//    
-//    func saveUsers() {
-//        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(users, toFile: User.ArchiveURL.path!)
-//        if !isSuccessfulSave {
-//            print ("Failed to save meals...")
-//        } else {
-//            print ("save user id \(users[0].userid)")
-//        }
-//    }
-//    
-//    func loadUsers() -> [User]? {
-//        print ("load from saved Users")
-//        return NSKeyedUnarchiver.unarchiveObjectWithFile(User.ArchiveURL.path!) as? [User]
-//    }
-//    
-//    
-//    func updateUserId(userId: String) {
-//        if let savedUsers = loadUsers() {
-//            users = savedUsers
-//        } else {
-//            let user1 = User(userid: "")!
-//            users += [user1]
-//        }
-//        users[0].userid = userId
-//        saveUsers()
-//    }
+    //    var users = [User]()
+    //
+    //    func saveUsers() {
+    //        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(users, toFile: User.ArchiveURL.path!)
+    //        if !isSuccessfulSave {
+    //            print ("Failed to save meals...")
+    //        } else {
+    //            print ("save user id \(users[0].userid)")
+    //        }
+    //    }
+    //
+    //    func loadUsers() -> [User]? {
+    //        print ("load from saved Users")
+    //        return NSKeyedUnarchiver.unarchiveObjectWithFile(User.ArchiveURL.path!) as? [User]
+    //    }
+    //
+    //
+    //    func updateUserId(userId: String) {
+    //        if let savedUsers = loadUsers() {
+    //            users = savedUsers
+    //        } else {
+    //            let user1 = User(userid: "")!
+    //            users += [user1]
+    //        }
+    //        users[0].userid = userId
+    //        saveUsers()
+    //    }
     
     func getUserId() {
         var userId = ""
@@ -524,23 +556,23 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     
     /*
-    func webView(webView: UIWebView, shouldStartLoadWithRequest r: NSURLRequest, navigationType nt: UIWebViewNavigationType) -> Bool {
-    if r.URL.scheme == "play" {
-    println("user would like to hear the podcast")
-    return false
-    }
-    if nt == .LinkClicked { // disable link-clicking
-    if self.canNavigate {
-    return true
-    }
-    println("user would like to navigation to \(r.URL)")
-    // this is how you would open in Mobile Safari
-    // UIApplication.sharedApplication().openURL(r.URL)
-    return false
-    }
-    return true
-    }
-    */
-
+     func webView(webView: UIWebView, shouldStartLoadWithRequest r: NSURLRequest, navigationType nt: UIWebViewNavigationType) -> Bool {
+     if r.URL.scheme == "play" {
+     println("user would like to hear the podcast")
+     return false
+     }
+     if nt == .LinkClicked { // disable link-clicking
+     if self.canNavigate {
+     return true
+     }
+     println("user would like to navigation to \(r.URL)")
+     // this is how you would open in Mobile Safari
+     // UIApplication.sharedApplication().openURL(r.URL)
+     return false
+     }
+     return true
+     }
+     */
+    
 }
 
