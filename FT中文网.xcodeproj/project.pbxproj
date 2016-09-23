@@ -31,6 +31,8 @@
 		5039A4B71C61FB170008F2AD /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5039A4B61C61FB170008F2AD /* AdSupport.framework */; };
 		5039A4B81C6208780008F2AD /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5039A4B61C61FB170008F2AD /* AdSupport.framework */; };
 		50604A631A5552F2003803E6 /* webview.html in Resources */ = {isa = PBXBuildFile; fileRef = 50604A621A5552F1003803E6 /* webview.html */; };
+		506DD4841D93BCC90098F367 /* yyk001.html in Resources */ = {isa = PBXBuildFile; fileRef = 506DD4831D93BCC90098F367 /* yyk001.html */; };
+		506DD4851D93BCC90098F367 /* yyk001.html in Resources */ = {isa = PBXBuildFile; fileRef = 506DD4831D93BCC90098F367 /* yyk001.html */; };
 		50982C7E1BC7A7C800907575 /* IJReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50982C7D1BC7A7C800907575 /* IJReachability.swift */; };
 		50982C7F1BC7A7C800907575 /* IJReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50982C7D1BC7A7C800907575 /* IJReachability.swift */; };
 		50982C801BC7A7C800907575 /* IJReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50982C7D1BC7A7C800907575 /* IJReachability.swift */; };
@@ -110,6 +112,7 @@
 		5039A4B11C61FAD40008F2AD /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		5039A4B61C61FB170008F2AD /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		50604A621A5552F1003803E6 /* webview.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = webview.html; path = supporting/webview.html; sourceTree = "<group>"; };
+		506DD4831D93BCC90098F367 /* yyk001.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = yyk001.html; sourceTree = "<group>"; };
 		50873CC91A503A870027955A /* FT Academy-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FT Academy-Bridging-Header.h"; sourceTree = "<group>"; };
 		50982C7D1BC7A7C800907575 /* IJReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IJReachability.swift; sourceTree = "<group>"; };
 		50A677261A4EBFBC002B347F /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = index.html; path = supporting/index.html; sourceTree = "<group>"; };
@@ -242,6 +245,7 @@
 				50256C9D1A4B9D0B005950B9 /* Info.plist */,
 				50A677261A4EBFBC002B347F /* index.html */,
 				50604A621A5552F1003803E6 /* webview.html */,
+				506DD4831D93BCC90098F367 /* yyk001.html */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -418,6 +422,7 @@
 				50604A631A5552F2003803E6 /* webview.html in Resources */,
 				50A677271A4EBFBC002B347F /* index.html in Resources */,
 				50256CA91A4B9D0B005950B9 /* LaunchScreen.xib in Resources */,
+				506DD4841D93BCC90098F367 /* yyk001.html in Resources */,
 				50159E5D1BA05EBD00F22FFC /* ftcicon.jpg in Resources */,
 				5039A4B41C61FAD40008F2AD /* README.txt in Resources */,
 				50256CA61A4B9D0B005950B9 /* Images.xcassets in Resources */,
@@ -439,6 +444,7 @@
 				50C34C2C1BC664AD00C8A8CB /* webview.html in Resources */,
 				50C34C2D1BC664AD00C8A8CB /* index.html in Resources */,
 				50C34C2F1BC664AD00C8A8CB /* ftcicon.jpg in Resources */,
+				506DD4851D93BCC90098F367 /* yyk001.html in Resources */,
 				50C34C391BC664B300C8A8CB /* LaunchScreen.xib in Resources */,
 				5039A4B51C61FAD40008F2AD /* README.txt in Resources */,
 				50C34C301BC664AD00C8A8CB /* Images.xcassets in Resources */,

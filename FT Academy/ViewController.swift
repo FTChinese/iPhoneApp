@@ -21,7 +21,12 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     //var startUrl = "https://backyard.ftchinese.com/"
     //var startUrl = "http://192.168.253.25:9000/?isInSWIFT&iOSShareWechat&gShowStatusBar"
     let iPadStartUrl = "http://app005.ftmailbox.com/ipad-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
+    let maxAdTimeAfterLaunch = 5.0
+    let maxAdTimeAfterWebRequest = 3.0
     let overlayView = UIView()
+    let adType = "page"
+    let adLink = "http://www.ftchinese.com"
+    let lauchAdSchedule = "http://m.ftchinese.com/test.json?1"
     
     deinit {
         //print("main view is being deinitialized")
@@ -55,9 +60,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             uiWebView?.delegate = self
         }
         
-        //Add an overlay onto the webview to deal with white screen
+
         adOverlayView()
     }
+    
+    
     
     // if there's no ad to load
     func normalOverlayView() {
@@ -99,7 +106,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     // if there's ad image to load
     func adOverlayView() {
-        overlayView.backgroundColor = UIColor(netHex:0xFFFFFF)
+        
+        parseSchedule()
+        overlayView.backgroundColor = UIColor(netHex:0x000000)
         overlayView.frame = self.view.bounds
         self.view.addSubview(overlayView)
         overlayView.translatesAutoresizingMaskIntoConstraints = false
@@ -107,34 +116,97 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Leading, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Trailing, multiplier: 1, constant: 0))
-        
         let screenWidth = UIScreen.mainScreen().bounds.width
         let screenHeight = UIScreen.mainScreen().bounds.height
-        let imageName = "Radio.jpg"
-        let image = UIImage(named: imageName)
-        let imageView = UIImageView(image: image!)
-        imageView.frame = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
-        imageView.contentMode = .ScaleAspectFit
-        self.overlayView.addSubview(imageView)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        //        view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
-        //        view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1/3, constant: 1))
-        view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: screenWidth))
-        view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: screenHeight))
+        
+        if adType == "page" {
+            if #available(iOS 8.0, *) {
+                let adPageView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight - 44))
+                let adPageUrl = "http://www3.ftchinese.com/adv/yyk/"
+                
+                //load html file from web
+                //let url = NSURL(string:adPageUrl)
+                //let req = NSURLRequest(URL:url!)
+                //adPageView.loadRequest(req)
+                
+                // load html file from local
+                let templatepath = NSBundle.mainBundle().pathForResource("yyk001", ofType: "html")!
+                let base = NSURL(string: adPageUrl)
+                let s = try! NSString(contentsOfFile:templatepath, encoding:NSUTF8StringEncoding)
+                adPageView.loadHTMLString(s as String, baseURL:base)
+                    
+                    
+                overlayView.addSubview(adPageView)
+            } else {
+                // Fallback on earlier versions
+            }
+            
+        } else if adType == "image" {
+            let imageName = "Radio.jpg"
+            let image = UIImage(named: imageName)
+            let imageView = UIImageView(image: image!)
+            imageView.frame = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
+            imageView.contentMode = .ScaleAspectFit
+            self.overlayView.addSubview(imageView)
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            //        view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
+            //        view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1/3, constant: 1))
+            view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: screenWidth))
+            view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: screenHeight))
+
+            
+            imageView.userInteractionEnabled = true
+            //now you need a tap gesture recognizer
+            //note that target and action point to what happens when the action is recognized.
+            let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.clickAd))
+            //Add the recognizer to your view.
+            imageView.addGestureRecognizer(tapRecognizer)
+        }
+        
+
+        let button = UIButton(frame: CGRectMake(0, 0, 100, 44))
+        //label.backgroundColor = UIColor.redColor()
+        //label.center = CGPointMake(160, 284)
+        
+        //button.backgroundColor = UIColor.greenColor()
+        button.setTitle("跳过广告", forState: .Normal)
+//        button.textAlignment = NSTextAlignment.Right
+//        button.text = "跳过广告>"
+//        button.textColor = UIColor.whiteColor()
+        self.overlayView.addSubview(button)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(ViewController.displayWebView), forControlEvents: .TouchUpInside)
+        
+        view.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 100))
+        view.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 44))
     }
+    
+    func clickAd() {
+        openInView(adLink)
+    }
+    
+    func parseSchedule() {
+        readFile("schedule.json")
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         pageStatus = .ViewLoaded
         loadFromLocal()
         pageStatus = .WebViewLoading
-        resetTimer(6)
+        resetTimer(maxAdTimeAfterLaunch)
+        updateAdSchedule()
     }
     
-    
+    func updateAdSchedule() {
+        let urlLauchAdSchedule = NSURL(string: lauchAdSchedule)
+        grabFileFromWeb(urlLauchAdSchedule!)
+    }
     
     func loadFromLocal() {
-        
         //        let url = NSURL(string:startUrl)
         //        let req = NSURLRequest(URL:url!)
         let templatepath = NSBundle.mainBundle().pathForResource("index", ofType: "html")!
@@ -152,7 +224,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             uiWebView.loadHTMLString(s as String, baseURL: base)
         }
         checkConnectionType()
-        
         
         // get the current userid and save it
         
@@ -316,7 +387,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
         let urlString = request.URL!.absoluteString
         if (urlString != startUrl && urlString != "about:blank") {
-            resetTimer(1.2)
+            resetTimer(maxAdTimeAfterWebRequest)
         }
         if request.URL!.scheme == "ftcweixin" {
             shareToWeChat(urlString)
@@ -341,7 +412,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: ((WKNavigationActionPolicy) -> Void)) {
         let urlString = navigationAction.request.URL!.absoluteString
         if (urlString != startUrl && urlString != "about:blank") {
-            resetTimer(1.2)
+            resetTimer(maxAdTimeAfterWebRequest)
         }
         if navigationAction.request.URL!.scheme == "ftcweixin" {
             shareToWeChat(urlString)
