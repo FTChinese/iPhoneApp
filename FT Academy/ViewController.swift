@@ -9,6 +9,8 @@
 import UIKit
 import WebKit
 import SafariServices
+import AVKit
+import AVFoundation
 
 class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, SFSafariViewControllerDelegate {
     
@@ -21,12 +23,19 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     //var startUrl = "https://backyard.ftchinese.com/"
     //var startUrl = "http://192.168.253.25:9000/?isInSWIFT&iOSShareWechat&gShowStatusBar"
     let iPadStartUrl = "http://app005.ftmailbox.com/ipad-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
-    let maxAdTimeAfterLaunch = 5.0
-    let maxAdTimeAfterWebRequest = 3.0
-    let overlayView = UIView()
-    let adType = "page"
-    let adLink = "http://www.ftchinese.com"
-    let lauchAdSchedule = "http://m.ftchinese.com/test.json?1"
+    var maxAdTimeAfterLaunch = 6.0
+    var maxAdTimeAfterWebRequest = 3.0
+    lazy var overlayView: UIView? = UIView()
+    var adType = "video"
+    let adLink = "http://www.rolex.com"
+    let lauchAdSchedule = "http://m.ftchinese.com/test.json?3"
+    let videoFile = "NUNU.MOV"
+    let imageFile = "rolex.jpg"
+    let htmlFile = "yyk001.html"
+    let htmlBaseUrl = "http://www3.ftchinese.com/adv/yyk/"
+    let screenWidth = UIScreen.mainScreen().bounds.width
+    let screenHeight = UIScreen.mainScreen().bounds.height
+    
     
     deinit {
         //print("main view is being deinitialized")
@@ -34,7 +43,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     override func loadView() {
         super.loadView()
-        //print("load view")
         pageStatus = .ViewToLoad
         if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
             startUrl = iPadStartUrl
@@ -62,39 +70,101 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         
 
         adOverlayView()
+        //normalOverlayView()
     }
     
     
     
+
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        pageStatus = .ViewLoaded
+        loadFromLocal()
+        pageStatus = .WebViewLoading
+        resetTimer(maxAdTimeAfterLaunch)
+        updateAdSchedule()
+    }
+    
+    
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(false)
+        if pageStatus == .WebViewDisplayed || pageStatus == .WebViewWarned {
+            //Deal with white screen when back from other scene
+            checkBlankPage()
+        }
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(false)
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        pageStatus = .WebViewWarned
+    }
+    
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return UIStatusBarStyle.LightContent
+    }
+    
+    override func prefersStatusBarHidden() -> Bool {
+        if pageStatus != .WebViewDisplayed {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    //On mobile phone, lock the screen to portrait only
+    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+            return UIInterfaceOrientationMask.All
+        } else {
+            return UIInterfaceOrientationMask.Portrait
+        }
+    }
+    
+    override func shouldAutorotate() -> Bool {
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    
     // if there's no ad to load
     func normalOverlayView() {
-        overlayView.backgroundColor = UIColor(netHex:0x002F5F)
-        overlayView.frame = self.view.bounds
-        self.view.addSubview(overlayView)
-        overlayView.translatesAutoresizingMaskIntoConstraints = false
-        view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Leading, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Trailing, multiplier: 1, constant: 0))
+        overlayView!.backgroundColor = UIColor(netHex:0x002F5F)
+        overlayView!.frame = self.view.bounds
+        self.view.addSubview(overlayView!)
+        overlayView!.translatesAutoresizingMaskIntoConstraints = false
+        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Leading, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Trailing, multiplier: 1, constant: 0))
         
         let imageName = "FTC-start"
         let image = UIImage(named: imageName)
-        let imageView = UIImageView(image: image!)
-        imageView.frame = CGRect(x: 0, y: 0, width: 266, height: 210)
-        imageView.contentMode = .ScaleAspectFit
-        self.overlayView.addSubview(imageView)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1/3, constant: 1))
-        view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 266))
-        view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 210))
+        var imageView: UIImageView?
+        imageView = UIImageView(image: image!)
+        imageView!.frame = CGRect(x: 0, y: 0, width: 266, height: 210)
+        imageView!.contentMode = .ScaleAspectFit
+        self.overlayView!.addSubview(imageView!)
+        imageView!.translatesAutoresizingMaskIntoConstraints = false
+        view.addConstraint(NSLayoutConstraint(item: imageView!, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: imageView!, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1/3, constant: 1))
+        view.addConstraint(NSLayoutConstraint(item: imageView!, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 266))
+        view.addConstraint(NSLayoutConstraint(item: imageView!, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 210))
         
         let label = UILabel(frame: CGRectMake(0, 0, 441, 21))
         label.center = CGPointMake(160, 284)
         label.textAlignment = NSTextAlignment.Center
         label.text = "英国《金融时报》中文网"
         label.textColor = UIColor.whiteColor()
-        self.overlayView.addSubview(label)
+        self.overlayView!.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
         
         view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
@@ -106,106 +176,187 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     // if there's ad image to load
     func adOverlayView() {
-        
         parseSchedule()
-        overlayView.backgroundColor = UIColor(netHex:0x000000)
-        overlayView.frame = self.view.bounds
-        self.view.addSubview(overlayView)
-        overlayView.translatesAutoresizingMaskIntoConstraints = false
-        view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Leading, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: overlayView, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Trailing, multiplier: 1, constant: 0))
-        let screenWidth = UIScreen.mainScreen().bounds.width
-        let screenHeight = UIScreen.mainScreen().bounds.height
+        
         
         if adType == "page" {
-            if #available(iOS 8.0, *) {
-                let adPageView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight - 44))
-                let adPageUrl = "http://www3.ftchinese.com/adv/yyk/"
-                
-                //load html file from web
-                //let url = NSURL(string:adPageUrl)
-                //let req = NSURLRequest(URL:url!)
-                //adPageView.loadRequest(req)
-                
-                // load html file from local
-                let templatepath = NSBundle.mainBundle().pathForResource("yyk001", ofType: "html")!
-                let base = NSURL(string: adPageUrl)
-                let s = try! NSString(contentsOfFile:templatepath, encoding:NSUTF8StringEncoding)
-                adPageView.loadHTMLString(s as String, baseURL:base)
-                    
-                    
-                overlayView.addSubview(adPageView)
-            } else {
-                // Fallback on earlier versions
-            }
-            
+            addOverlayView()
+            showHTMLAd()
         } else if adType == "image" {
-            let imageName = "Radio.jpg"
-            let image = UIImage(named: imageName)
-            let imageView = UIImageView(image: image!)
-            imageView.frame = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
-            imageView.contentMode = .ScaleAspectFit
-            self.overlayView.addSubview(imageView)
-            imageView.translatesAutoresizingMaskIntoConstraints = false
-            //        view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
-            //        view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1/3, constant: 1))
-            view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: screenWidth))
-            view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: screenHeight))
-
-            
-            imageView.userInteractionEnabled = true
-            //now you need a tap gesture recognizer
-            //note that target and action point to what happens when the action is recognized.
-            let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.clickAd))
-            //Add the recognizer to your view.
-            imageView.addGestureRecognizer(tapRecognizer)
+            addOverlayView()
+            showImage()
+        } else if adType == "video" {
+            do {
+                try playVideo()
+            } catch AppError.InvalidResource(let name, let type) {
+                debugPrint("Could not find resource \(name).\(type)")
+            } catch {
+                debugPrint("Generic error")
+            }
         }
         
-
-        let button = UIButton(frame: CGRectMake(0, 0, 100, 44))
-        //label.backgroundColor = UIColor.redColor()
-        //label.center = CGPointMake(160, 284)
-        
-        //button.backgroundColor = UIColor.greenColor()
-        button.setTitle("跳过广告", forState: .Normal)
-//        button.textAlignment = NSTextAlignment.Right
-//        button.text = "跳过广告>"
-//        button.textColor = UIColor.whiteColor()
-        self.overlayView.addSubview(button)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(ViewController.displayWebView), forControlEvents: .TouchUpInside)
-        
-        view.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 100))
-        view.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 44))
+        //跳过广告的按钮
+        addCloseButton()
     }
+    
+    func addOverlayView() {
+        overlayView!.backgroundColor = UIColor(netHex:0x000000)
+        overlayView!.frame = self.view.bounds
+        self.view.addSubview(overlayView!)
+        overlayView!.translatesAutoresizingMaskIntoConstraints = false
+        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Leading, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Trailing, multiplier: 1, constant: 0))
+    }
+    
+    func addCloseButton() {
+        let button: UIButton? = UIButton(frame: CGRectMake(0, 0, 100, 44))
+        button!.setTitle("跳过广告", forState: .Normal)
+        if adType == "video" {
+            self.view.viewWithTag(111)!.addSubview(button!)
+        } else {
+            self.overlayView!.addSubview(button!)
+        }
+        
+        button!.translatesAutoresizingMaskIntoConstraints = false
+        button!.addTarget(self, action: #selector(ViewController.displayWebView), forControlEvents: .TouchUpInside)
+        
+        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 100))
+        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 44))
+    }
+    
+    func showImage() {
+        let filename: NSString = imageFile
+        let pathExtention = filename.pathExtension
+        let pathPrefix = filename.stringByDeletingPathExtension
+        let templatepath = NSBundle.mainBundle().pathForResource(pathPrefix, ofType: pathExtention)!
+        let image: UIImage? = UIImage(contentsOfFile: templatepath)
+        let imageView: UIImageView? = UIImageView(image: image!)
+        imageView?.frame = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
+        imageView?.contentMode = .ScaleAspectFit
+        self.overlayView!.addSubview(imageView!)
+        imageView?.translatesAutoresizingMaskIntoConstraints = false
+        view.addConstraint(NSLayoutConstraint(item: imageView!, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: screenWidth))
+        view.addConstraint(NSLayoutConstraint(item: imageView!, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: screenHeight))
+        imageView?.userInteractionEnabled = true
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.clickAd))
+        imageView!.addGestureRecognizer(tapRecognizer)
+    }
+    
+    func showHTMLAd() {
+        if #available(iOS 8.0, *) {
+            let filename: NSString = htmlFile
+            let pathExtention = filename.pathExtension
+            let pathPrefix = filename.stringByDeletingPathExtension
+            let adPageView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight - 44))
+            let templatepath = NSBundle.mainBundle().pathForResource(pathPrefix, ofType: pathExtention)!
+            let base = NSURL(string: htmlBaseUrl)
+            let s = try! NSString(contentsOfFile:templatepath, encoding:NSUTF8StringEncoding)
+            adPageView.loadHTMLString(s as String, baseURL:base)
+            overlayView!.addSubview(adPageView)
+            
+            if adLink != "" {
+                let adPageLinkOverlay = UIView(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight - 44))
+                let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.clickAd))
+                overlayView!.addSubview(adPageLinkOverlay)
+                adPageLinkOverlay.addGestureRecognizer(tapRecognizer)
+            }
+            
+        } else {
+            adType = "image"
+            showImage()
+        }
+    }
+    
+    func playVideo() throws {
+        let filename: NSString = videoFile
+        let pathExtention = filename.pathExtension
+        let pathPrefix = filename.stringByDeletingPathExtension
+        
+        guard let path = NSBundle.mainBundle().pathForResource(pathPrefix, ofType:pathExtention) else {
+            throw AppError.InvalidResource(pathPrefix, pathExtention)
+        }
+        
+        if #available(iOS 8.0, *) {
+            maxAdTimeAfterLaunch = 525.0
+            maxAdTimeAfterWebRequest = 523.0
+            let player = AVPlayer(URL: NSURL(fileURLWithPath: path))
+            let playerController = AVPlayerViewController()
+            
+            // this code doesn't make Xcode complain about constraints
+            // video view must be added to the self.view, not a subview
+            playerController.player = player
+            // this code seems to be useless and causes memory leak when video is closed
+            // self.addChildViewController(playerController)
+            playerController.showsPlaybackControls = false
+            player.muted = true
+            player.play()
+            self.view.addSubview(playerController.view)
+            playerController.view.tag = 111
+            playerController.view.frame = self.view.frame
+            player.play()
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.displayWebView), name: AVPlayerItemDidPlayToEndTimeNotification, object: player.currentItem)
+            if adLink != "" {
+                let adPageLinkOverlay = UIView(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight - 44))
+                let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.clickAd))
+                playerController.view.addSubview(adPageLinkOverlay)
+                adPageLinkOverlay.addGestureRecognizer(tapRecognizer)
+            }
+        } else {
+            adType = "image"
+            showImage()
+        }
+    }
+    
     
     func clickAd() {
         openInView(adLink)
     }
-    
-    func parseSchedule() {
-        readFile("schedule.json")
-    }
-    
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        pageStatus = .ViewLoaded
-        loadFromLocal()
-        pageStatus = .WebViewLoading
-        resetTimer(maxAdTimeAfterLaunch)
-        updateAdSchedule()
-    }
-    
     func updateAdSchedule() {
         let urlLauchAdSchedule = NSURL(string: lauchAdSchedule)
         grabFileFromWeb(urlLauchAdSchedule!)
     }
+    func grabFileFromWeb(url: NSURL) {
+        //print("lastPathComponent: " + (url.lastPathComponent ?? ""))
+        //weChatShareIcon = UIImage(named: "ftcicon.jpg")
+        getDataFromUrl(url) { (data, response, error)  in
+            dispatch_async(dispatch_get_main_queue()) { () -> Void in
+                guard let data = data where error == nil else { return }
+                //print(response?.suggestedFilename ?? "")
+                //print(data)
+                self.saveFile(data, filename: "schedule.json")
+                //print(data)
+                //print("Download Finished")
+                //weChatShareIcon = UIImage(data: data)
+            }
+        }
+    }
     
+    func saveFile(data: NSData, filename: String) {
+        let documentsDirectoryPathString = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).first!
+        let documentsDirectoryPath = NSURL(string: documentsDirectoryPathString)!
+        let jsonFilePath = documentsDirectoryPath.URLByAppendingPathComponent(filename)
+        let fileManager = NSFileManager.defaultManager()
+        let created = fileManager.createFileAtPath(jsonFilePath.absoluteString, contents: nil, attributes: nil)
+        if created {
+            //print("File created ")
+        } else {
+            //print("Couldn't create file for some reason")
+        }
+        // Write that JSON to the file created earlier
+        do {
+            let file = try NSFileHandle(forWritingToURL: jsonFilePath)
+            file.writeData(data)
+            //print("JSON data was written to the file successfully!")
+        } catch let error as NSError {
+            print("Couldn't write to file: \(error.localizedDescription)")
+        }
+    }
+    
+    //Load HTML String from Bundle to start the App
     func loadFromLocal() {
         //        let url = NSURL(string:startUrl)
         //        let req = NSURLRequest(URL:url!)
@@ -224,22 +375,89 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             uiWebView.loadHTMLString(s as String, baseURL: base)
         }
         checkConnectionType()
-        
-        // get the current userid and save it
-        
-        
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(false)
-        if pageStatus == .WebViewDisplayed || pageStatus == .WebViewWarned {
-            //Deal with white screen when back from other scene
-            checkBlankPage()
+    func parseSchedule() {
+        let scheduleDataFinal: NSData
+        let jsonFileTime: Int
+        let jsonFileTimeBundle: Int
+        let scheduleData = readFile("schedule.json", fileLocation: "download")
+        let scheduleDataBundle = readFile("schedule.json", fileLocation: "bundle")
+        if scheduleData != nil {
+            jsonFileTime = getJSONFileTime(scheduleData!)
+        } else {
+            jsonFileTime = 0
         }
+        if scheduleDataBundle != nil {
+            jsonFileTimeBundle = getJSONFileTime(scheduleDataBundle!)
+        } else {
+            jsonFileTimeBundle = 0
+        }
+        // compare two versions of schedule.json file
+        // use whichever is latest
+        if jsonFileTime > jsonFileTimeBundle {
+            scheduleDataFinal = scheduleData!
+            print("get schedule from download")
+        } else {
+            scheduleDataFinal = scheduleDataBundle!
+            print("get schedule from bundle")
+        }
+        
+
+        do {
+            let JSON = try NSJSONSerialization.JSONObjectWithData(scheduleDataFinal, options:NSJSONReadingOptions(rawValue: 0))
+            guard let JSONDictionary: NSDictionary = JSON as? NSDictionary else {
+                print("Not a Dictionary")
+                return
+            }
+            guard let creatives = JSONDictionary["creatives"] as? NSArray else {
+                print("creatives Not an Array")
+                return
+            }
+            for (creative) in creatives {
+                print(creative["click"])
+            }
+        }
+        catch let JSONError as NSError {
+            print("\(JSONError)")
+        }
+
     }
     
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(false)
+    func getJSONFileTime(jsonData: NSData) -> Int {
+        do {
+            let JSON = try NSJSONSerialization.JSONObjectWithData(jsonData, options:NSJSONReadingOptions(rawValue: 0))
+            guard let JSONDictionary: NSDictionary = JSON as? NSDictionary else {
+                print("Not a Dictionary")
+                return 0
+            }
+            //print("JSONDictionary! \(JSONDictionary)")
+            guard let fileTime = JSONDictionary["fileTime"] as? Int else {
+                print("No File Time")
+                return 0
+            }
+            return fileTime
+        }
+        catch let JSONError as NSError {
+            print("\(JSONError)")
+        }
+        return 0
+    }
+    
+    func readFile(fileName: String, fileLocation: String) -> NSData? {
+        if fileLocation == "download" {
+            let DocumentDirURL = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
+            let fileURL = DocumentDirURL.URLByAppendingPathComponent(fileName)
+            return NSData(contentsOfURL: fileURL)
+        } else {
+            let filename: NSString = fileName as NSString
+            let pathExtention = filename.pathExtension
+            let pathPrefix = filename.stringByDeletingPathExtension
+            guard let fileURLBuddle = NSBundle.mainBundle().pathForResource(pathPrefix, ofType: pathExtention) else {
+                return nil
+            }
+            return NSData(contentsOfFile: fileURLBuddle)
+        }
     }
     
     func checkBlankPage() {
@@ -341,7 +559,12 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     func displayWebView() {
         if pageStatus != .WebViewDisplayed {
-            overlayView.removeFromSuperview()
+            for subUIView in overlayView!.subviews {
+                subUIView.removeFromSuperview()
+            }
+            overlayView!.removeFromSuperview()
+            overlayView = nil
+            self.view.viewWithTag(111)?.removeFromSuperview()
             pageStatus = .WebViewDisplayed
             //trigger prefersStatusBarHidden
             setNeedsStatusBarAppearanceUpdate()
@@ -349,39 +572,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        pageStatus = .WebViewWarned
-    }
-    
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
-    }
-    
-    override func prefersStatusBarHidden() -> Bool {
-        if pageStatus != .WebViewDisplayed {
-            return true
-        } else {
-            return false
-        }
-    }
-    
-    //On mobile phone, lock the screen to portrait only
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-            return UIInterfaceOrientationMask.All
-        } else {
-            return UIInterfaceOrientationMask.Portrait
-        }
-    }
-    
-    override func shouldAutorotate() -> Bool {
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-            return true
-        } else {
-            return false
-        }
-    }
     
     //iOS 7 link clicked
     func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {

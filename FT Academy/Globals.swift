@@ -39,6 +39,10 @@ enum WebViewStatus {
     case WebViewWarned
 }
 
+enum AppError : ErrorType {
+    case InvalidResource(String, String)
+}
+
 func sendDeviceToken() {
     if postString != "" && deviceUserId != "no" && deviceTokenSent == false {
         let url = NSURL(string: deviceTokenUrl)
@@ -51,10 +55,10 @@ func sendDeviceToken() {
         let task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
             if data != nil {
                 deviceTokenSent = true
-                                let urlContent = NSString(data: data!, encoding: NSUTF8StringEncoding) as NSString!
-                                print("Data to \(postStringFinal): \(urlContent)")
+                let urlContent = NSString(data: data!, encoding: NSUTF8StringEncoding) as NSString!
+                print("Data to \(postStringFinal): \(urlContent)")
             } else {
-                                print("failed to send token: \(deviceTokenString)! ")
+                print("failed to send token: \(deviceTokenString)! ")
             }
         })
         task.resume()
@@ -188,105 +192,16 @@ func updateWeChatShareIcon(url: NSURL) {
     getDataFromUrl(url) { (data, response, error)  in
         dispatch_async(dispatch_get_main_queue()) { () -> Void in
             guard let data = data where error == nil else { return }
-            print(response?.suggestedFilename ?? "")
-            print("Download Finished")
+            //print(response?.suggestedFilename ?? "")
+            //print("Download Finished")
             weChatShareIcon = UIImage(data: data)
         }
     }
 }
 
-func grabFileFromWeb(url: NSURL) {
-    //print("lastPathComponent: " + (url.lastPathComponent ?? ""))
-    //weChatShareIcon = UIImage(named: "ftcicon.jpg")
-    getDataFromUrl(url) { (data, response, error)  in
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
-            guard let data = data where error == nil else { return }
-            print(response?.suggestedFilename ?? "")
-            //print(data)
-            saveFile(data, filename: "schedule.json")
-            //print(data)
-            //print("Download Finished")
-            //weChatShareIcon = UIImage(data: data)
-        }
-    }
-}
 
-func saveFile(data: NSData, filename: String) {
-    let documentsDirectoryPathString = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).first!
-    let documentsDirectoryPath = NSURL(string: documentsDirectoryPathString)!
-    
-    let jsonFilePath = documentsDirectoryPath.URLByAppendingPathComponent(filename)
-    let fileManager = NSFileManager.defaultManager()
-    //var isDirectory: ObjCBool = false
-    
-    // remove the file if it exists
-//    if fileManager.fileExistsAtPath(jsonFilePath.absoluteString, isDirectory: &isDirectory) {
-//        do {
-//           
-//            try fileManager.removeItemAtPath(jsonFilePath.absoluteString)
-//            print("JSON file was removed!")
-//        } catch let error as NSError {
-//            print("Couldn't write to file: \(error.localizedDescription)")
-//        }
-//    }
-    
 
-    let created = fileManager.createFileAtPath(jsonFilePath.absoluteString, contents: nil, attributes: nil)
-    if created {
-        print("File created ")
-    } else {
-        print("Couldn't create file for some reason")
-    }
 
-    
-    // Write that JSON to the file created earlier
-    // let jsonFilePath = documentsDirectoryPath.URLByAppendingPathComponent("test.json")
-    do {
-        let file = try NSFileHandle(forWritingToURL: jsonFilePath)
-        file.writeData(data)
-        print("JSON data was written to the file successfully!")
-    } catch let error as NSError {
-        print("Couldn't write to file: \(error.localizedDescription)")
-    }
-}
-
-func readFile(fileName: String) {
-//    let documentsDirectoryPathString = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).first!
-//    let documentsDirectoryPath = NSURL(string: documentsDirectoryPathString)!
-//    let jsonFilePath = documentsDirectoryPath.URLByAppendingPathComponent(fileName)
-//    let fileManager = NSFileManager.defaultManager()
-//    var isDirectory: ObjCBool = false
-//    
-//    // check the file in the Documents folder
-//    if fileManager.fileExistsAtPath(jsonFilePath.absoluteString, isDirectory: &isDirectory) {
-//        print("File Exists for read")
-//        //reading
-//        do {
-//            let file = try NSFileHandle(forReadingFromURL: jsonFilePath)
-//            let data = file.readDataToEndOfFile
-//            print(data)
-//        } catch let error as NSError {
-//            print("Couldn't read file: \(error.localizedDescription)")
-//        }
-//        
-//    }
-    
-    // Save data to file
-    let DocumentDirURL = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
-    
-    let fileURL = DocumentDirURL.URLByAppendingPathComponent(fileName)
-    print("FilePath: \(fileURL.path)")
-    
-    
-    // Reading
-    var inString = ""
-    do {
-        inString = try String(contentsOfURL: fileURL)
-    } catch let error as NSError {
-        print("Failed reading from URL: \(fileURL), Error: " + error.localizedDescription)
-    }
-    print("In: \(inString)")
-}
 
 func setTimeout(delay:NSTimeInterval, block:()->Void) -> NSTimer {
     return NSTimer.scheduledTimerWithTimeInterval(delay, target: NSBlockOperation(block: block), selector: #selector(NSOperation.main), userInfo: nil, repeats: false)
