@@ -129,14 +129,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     
     func application( _ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data ) {
-        let characterSet: CharacterSet = CharacterSet( charactersIn: "<>" )
-        deviceTokenString = ( deviceToken.description as NSString )
-            .trimmingCharacters( in: characterSet )
-            .replacingOccurrences( of: " ", with: "" ) as String
+        deviceTokenString = ""
+        for i in 0..<deviceToken.count {
+            deviceTokenString = deviceTokenString + String(format: "%02.2hhx", arguments: [deviceToken[i]])
+        }
         saveDeviceInfo()
         //print(postString)
         sendDeviceToken()
-        //print(self.deviceTokenString)
+        //print("send device token: \(deviceTokenString)")
     }
     
     func saveDeviceInfo() {
@@ -199,9 +199,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
         UIApplication.shared.applicationIconBadgeNumber = 0
         var title = "为您推荐"
-//        if let _ = userInfo["aps"]?["alert"] {
-//            title = userInfo["aps"]?["alert"] as! String
-//        }
         guard let aps = userInfo["aps"] as? NSDictionary else {
             return
         }
@@ -239,7 +236,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
-    
     
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
