@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
         //GoogleConversionPing.pingWithConversionId ("993907328", label: "35JGCOi9xAQQgKX32QM", value: "0", isRepeatable: false)
@@ -31,15 +31,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //print("launched with options! ")
         
 
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-            ACTConversionReporter.reportWithConversionID("937693643", label: "Qe7aCL-Kx2MQy6OQvwM", value: "1.00", isRepeatable: false)
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            ACTConversionReporter.report(withConversionID: "937693643", label: "Qe7aCL-Kx2MQy6OQvwM", value: "1.00", isRepeatable: false)
         } else {
-            ACTConversionReporter.reportWithConversionID("937693643", label: "TvNTCJmOiGMQy6OQvwM", value: "1.00", isRepeatable: false)
+            ACTConversionReporter.report(withConversionID: "937693643", label: "TvNTCJmOiGMQy6OQvwM", value: "1.00", isRepeatable: false)
         }
         
         WXApi.registerApp("wxc1bc20ee7478536a", withDescription: "FT中文网")
         
-        UIApplication.sharedApplication().applicationIconBadgeNumber = 0
+        UIApplication.shared.applicationIconBadgeNumber = 0
 
         
         if #available(iOS 8.0, *) {
@@ -68,24 +68,45 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: categories as? Set<UIUserNotificationCategory>)
             */
-            let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil)
-            UIApplication.sharedApplication().registerUserNotificationSettings(settings)
-            UIApplication.sharedApplication().registerForRemoteNotifications()
+            let settings = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
+            UIApplication.shared.registerUserNotificationSettings(settings)
+            UIApplication.shared.registerForRemoteNotifications()
         } else {
-            let settings = UIRemoteNotificationType.Alert.union(UIRemoteNotificationType.Badge).union(UIRemoteNotificationType.Sound)
-            UIApplication.sharedApplication().registerForRemoteNotificationTypes(settings)
+            let settings = UIRemoteNotificationType.alert.union(UIRemoteNotificationType.badge).union(UIRemoteNotificationType.sound)
+            UIApplication.shared.registerForRemoteNotifications(matching: settings)
         }
         
         // if launched from a tap on a notification
         if let launchOptions = launchOptions {
-            if let userInfo = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey] {
-                if let action = userInfo["action"], id = userInfo["id"], title = userInfo["aps"]!!["alert"] {
-                    let rootViewController = self.window!.rootViewController as! ViewController
-                    let _ = setTimeout(5.0, block: { () -> Void in
-                        rootViewController.openNotification(action as! String, id: id as! String, title: title as! String)
-                    })
+            if let userInfo = launchOptions[UIApplicationLaunchOptionsKey.remoteNotification] as? NSDictionary {
+//                if let action = userInfo["action"], let id = userInfo["id"], let title = userInfo["aps"]!!["alert"] {
+//                    let rootViewController = self.window!.rootViewController as! ViewController
+//                    let _ = setTimeout(5.0, block: { () -> Void in
+//                        rootViewController.openNotification(action as! String, id: id as! String, title: title as! String)
+//                    })
+//                }
+                //guard let listOfFriends = tResult["data"] else { return; }
+                
+                guard let action = userInfo["action"] else {
+                    return false
                 }
+                guard let id = userInfo["id"] else {
+                    return false
+                }
+                guard let aps = userInfo["aps"] as? NSDictionary else {
+                    return false
+                }
+                guard let title = aps["alert"] else {
+                    return false
+                }
+                let rootViewController = self.window!.rootViewController as! ViewController
+                let _ = setTimeout(5.0, block: { () -> Void in
+                    rootViewController.openNotification(action as! String, id: id as! String, title: title as! String)
+                })
             }
+            
+
+            
         }
         
 
@@ -107,11 +128,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     
-    func application( application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData ) {
-        let characterSet: NSCharacterSet = NSCharacterSet( charactersInString: "<>" )
+    func application( _ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data ) {
+        let characterSet: CharacterSet = CharacterSet( charactersIn: "<>" )
         deviceTokenString = ( deviceToken.description as NSString )
-            .stringByTrimmingCharactersInSet( characterSet )
-            .stringByReplacingOccurrencesOfString( " ", withString: "" ) as String
+            .trimmingCharacters( in: characterSet )
+            .replacingOccurrences( of: " ", with: "" ) as String
         saveDeviceInfo()
         //print(postString)
         sendDeviceToken()
@@ -120,8 +141,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func saveDeviceInfo() {
         let bundleID: String
-        if let _ = NSBundle.mainBundle().bundleIdentifier {
-            bundleID = NSBundle.mainBundle().bundleIdentifier!
+        if let _ = Bundle.main.bundleIdentifier {
+            bundleID = Bundle.main.bundleIdentifier!
         } else {
             bundleID = ""
         }
@@ -137,7 +158,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let status = "start"
         let preference = ""
         let deviceType: String
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+        if UIDevice.current.userInterfaceIdiom == .pad {
             deviceType = "pad"
         } else {
             deviceType = "phone"
@@ -147,11 +168,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
 
     
-    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
-        let characterSet: NSCharacterSet = NSCharacterSet( charactersInString: "<>" )
-        let errorString: String = ( error.description as NSString )
-            .stringByTrimmingCharactersInSet( characterSet )
-            .stringByReplacingOccurrencesOfString( " ", withString: "" ) as String
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        let characterSet: CharacterSet = CharacterSet( charactersIn: "<>" )
+        let errorString: String = ( error.localizedDescription as NSString )
+            .trimmingCharacters( in: characterSet )
+            .replacingOccurrences( of: " ", with: "" ) as String
         print(errorString)
     }
     
@@ -175,34 +196,42 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     */
     
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-        UIApplication.sharedApplication().applicationIconBadgeNumber = 0
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
+        UIApplication.shared.applicationIconBadgeNumber = 0
         var title = "为您推荐"
-        if let _ = userInfo["aps"]?["alert"] {
-            title = userInfo["aps"]?["alert"] as! String
+//        if let _ = userInfo["aps"]?["alert"] {
+//            title = userInfo["aps"]?["alert"] as! String
+//        }
+        guard let aps = userInfo["aps"] as? NSDictionary else {
+            return
         }
+        guard let theTitle = aps["alert"] as? String else {
+            return
+        }
+        title = theTitle
+        
         var lead = ""
         if let _ = userInfo["lead"] {
             lead = userInfo["lead"] as! String
         }
         
-        if let notiAction = userInfo["action"], id = userInfo["id"] {
+        if let notiAction = userInfo["action"], let id = userInfo["id"] {
             let rootViewController = self.window!.rootViewController as! ViewController
-            if ( application.applicationState == .Inactive || application.applicationState == .Background  )
+            if ( application.applicationState == .inactive || application.applicationState == .background  )
             {
                 rootViewController.openNotification(notiAction as! String, id: id as! String, title: title)
             } else {
                 if #available(iOS 8.0, *) {
-                    let alert = UIAlertController(title: title, message: lead, preferredStyle: UIAlertControllerStyle.Alert)
-                    alert.addAction(UIAlertAction(title: "去看看", style: .Default, handler: { (action: UIAlertAction!) in
+                    let alert = UIAlertController(title: title, message: lead, preferredStyle: UIAlertControllerStyle.alert)
+                    alert.addAction(UIAlertAction(title: "去看看", style: .default, handler: { (action: UIAlertAction!) in
                         //let rootViewController = self.window!.rootViewController as! ViewController
                         rootViewController.openNotification(notiAction as! String, id: id as! String, title: title)
                     }))
-                    alert.addAction(UIAlertAction(title: "不感兴趣", style: UIAlertActionStyle.Default, handler: nil))
-                    rootViewController.presentViewController(alert, animated: true, completion: nil)
+                    alert.addAction(UIAlertAction(title: "不感兴趣", style: UIAlertActionStyle.default, handler: nil))
+                    rootViewController.present(alert, animated: true, completion: nil)
                 } else {
                     let alertView = UIAlertView();
-                    alertView.addButtonWithTitle("知道了");
+                    alertView.addButton(withTitle: "知道了");
                     alertView.title = title;
                     alertView.message = lead;
                     alertView.show();
@@ -212,7 +241,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     
-    func applicationWillResignActive(application: UIApplication) {
+    func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
         
@@ -230,24 +259,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // Fallback on earlier versions
         }
         */
-        UIApplication.sharedApplication().applicationIconBadgeNumber = 0
+        UIApplication.shared.applicationIconBadgeNumber = 0
     }
     
-    func applicationDidEnterBackground(application: UIApplication) {
+    func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
         let rootViewController = self.window!.rootViewController as! ViewController
         rootViewController.getUserId()
     }
     
-    func applicationWillEnterForeground(application: UIApplication) {
+    func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     }
     
-    func applicationDidBecomeActive(application: UIApplication) {
+    func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         //print ("application did become active")
-        UIApplication.sharedApplication().applicationIconBadgeNumber = 0
+        UIApplication.shared.applicationIconBadgeNumber = 0
         let rootViewController = self.window!.rootViewController as! ViewController
         rootViewController.checkBlankPage()
         // send deviceToken only once
@@ -255,19 +284,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
     }
     
-    func applicationWillTerminate(application: UIApplication) {
+    func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
     
     // tap on status bar to scroll back to top
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        super.touchesBegan(touches, withEvent: event)
-        let events = event!.allTouches()
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        let events = event!.allTouches
         let touch = events!.first
-        let location = touch!.locationInView(self.window)
-        let statusBarFrame = UIApplication.sharedApplication().statusBarFrame
-        if CGRectContainsPoint(statusBarFrame, location) {
-            NSNotificationCenter.defaultCenter().postNotificationName("statusBarSelected", object: nil)
+        let location = touch!.location(in: self.window)
+        let statusBarFrame = UIApplication.shared.statusBarFrame
+        if statusBarFrame.contains(location) {
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "statusBarSelected"), object: nil)
         }
     }
 }

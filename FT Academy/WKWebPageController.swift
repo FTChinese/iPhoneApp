@@ -19,7 +19,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     @available(iOS 8.0, *)
     lazy var webView: WKWebView? = { return nil }()
     var myContext = 0
-    let progressView = UIProgressView(progressViewStyle: UIProgressViewStyle.Default)
+    let progressView = UIProgressView(progressViewStyle: UIProgressViewStyle.default)
     
     
     deinit {
@@ -44,37 +44,37 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
             let jsCode = "function getContentByMetaTagName(c) {for (var b = document.getElementsByTagName('meta'), a = 0; a < b.length; a++) {if (c == b[a].name || c == b[a].getAttribute('property')) { return b[a].content; }} return '';} var gCoverImage = getContentByMetaTagName('og:image') || '';var gIconImage = getContentByMetaTagName('thumbnail') || '';var gDescription = getContentByMetaTagName('og:description') || getContentByMetaTagName('description') || '';gIconImage=encodeURIComponent(gIconImage);webkit.messageHandlers.callbackHandler.postMessage(gCoverImage + '|' + gIconImage + '|' + gDescription);"
             let userScript = WKUserScript(
                 source: jsCode,
-                injectionTime: WKUserScriptInjectionTime.AtDocumentEnd,
+                injectionTime: WKUserScriptInjectionTime.atDocumentEnd,
                 forMainFrameOnly: true
             )
             contentController.addUserScript(userScript)
-            contentController.addScriptMessageHandler(
+            contentController.add(
                 self,
                 name: "callbackHandler"
             )
             let config = WKWebViewConfiguration()
             config.userContentController = contentController
             //var webView: WKWebView!
-            var longLine = UIScreen.mainScreen().bounds.width
-            var shortLine = UIScreen.mainScreen().bounds.height
+            var longLine = UIScreen.main.bounds.width
+            var shortLine = UIScreen.main.bounds.height
             if longLine < shortLine {
-                longLine = UIScreen.mainScreen().bounds.height
-                shortLine = UIScreen.mainScreen().bounds.width
+                longLine = UIScreen.main.bounds.height
+                shortLine = UIScreen.main.bounds.width
             }
-            if webPageUrl.rangeOfString("d=landscape") != nil {
+            if webPageUrl.range(of: "d=landscape") != nil {
                 self.webView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: longLine, height: shortLine - 44), configuration: config)
-            } else if webPageUrl.rangeOfString("d=portrait") != nil {
+            } else if webPageUrl.range(of: "d=portrait") != nil {
                 self.webView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: shortLine, height: longLine - 44), configuration: config)
             } else {
-                self.webView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.mainScreen().bounds.width, height: UIScreen.mainScreen().bounds.height - 44), configuration: config)
+                self.webView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height - 44), configuration: config)
             }
             self.containerView.addSubview(self.webView!)
             self.containerView.clipsToBounds = true
-            self.webView!.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: &myContext)
-            self.webView!.addObserver(self, forKeyPath: "canGoBack", options: .New, context: &myContext)
-            self.webView!.addObserver(self, forKeyPath: "canGoForward", options: .New, context: &myContext)
+            self.webView!.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: &myContext)
+            self.webView!.addObserver(self, forKeyPath: "canGoBack", options: .new, context: &myContext)
+            self.webView!.addObserver(self, forKeyPath: "canGoForward", options: .new, context: &myContext)
             self.webView!.navigationDelegate = self
-            self.webView!.UIDelegate = self
+            self.webView!.uiDelegate = self
             self.webView!.scrollView.delegate = self
             self.subWKView = self.webView
             
@@ -87,7 +87,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     
     //there's a bug on iOS 9 so that you can't set decelerationRate directly on webView
     //http://stackoverflow.com/questions/31369538/cannot-change-wkwebviews-scroll-rate-on-ios-9-beta
-    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         if #available(iOS 8.0, *) {
             scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
         }
@@ -97,10 +97,10 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     
     // message sent back to native app
     @available(iOS 8.0, *)
-    func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if(message.name == "callbackHandler") {
             let infoForShare = message.body as! String
-            let toArray = infoForShare.componentsSeparatedByString("|")
+            let toArray = infoForShare.components(separatedBy: "|")
             webPageDescription = toArray[2]
             webPageImage = toArray[0]
             webPageImageIcon = toArray[1]
@@ -109,24 +109,24 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let url = NSURL(string:webPageUrl)
-        let req = NSURLRequest(URL:url!)
+        let url = URL(string:webPageUrl)
+        let req = URLRequest(url:url!)
         if #available(iOS 8.0, *) {
             //let webView = self.subWKView as! WKWebView
-            self.webView!.loadRequest(req)
-            progressView.frame = CGRectMake(0,0,UIScreen.mainScreen().bounds.width,10)
+            self.webView!.load(req)
+            progressView.frame = CGRect(x: 0,y: 0,width: UIScreen.main.bounds.width,height: 10)
             self.containerView.addSubview(progressView)
-            backBarButton.enabled = false
-            forwardBarButton.enabled = false
+            backBarButton.isEnabled = false
+            forwardBarButton.isEnabled = false
         } else {
             containerView.loadRequest(req)
         }
     }
     
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if context != &myContext {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
             return
         }
         if keyPath == "estimatedProgress" {
@@ -136,12 +136,12 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
                 let progress = Float(progress0)
                 self.progressView.setProgress(progress, animated: true)
                 if progress == 1.0 {
-                    self.progressView.hidden = true
+                    self.progressView.isHidden = true
                 } else {
-                    self.progressView.hidden = false
+                    self.progressView.isHidden = false
                 }
-                if let _ = self.webView!.URL {
-                    webPageUrl = self.webView!.URL!.absoluteString
+                if let _ = self.webView!.url {
+                    webPageUrl = self.webView!.url!.absoluteString
                     webPageTitle = self.webView!.title!
                     if webPageTitle == "" {
                         webPageTitle = webPageTitle0
@@ -154,7 +154,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
             if #available(iOS 8.0, *) {
                 //let webView = self.subWKView as! WKWebView
                 let canGoBack = self.webView!.canGoBack
-                backBarButton.enabled = canGoBack
+                backBarButton.isEnabled = canGoBack
             }
             return
         }
@@ -162,7 +162,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
             if #available(iOS 8.0, *) {
                 //let webView = self.subWKView as! WKWebView
                 let canGoForward = self.webView!.canGoForward
-                forwardBarButton.enabled = canGoForward
+                forwardBarButton.isEnabled = canGoForward
             }
             return
         }
@@ -170,9 +170,9 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     
     // this handles target=_blank links by opening them in the same view
     @available(iOS 8.0, *)
-    func webView(webView: WKWebView, createWebViewWithConfiguration configuration: WKWebViewConfiguration, forNavigationAction navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
+    func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
         if navigationAction.targetFrame == nil {
-            webView.loadRequest(navigationAction.request)
+            webView.load(navigationAction.request)
         }
         return nil
     }
@@ -181,7 +181,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         super.didReceiveMemoryWarning()
     }
     
-    @IBAction func goBack(sender: AnyObject) {
+    @IBAction func goBack(_ sender: AnyObject) {
         if #available(iOS 8.0, *) {
             //let webView = self.subWKView as! WKWebView
             self.webView!.goBack()
@@ -190,7 +190,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         }
     }
     
-    @IBAction func goForward(sender: AnyObject) {
+    @IBAction func goForward(_ sender: AnyObject) {
         if #available(iOS 8.0, *) {
             //let webView = self.subWKView as! WKWebView
             self.webView!.goForward()
@@ -199,56 +199,56 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         }
     }
     
-    @IBAction func share(sender: AnyObject) {
+    @IBAction func share(_ sender: AnyObject) {
         let wcActivity = WeChatActivity()
         let wcMoment = WeChatMoment()
         let openInSafari = OpenInSafari()
-        var url = NSURL(string:webPageUrl)
+        var url = URL(string:webPageUrl)
         if #available(iOS 8.0, *) {
             //let webView = self.subWKView as! WKWebView
-            url = self.webView!.URL
+            url = self.webView!.url
         } else {
-            url = containerView.request?.URL
-            webPageTitle = containerView.stringByEvaluatingJavaScriptFromString("document.title")!
+            url = containerView.request?.url
+            webPageTitle = containerView.stringByEvaluatingJavaScript(from: "document.title")!
             let jsCode = "function getContentByMetaTagName(c) {for (var b = document.getElementsByTagName('meta'), a = 0; a < b.length; a++) {if (c == b[a].name || c == b[a].getAttribute('property')) { return b[a].content; }} return '';}"
-            let _ = containerView.stringByEvaluatingJavaScriptFromString(jsCode)
-            webPageDescription = containerView.stringByEvaluatingJavaScriptFromString("getContentByMetaTagName('og:description') || getContentByMetaTagName('description') || ''")!
-            webPageImage = containerView.stringByEvaluatingJavaScriptFromString("getContentByMetaTagName('og:image') || ''")!
-            webPageImageIcon = containerView.stringByEvaluatingJavaScriptFromString("encodeURIComponent(getContentByMetaTagName('thumbnail') || '')")!
+            let _ = containerView.stringByEvaluatingJavaScript(from: jsCode)
+            webPageDescription = containerView.stringByEvaluatingJavaScript(from: "getContentByMetaTagName('og:description') || getContentByMetaTagName('description') || ''")!
+            webPageImage = containerView.stringByEvaluatingJavaScript(from: "getContentByMetaTagName('og:image') || ''")!
+            webPageImageIcon = containerView.stringByEvaluatingJavaScript(from: "encodeURIComponent(getContentByMetaTagName('thumbnail') || '')")!
         }
         if let myWebsite = url {
             let shareData = DataForShare()
             //let image = UIImage(named: "ftcicon.jpg")!
             let image = ShareImageActivityProvider(placeholderItem: UIImage(named: "ftcicon.jpg")!)
-            let objectsToShare = [shareData, myWebsite, image]
+            let objectsToShare = [shareData, myWebsite, image] as [Any]
             //let objectsToShare = [shareData, myWebsite]
             let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcMoment, openInSafari])
-            activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList]
-            if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+            activityVC.excludedActivityTypes = [UIActivityType.airDrop, UIActivityType.addToReadingList]
+            if UIDevice.current.userInterfaceIdiom == .pad {
                 //self.presentViewController(controller, animated: true, completion: nil)
                 let popup: UIPopoverController = UIPopoverController(contentViewController: activityVC)
-                popup.presentPopoverFromRect(CGRectMake(self.view.frame.size.width / 2, self.view.frame.size.height / 4, 0, 0), inView: self.view, permittedArrowDirections: UIPopoverArrowDirection.Any, animated: true)
+                popup.present(from: CGRect(x: self.view.frame.size.width / 2, y: self.view.frame.size.height / 4, width: 0, height: 0), in: self.view, permittedArrowDirections: UIPopoverArrowDirection.any, animated: true)
             } else {
-                self.presentViewController(activityVC, animated: true, completion: nil)
+                self.present(activityVC, animated: true, completion: nil)
             }
         }
         
         
-        if webPageImageIcon.rangeOfString("https://image.webservices.ft.com") == nil{
+        if webPageImageIcon.range(of: "https://image.webservices.ft.com") == nil{
             webPageImageIcon = "https://image.webservices.ft.com/v1/images/raw/\(webPageImageIcon)?source=ftchinese&width=72&height=72"
         }
-        if let imgUrl = NSURL(string: webPageImageIcon) {
+        if let imgUrl = URL(string: webPageImageIcon) {
             updateWeChatShareIcon(imgUrl)
         }
         
     }
     
     
-    @IBAction func dismissSegue(sender: AnyObject) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+    @IBAction func dismissSegue(_ sender: AnyObject) {
+        self.dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func reload(sender: AnyObject) {
+    @IBAction func reload(_ sender: AnyObject) {
         if #available(iOS 8.0, *) {
             //let webView = self.subWKView as! WKWebView
             self.webView!.reload()
@@ -257,27 +257,27 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         }
     }
     
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        if webPageUrl.rangeOfString("d=landscape") != nil {
-            return UIInterfaceOrientationMask.Landscape
-        } else if webPageUrl.rangeOfString("d=portrait") != nil {
-            return UIInterfaceOrientationMask.Portrait
-        } else if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-            if UIScreen.mainScreen().bounds.width > UIScreen.mainScreen().bounds.height {
-                return UIInterfaceOrientationMask.Landscape
+    override var supportedInterfaceOrientations : UIInterfaceOrientationMask {
+        if webPageUrl.range(of: "d=landscape") != nil {
+            return UIInterfaceOrientationMask.landscape
+        } else if webPageUrl.range(of: "d=portrait") != nil {
+            return UIInterfaceOrientationMask.portrait
+        } else if UIDevice.current.userInterfaceIdiom == .pad {
+            if UIScreen.main.bounds.width > UIScreen.main.bounds.height {
+                return UIInterfaceOrientationMask.landscape
             } else {
-                return UIInterfaceOrientationMask.Portrait
+                return UIInterfaceOrientationMask.portrait
             }
         } else {
-            return UIInterfaceOrientationMask.Portrait
+            return UIInterfaceOrientationMask.portrait
         }
     }
     
-    override func shouldAutorotate() -> Bool {
+    override var shouldAutorotate : Bool {
         return true
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
     

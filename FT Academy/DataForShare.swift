@@ -15,23 +15,23 @@ class DataForShare: NSObject, UIActivityItemSource {
     var lead: String = webPageDescription
     var imageCover: String = webPageImage
     
-    func activityViewControllerPlaceholderItem(activityViewController: UIActivityViewController) -> AnyObject {
+    func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
         return webPageTitle;
     }
     
-    func activityViewController(activityViewController: UIActivityViewController, itemForActivityType activityType: String) -> AnyObject? {
+    func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: UIActivityType) -> Any? {
         //Sina Weibo cannot handle arrays. It's either text or image
         var textForShare = ""
-        if activityType == UIActivityTypeMail {
+        if activityType == UIActivityType.mail {
             textForShare = webPageDescription
-        } else if activityType == UIActivityTypePostToWeibo || activityType == UIActivityTypePostToTwitter {
+        } else if activityType == UIActivityType.postToWeibo || activityType == UIActivityType.postToTwitter {
             textForShare = "【" + webPageTitle + "】" + webPageDescription
             let textForShareCredit = "（分享自 @FT中文网）"
             let textForShareLimit = 140
             let textForShareTailCount = textForShareCredit.characters.count + url.characters.count
             if textForShare.characters.count + textForShareTailCount > textForShareLimit {
-                let index = textForShare.startIndex.advancedBy(textForShareLimit - textForShareTailCount - 3)
-                textForShare = textForShare.substringToIndex(index) + "..."
+                let index = textForShare.characters.index(textForShare.startIndex, offsetBy: textForShareLimit - textForShareTailCount - 3)
+                textForShare = textForShare.substring(to: index) + "..."
             }
             textForShare = textForShare + "（分享自 @FT中文网）"
 //        } else if activityType == "com.tencent.xin.sharetimeline" {
@@ -42,17 +42,17 @@ class DataForShare: NSObject, UIActivityItemSource {
         return textForShare
     }
     
-    func activityViewController(activityViewController: UIActivityViewController, subjectForActivityType activityType: String?) -> String {
+    func activityViewController(_ activityViewController: UIActivityViewController, subjectForActivityType activityType: UIActivityType?) -> String {
         
-        if(activityType == UIActivityTypeMail){
+        if(activityType == UIActivityType.mail){
             return webPageTitle
         } else {
             return webPageTitle
         }
     }
     
-    func activityViewController(activityViewController: UIActivityViewController,
-        thumbnailImageForActivityType activityType: String?,
+    func activityViewController(_ activityViewController: UIActivityViewController,
+        thumbnailImageForActivityType activityType: UIActivityType?,
         suggestedSize size: CGSize) -> UIImage? {
             var image : UIImage
             //            if queryStringDictionary["img"] != nil {
@@ -72,7 +72,7 @@ class DataForShare: NSObject, UIActivityItemSource {
             //            }
             //print("width: \(size.width); height: \(size.height)")
             image = UIImage(named: "ftcicon.jpg")!
-            image = image.resizableImageWithCapInsets(UIEdgeInsetsZero)
+            image = image.resizableImage(withCapInsets: UIEdgeInsets.zero)
             return image
     }
     

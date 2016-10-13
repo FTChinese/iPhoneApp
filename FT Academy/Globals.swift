@@ -32,30 +32,31 @@ var deviceUserId = "no"
 let deviceTokenUrl = "http://noti.ftacademy.cn/iphone-collect.php"
 
 enum WebViewStatus {
-    case ViewToLoad
-    case ViewLoaded
-    case WebViewLoading
-    case WebViewDisplayed
-    case WebViewWarned
+    case viewToLoad
+    case viewLoaded
+    case webViewLoading
+    case webViewDisplayed
+    case webViewWarned
 }
 
-enum AppError : ErrorType {
-    case InvalidResource(String, String)
+enum AppError : Error {
+    case invalidResource(String, String)
 }
 
 func sendDeviceToken() {
     if postString != "" && deviceUserId != "no" && deviceTokenSent == false {
-        let url = NSURL(string: deviceTokenUrl)
-        let request = NSMutableURLRequest(URL:url!)
+        let url = URL(string: deviceTokenUrl)
+        let request = NSMutableURLRequest(url:url!)
         let postStringFinal = "\(postString)\(deviceUserId)"
-        request.HTTPMethod = "POST"
+        request.httpMethod = "POST"
         //print(postString)
-        request.HTTPBody = postStringFinal.dataUsingEncoding(NSUTF8StringEncoding)
-        let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
+        request.httpBody = postStringFinal.data(using: String.Encoding.utf8)
+        let session = URLSession.shared
+        //let task = URLSession.shared().dataTask(with: request as URLRequest) {
+        let task = session.dataTask(with: request as URLRequest, completionHandler: {data, response, error -> Void in
             if data != nil {
                 deviceTokenSent = true
-                let urlContent = NSString(data: data!, encoding: NSUTF8StringEncoding) as NSString!
+                let urlContent = NSString(data: data!, encoding: String.Encoding.utf8.rawValue) as NSString!
                 print("Data to \(postStringFinal): \(urlContent)")
             } else {
                 print("failed to send token: \(deviceTokenString)! ")
@@ -66,30 +67,30 @@ func sendDeviceToken() {
 }
 
 func ltzAbbrev() -> String {
-    return NSTimeZone.localTimeZone().abbreviation!
+    return NSTimeZone.local.abbreviation()!
 }
 
 
-func shareToWeChat(originalUrlString : String) {
+func shareToWeChat(_ originalUrlString : String) {
     let originalURL = originalUrlString
     var queryStringDictionary = ["url":""]
-    let urlComponents : NSArray = (originalURL as NSString!).substringFromIndex(13).componentsSeparatedByString("&")
+    let urlComponents = (originalURL as NSString!).substring(from: 13).components(separatedBy: "&")
     for keyValuePair in urlComponents {
-        let stringSeparate = keyValuePair.rangeOfString("=").location
+        let stringSeparate = (keyValuePair as AnyObject).range(of: "=").location
         if (stringSeparate>0 && stringSeparate < 100) {
-            let pairKey = (keyValuePair as! NSString).substringToIndex(stringSeparate)
-            let pairValue = (keyValuePair as! NSString).substringFromIndex(stringSeparate+1)
+            let pairKey = (keyValuePair as NSString).substring(to: stringSeparate)
+            let pairValue = (keyValuePair as NSString).substring(from: stringSeparate+1)
             queryStringDictionary[pairKey] = pairValue
         }
     }
     if WXApi.isWXAppInstalled() == false {
         if #available(iOS 8.0, *) {
-            let alert = UIAlertController(title: "请先安装微信", message: "谢谢您的支持！请先去app store安装微信再分享", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "了解", style: UIAlertActionStyle.Default, handler: nil))
+            let alert = UIAlertController(title: "请先安装微信", message: "谢谢您的支持！请先去app store安装微信再分享", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "了解", style: UIAlertActionStyle.default, handler: nil))
         } else {
             // Fallback on earlier versions
             let alertView = UIAlertView();
-            alertView.addButtonWithTitle("了解");
+            alertView.addButton(withTitle: "了解");
             alertView.title = "请安装微信";
             alertView.message = "谢谢您的支持！请先去app store安装微信再分享";
             alertView.show();
@@ -151,13 +152,13 @@ func shareToWeChat(originalUrlString : String) {
     
     
     //let _ = setTimeout(2.0, block: { () -> Void in
-        image = image.resizableImageWithCapInsets(UIEdgeInsetsZero)
+        image = image.resizableImage(withCapInsets: UIEdgeInsets.zero)
         message.setThumbImage(image)
         let webpageObj = WXWebpageObject()
         //webpageObj.webpageUrl = "\(queryStringDictionary["url"]!)?shareicon=\(shareOption)#ccode=\(ccode["wechat"]!)"
     
         var shareUrl = queryStringDictionary["url"]!
-        if shareUrl.rangeOfString("story/[0-9]+$", options: .RegularExpressionSearch) != nil {
+        if shareUrl.range(of: "story/[0-9]+$", options: .regularExpression) != nil {
             shareUrl = shareUrl + "?full=y"
         }
         webpageObj.webpageUrl = "\(shareUrl)#ccode=\(ccode["wechat"]!)"
@@ -172,26 +173,37 @@ func shareToWeChat(originalUrlString : String) {
         } else {
             req.scene = 1
         }
-        WXApi.sendReq(req)
+        WXApi.send(req)
     //})
 }
 
 var weChatShareIcon = UIImage(named: "ftcicon.jpg")
 
-func getDataFromUrl(url:NSURL, completion: ((data: NSData?, response: NSURLResponse?, error: NSError? ) -> Void)) {
-    NSURLSession.sharedSession().dataTaskWithURL(url) { (data, response, error) in
-        completion(data: data, response: response, error: error)
-        }.resume()
+func getDataFromUrl(_ url:URL, completion: @escaping ((_ data: Data?, _ response: URLResponse?, _ error: NSError? ) -> Void)) {
+//    URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
+//        completion(data, response, error)
+//        }).resume()
+//    
+    
+    
+    let listTask = URLSession.shared.dataTask(with: url, completionHandler:{(data, response, error) in
+        completion(data, response, error as NSError?)
+        return ()
+        })
+    listTask.resume()
 }
 
 
-func updateWeChatShareIcon(url: NSURL) {
+
+
+
+func updateWeChatShareIcon(_ url: URL) {
     print("Download Started")
-    print("lastPathComponent: " + (url.lastPathComponent ?? ""))
+    print("lastPathComponent: " + (url.lastPathComponent ))
     weChatShareIcon = UIImage(named: "ftcicon.jpg")
     getDataFromUrl(url) { (data, response, error)  in
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
-            guard let data = data where error == nil else { return }
+        DispatchQueue.main.async { () -> Void in
+            guard let data = data , error == nil else { return }
             //print(response?.suggestedFilename ?? "")
             //print("Download Finished")
             weChatShareIcon = UIImage(data: data)
@@ -203,8 +215,8 @@ func updateWeChatShareIcon(url: NSURL) {
 
 
 
-func setTimeout(delay:NSTimeInterval, block:()->Void) -> NSTimer {
-    return NSTimer.scheduledTimerWithTimeInterval(delay, target: NSBlockOperation(block: block), selector: #selector(NSOperation.main), userInfo: nil, repeats: false)
+func setTimeout(_ delay:TimeInterval, block:@escaping ()->Void) -> Timer {
+    return Timer.scheduledTimer(timeInterval: delay, target: BlockOperation(block: block), selector: #selector(Operation.main), userInfo: nil, repeats: false)
 }
 
 extension UIColor {
@@ -220,10 +232,10 @@ extension UIColor {
     }
 }
 
-extension IntervalType {
-    public func random() -> Bound {
-        let range = (self.end as! Double) - (self.start as! Double)
-        let randomValue = (Double(arc4random_uniform(UINT32_MAX)) / Double(UINT32_MAX)) * range + (self.start as! Double)
-        return randomValue as! Bound
-    }
-}
+//extension IntervalType {
+//    public func random() -> Bound {
+//        let range = (self.end as! Double) - (self.start as! Double)
+//        let randomValue = (Double(arc4random_uniform(UINT32_MAX)) / Double(UINT32_MAX)) * range + (self.start as! Double)
+//        return randomValue as! Bound
+//    }
+//}

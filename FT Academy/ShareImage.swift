@@ -11,7 +11,7 @@ import UIKit
 
 class ShareImageActivityProvider: UIActivityItemProvider {
     
-    override func activityViewController(activityViewController: UIActivityViewController, itemForActivityType activityType: String) -> AnyObject?
+    override func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: UIActivityType) -> Any?
     {
         return weChatShareIcon
     }

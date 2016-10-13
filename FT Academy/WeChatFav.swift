@@ -9,26 +9,26 @@ class WeChatFav : UIActivity{
     var text:String?
     
     
-    override func activityType()-> String {
-        return "WeChatMoment"
+    override var activityType: UIActivityType {
+        return UIActivityType(rawValue: "WeChatMoment")
     }
     
-    override func activityImage()-> UIImage?
+    override var activityImage: UIImage?
     {
         return UIImage(named: "WeChatFav")!
     }
     
-    override func activityTitle() -> String
+    override var activityTitle : String
     {
         return "微信收藏"
     }
     
     
-    override class func activityCategory() -> UIActivityCategory{
-        return UIActivityCategory.Action
+    override class var activityCategory : UIActivityCategory{
+        return UIActivityCategory.action
     }
     
-    func getURLFromMessage(message:String)-> NSURL
+    func getURLFromMessage(_ message:String)-> URL
     {
         var url = "whatsapp://"
         
@@ -37,15 +37,15 @@ class WeChatFav : UIActivity{
             url = "\(url)send?text=\(message)"
         }
         
-        return NSURL(string: url)!
+        return URL(string: url)!
     }
     
     
-    override func canPerformWithActivityItems(activityItems: [AnyObject]) -> Bool {
+    override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
         return true;
     }
     
-    override func performActivity() {
+    override func perform() {
         shareToWeChat("ftcweixin://?url=\(webPageUrl)&title=\(webPageTitle)&description=\(webPageDescription)&img=\(webPageImageIcon)&to=fav")
     }
 }

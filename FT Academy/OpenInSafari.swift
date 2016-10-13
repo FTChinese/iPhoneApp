@@ -18,32 +18,32 @@ class OpenInSafari : UIActivity{
     var text:String?
     
     
-    override func activityType()-> String {
-        return "openInSafari"
+    override var activityType: UIActivityType {
+        return UIActivityType(rawValue: "openInSafari")
     }
     
-    override func activityImage()-> UIImage?
+    override var activityImage: UIImage?
     {
         return UIImage(named: "Safari")!
     }
     
-    override func activityTitle() -> String
+    override var activityTitle : String
     {
         return "打开链接"
     }
     
     
-    override class func activityCategory() -> UIActivityCategory{
-        return UIActivityCategory.Share
+    override class var activityCategory : UIActivityCategory{
+        return UIActivityCategory.share
     }
     
     
-    override func canPerformWithActivityItems(activityItems: [AnyObject]) -> Bool {
+    override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
         return true;
     }
     
-    override func performActivity() {
-        UIApplication.sharedApplication().openURL(NSURL(string:webPageUrl)!)
+    override func perform() {
+        UIApplication.shared.openURL(URL(string:webPageUrl)!)
     }
     
     

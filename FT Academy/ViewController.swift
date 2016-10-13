@@ -17,7 +17,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     var uiWebView: UIWebView!
     @available(iOS 8.0, *)
     lazy var webView: WKWebView? = { return nil }()
-    weak var timer: NSTimer?
+    weak var timer: Timer?
     var pageStatus: WebViewStatus?
     var startUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
     //var startUrl = "https://backyard.ftchinese.com/"
@@ -29,12 +29,12 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     var adType = "video"
     let adLink = "http://www.rolex.com"
     let lauchAdSchedule = "http://m.ftchinese.com/test.json?3"
-    let videoFile = "NUNU.MOV"
+    let videoFile = "P38938019__AT_video_gr5.mp4"
     let imageFile = "rolex.jpg"
     let htmlFile = "yyk001.html"
     let htmlBaseUrl = "http://www3.ftchinese.com/adv/yyk/"
-    let screenWidth = UIScreen.mainScreen().bounds.width
-    let screenHeight = UIScreen.mainScreen().bounds.height
+    let screenWidth = UIScreen.main.bounds.width
+    let screenHeight = UIScreen.main.bounds.height
     
     
     deinit {
@@ -43,8 +43,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     override func loadView() {
         super.loadView()
-        pageStatus = .ViewToLoad
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+        pageStatus = .viewToLoad
+        if UIDevice.current.userInterfaceIdiom == .pad {
             startUrl = iPadStartUrl
         }
         
@@ -53,7 +53,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             self.webView = WKWebView()
             self.view = self.webView
             self.webView!.navigationDelegate = self
-            NSNotificationCenter.defaultCenter().addObserverForName("statusBarSelected", object: nil, queue: nil) { event in
+            NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "statusBarSelected"), object: nil, queue: nil) { event in
                 self.webView!.evaluateJavaScript("scrollToTop()") { (result, error) in
                     if error != nil {
                         //print("an error occored when trying to scroll to Top! ")
@@ -79,38 +79,38 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        pageStatus = .ViewLoaded
+        pageStatus = .viewLoaded
         loadFromLocal()
-        pageStatus = .WebViewLoading
+        pageStatus = .webViewLoading
         resetTimer(maxAdTimeAfterLaunch)
         updateAdSchedule()
     }
     
     
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
-        if pageStatus == .WebViewDisplayed || pageStatus == .WebViewWarned {
+        if pageStatus == .webViewDisplayed || pageStatus == .webViewWarned {
             //Deal with white screen when back from other scene
             checkBlankPage()
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(false)
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        pageStatus = .WebViewWarned
+        pageStatus = .webViewWarned
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return UIStatusBarStyle.lightContent
     }
     
-    override func prefersStatusBarHidden() -> Bool {
-        if pageStatus != .WebViewDisplayed {
+    override var prefersStatusBarHidden : Bool {
+        if pageStatus != .webViewDisplayed {
             return true
         } else {
             return false
@@ -118,16 +118,16 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     //On mobile phone, lock the screen to portrait only
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-            return UIInterfaceOrientationMask.All
+    override var supportedInterfaceOrientations : UIInterfaceOrientationMask {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            return UIInterfaceOrientationMask.all
         } else {
-            return UIInterfaceOrientationMask.Portrait
+            return UIInterfaceOrientationMask.portrait
         }
     }
     
-    override func shouldAutorotate() -> Bool {
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+    override var shouldAutorotate : Bool {
+        if UIDevice.current.userInterfaceIdiom == .pad {
             return true
         } else {
             return false
@@ -141,36 +141,36 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         overlayView!.frame = self.view.bounds
         self.view.addSubview(overlayView!)
         overlayView!.translatesAutoresizingMaskIntoConstraints = false
-        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Leading, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Trailing, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.bottom, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.leading, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.trailing, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.trailing, multiplier: 1, constant: 0))
         
         let imageName = "FTC-start"
         let image = UIImage(named: imageName)
         var imageView: UIImageView?
         imageView = UIImageView(image: image!)
         imageView!.frame = CGRect(x: 0, y: 0, width: 266, height: 210)
-        imageView!.contentMode = .ScaleAspectFit
+        imageView!.contentMode = .scaleAspectFit
         self.overlayView!.addSubview(imageView!)
         imageView!.translatesAutoresizingMaskIntoConstraints = false
-        view.addConstraint(NSLayoutConstraint(item: imageView!, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: imageView!, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1/3, constant: 1))
-        view.addConstraint(NSLayoutConstraint(item: imageView!, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 266))
-        view.addConstraint(NSLayoutConstraint(item: imageView!, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 210))
+        view.addConstraint(NSLayoutConstraint(item: imageView!, attribute: NSLayoutAttribute.centerX, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.centerX, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: imageView!, attribute: NSLayoutAttribute.centerY, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.bottom, multiplier: 1/3, constant: 1))
+        view.addConstraint(NSLayoutConstraint(item: imageView!, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 266))
+        view.addConstraint(NSLayoutConstraint(item: imageView!, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 210))
         
-        let label = UILabel(frame: CGRectMake(0, 0, 441, 21))
-        label.center = CGPointMake(160, 284)
-        label.textAlignment = NSTextAlignment.Center
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 441, height: 21))
+        label.center = CGPoint(x: 160, y: 284)
+        label.textAlignment = NSTextAlignment.center
         label.text = "英国《金融时报》中文网"
-        label.textColor = UIColor.whiteColor()
+        label.textColor = UIColor.white
         self.overlayView!.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: -20))
-        view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 441))
-        view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 21))
+        view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.centerX, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.centerX, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.bottom, multiplier: 1, constant: -20))
+        view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 441))
+        view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 21))
     }
     
     
@@ -188,7 +188,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         } else if adType == "video" {
             do {
                 try playVideo()
-            } catch AppError.InvalidResource(let name, let type) {
+            } catch AppError.invalidResource(let name, let type) {
                 debugPrint("Could not find resource \(name).\(type)")
             } catch {
                 debugPrint("Generic error")
@@ -204,15 +204,15 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         overlayView!.frame = self.view.bounds
         self.view.addSubview(overlayView!)
         overlayView!.translatesAutoresizingMaskIntoConstraints = false
-        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Leading, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Trailing, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.bottom, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.leading, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.trailing, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.trailing, multiplier: 1, constant: 0))
     }
     
     func addCloseButton() {
-        let button: UIButton? = UIButton(frame: CGRectMake(0, 0, 100, 44))
-        button!.setTitle("跳过广告", forState: .Normal)
+        let button: UIButton? = UIButton(frame: CGRect(x: 0, y: 0, width: 100, height: 44))
+        button!.setTitle("跳过广告", for: UIControlState())
         if adType == "video" {
             self.view.viewWithTag(111)!.addSubview(button!)
         } else {
@@ -220,41 +220,41 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
         
         button!.translatesAutoresizingMaskIntoConstraints = false
-        button!.addTarget(self, action: #selector(ViewController.displayWebView), forControlEvents: .TouchUpInside)
+        button!.addTarget(self, action: #selector(ViewController.displayWebView), for: .touchUpInside)
         
-        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 100))
-        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 44))
+        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.right, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.right, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.bottom, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 100))
+        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 44))
     }
     
     func showImage() {
-        let filename: NSString = imageFile
+        let filename: NSString = imageFile as NSString
         let pathExtention = filename.pathExtension
-        let pathPrefix = filename.stringByDeletingPathExtension
-        let templatepath = NSBundle.mainBundle().pathForResource(pathPrefix, ofType: pathExtention)!
+        let pathPrefix = filename.deletingPathExtension
+        let templatepath = Bundle.main.path(forResource: pathPrefix, ofType: pathExtention)!
         let image: UIImage? = UIImage(contentsOfFile: templatepath)
         let imageView: UIImageView? = UIImageView(image: image!)
         imageView?.frame = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
-        imageView?.contentMode = .ScaleAspectFit
+        imageView?.contentMode = .scaleAspectFit
         self.overlayView!.addSubview(imageView!)
         imageView?.translatesAutoresizingMaskIntoConstraints = false
-        view.addConstraint(NSLayoutConstraint(item: imageView!, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: screenWidth))
-        view.addConstraint(NSLayoutConstraint(item: imageView!, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: screenHeight))
-        imageView?.userInteractionEnabled = true
+        view.addConstraint(NSLayoutConstraint(item: imageView!, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: screenWidth))
+        view.addConstraint(NSLayoutConstraint(item: imageView!, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: screenHeight))
+        imageView?.isUserInteractionEnabled = true
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.clickAd))
         imageView!.addGestureRecognizer(tapRecognizer)
     }
     
     func showHTMLAd() {
         if #available(iOS 8.0, *) {
-            let filename: NSString = htmlFile
+            let filename: NSString = htmlFile as NSString
             let pathExtention = filename.pathExtension
-            let pathPrefix = filename.stringByDeletingPathExtension
+            let pathPrefix = filename.deletingPathExtension
             let adPageView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight - 44))
-            let templatepath = NSBundle.mainBundle().pathForResource(pathPrefix, ofType: pathExtention)!
-            let base = NSURL(string: htmlBaseUrl)
-            let s = try! NSString(contentsOfFile:templatepath, encoding:NSUTF8StringEncoding)
+            let templatepath = Bundle.main.path(forResource: pathPrefix, ofType: pathExtention)!
+            let base = URL(string: htmlBaseUrl)
+            let s = try! NSString(contentsOfFile:templatepath, encoding:String.Encoding.utf8.rawValue)
             adPageView.loadHTMLString(s as String, baseURL:base)
             overlayView!.addSubview(adPageView)
             
@@ -272,18 +272,18 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     func playVideo() throws {
-        let filename: NSString = videoFile
+        let filename: NSString = videoFile as NSString
         let pathExtention = filename.pathExtension
-        let pathPrefix = filename.stringByDeletingPathExtension
+        let pathPrefix = filename.deletingPathExtension
         
-        guard let path = NSBundle.mainBundle().pathForResource(pathPrefix, ofType:pathExtention) else {
-            throw AppError.InvalidResource(pathPrefix, pathExtention)
+        guard let path = Bundle.main.path(forResource: pathPrefix, ofType:pathExtention) else {
+            throw AppError.invalidResource(pathPrefix, pathExtention)
         }
         
         if #available(iOS 8.0, *) {
             maxAdTimeAfterLaunch = 525.0
             maxAdTimeAfterWebRequest = 523.0
-            let player = AVPlayer(URL: NSURL(fileURLWithPath: path))
+            let player = AVPlayer(url: URL(fileURLWithPath: path))
             let playerController = AVPlayerViewController()
             
             // this code doesn't make Xcode complain about constraints
@@ -292,13 +292,13 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             // this code seems to be useless and causes memory leak when video is closed
             // self.addChildViewController(playerController)
             playerController.showsPlaybackControls = false
-            player.muted = true
+            //player.muted = true
             player.play()
             self.view.addSubview(playerController.view)
             playerController.view.tag = 111
             playerController.view.frame = self.view.frame
             player.play()
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.displayWebView), name: AVPlayerItemDidPlayToEndTimeNotification, object: player.currentItem)
+            NotificationCenter.default.addObserver(self, selector: #selector(ViewController.displayWebView), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player.currentItem)
             if adLink != "" {
                 let adPageLinkOverlay = UIView(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight - 44))
                 let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.clickAd))
@@ -316,15 +316,15 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         openInView(adLink)
     }
     func updateAdSchedule() {
-        let urlLauchAdSchedule = NSURL(string: lauchAdSchedule)
+        let urlLauchAdSchedule = URL(string: lauchAdSchedule)
         grabFileFromWeb(urlLauchAdSchedule!)
     }
-    func grabFileFromWeb(url: NSURL) {
+    func grabFileFromWeb(_ url: URL) {
         //print("lastPathComponent: " + (url.lastPathComponent ?? ""))
         //weChatShareIcon = UIImage(named: "ftcicon.jpg")
         getDataFromUrl(url) { (data, response, error)  in
-            dispatch_async(dispatch_get_main_queue()) { () -> Void in
-                guard let data = data where error == nil else { return }
+            DispatchQueue.main.async { () -> Void in
+                guard let data = data , error == nil else { return }
                 //print(response?.suggestedFilename ?? "")
                 //print(data)
                 self.saveFile(data, filename: "schedule.json")
@@ -335,12 +335,12 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
-    func saveFile(data: NSData, filename: String) {
-        let documentsDirectoryPathString = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).first!
-        let documentsDirectoryPath = NSURL(string: documentsDirectoryPathString)!
-        let jsonFilePath = documentsDirectoryPath.URLByAppendingPathComponent(filename)
-        let fileManager = NSFileManager.defaultManager()
-        let created = fileManager.createFileAtPath(jsonFilePath.absoluteString, contents: nil, attributes: nil)
+    func saveFile(_ data: Data, filename: String) {
+        let documentsDirectoryPathString = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
+        let documentsDirectoryPath = URL(string: documentsDirectoryPathString)!
+        let jsonFilePath = documentsDirectoryPath.appendingPathComponent(filename)
+        let fileManager = FileManager.default
+        let created = fileManager.createFile(atPath: jsonFilePath.absoluteString, contents: nil, attributes: nil)
         if created {
             //print("File created ")
         } else {
@@ -348,8 +348,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
         // Write that JSON to the file created earlier
         do {
-            let file = try NSFileHandle(forWritingToURL: jsonFilePath)
-            file.writeData(data)
+            let file = try FileHandle(forWritingTo: jsonFilePath)
+            file.write(data)
             //print("JSON data was written to the file successfully!")
         } catch let error as NSError {
             print("Couldn't write to file: \(error.localizedDescription)")
@@ -360,10 +360,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     func loadFromLocal() {
         //        let url = NSURL(string:startUrl)
         //        let req = NSURLRequest(URL:url!)
-        let templatepath = NSBundle.mainBundle().pathForResource("index", ofType: "html")!
+        let templatepath = Bundle.main.path(forResource: "index", ofType: "html")!
         //let base = NSURL.fileURLWithPath(templatepath)!
-        let base = NSURL(string: startUrl)
-        let s = try! NSString(contentsOfFile:templatepath, encoding:NSUTF8StringEncoding)
+        let base = URL(string: startUrl)
+        let s = try! NSString(contentsOfFile:templatepath, encoding:String.Encoding.utf8.rawValue)
         //let ss = "<content>"
         
         if #available(iOS 8.0, *) {
@@ -378,7 +378,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     func parseSchedule() {
-        let scheduleDataFinal: NSData
+        let scheduleDataFinal: Data
         let jsonFileTime: Int
         let jsonFileTimeBundle: Int
         let scheduleData = readFile("schedule.json", fileLocation: "download")
@@ -405,7 +405,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         
 
         do {
-            let JSON = try NSJSONSerialization.JSONObjectWithData(scheduleDataFinal, options:NSJSONReadingOptions(rawValue: 0))
+            let JSON = try JSONSerialization.jsonObject(with: scheduleDataFinal, options:JSONSerialization.ReadingOptions(rawValue: 0))
             guard let JSONDictionary: NSDictionary = JSON as? NSDictionary else {
                 print("Not a Dictionary")
                 return
@@ -415,7 +415,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 return
             }
             for (creative) in creatives {
-                print(creative["click"])
+                print(creative)
             }
         }
         catch let JSONError as NSError {
@@ -424,9 +424,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
 
     }
     
-    func getJSONFileTime(jsonData: NSData) -> Int {
+    func getJSONFileTime(_ jsonData: Data) -> Int {
         do {
-            let JSON = try NSJSONSerialization.JSONObjectWithData(jsonData, options:NSJSONReadingOptions(rawValue: 0))
+            let JSON = try JSONSerialization.jsonObject(with: jsonData, options:JSONSerialization.ReadingOptions(rawValue: 0))
             guard let JSONDictionary: NSDictionary = JSON as? NSDictionary else {
                 print("Not a Dictionary")
                 return 0
@@ -444,19 +444,19 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         return 0
     }
     
-    func readFile(fileName: String, fileLocation: String) -> NSData? {
+    func readFile(_ fileName: String, fileLocation: String) -> Data? {
         if fileLocation == "download" {
-            let DocumentDirURL = try! NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
-            let fileURL = DocumentDirURL.URLByAppendingPathComponent(fileName)
-            return NSData(contentsOfURL: fileURL)
+            let DocumentDirURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+            let fileURL = DocumentDirURL.appendingPathComponent(fileName)
+            return (try? Data(contentsOf: fileURL))
         } else {
             let filename: NSString = fileName as NSString
             let pathExtention = filename.pathExtension
-            let pathPrefix = filename.stringByDeletingPathExtension
-            guard let fileURLBuddle = NSBundle.mainBundle().pathForResource(pathPrefix, ofType: pathExtention) else {
+            let pathPrefix = filename.deletingPathExtension
+            guard let fileURLBuddle = Bundle.main.path(forResource: pathPrefix, ofType: pathExtention) else {
                 return nil
             }
-            return NSData(contentsOfFile: fileURLBuddle)
+            return (try? Data(contentsOf: URL(fileURLWithPath: fileURLBuddle)))
         }
     }
     
@@ -471,7 +471,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 }
             }
         } else {
-            if let _ = uiWebView.stringByEvaluatingJavaScriptFromString("document.querySelector('body').innerHTML") {
+            if let _ = uiWebView.stringByEvaluatingJavaScript(from: "document.querySelector('body').innerHTML") {
                 checkConnectionType()
             } else {
                 self.loadFromLocal()
@@ -480,7 +480,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     //when user tap on a remote notification
-    func openNotification(action: String, id: String, title: String) {
+    func openNotification(_ action: String, id: String, title: String) {
         var jsCode: String
         switch(action) {
         case "story":
@@ -513,7 +513,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 self.webView!.evaluateJavaScript(jsCode) { (result, error) in
                 }
             } else {
-                if let _ = self.uiWebView.stringByEvaluatingJavaScriptFromString(jsCode) {
+                if let _ = self.uiWebView.stringByEvaluatingJavaScript(from: jsCode) {
                 }
             }
         }
@@ -524,48 +524,50 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         let statusType = IJReachability().connectedToNetworkOfType()
         var connectionType = "unknown"
         switch statusType {
-        case .WWAN:
+        case .wwan:
             connectionType = "data"
-        case .WiFi:
+        case .wiFi:
             connectionType =  "wifi"
-        case .NotConnected:
+        case .notConnected:
             connectionType =  "no"
         }
         updateConnectionToWeb(connectionType)
     }
     
-    func updateConnectionToWeb(connectionType: String) {
+    
+    
+    func updateConnectionToWeb(_ connectionType: String) {
         let jsCode = "window.gConnectionType = '\(connectionType)';"
         if #available(iOS 8.0, *) {
             //let webView = self.view as! WKWebView
             self.webView!.evaluateJavaScript(jsCode) { (result, error) in
             }
         } else {
-            let _ = uiWebView.stringByEvaluatingJavaScriptFromString(jsCode)
+            let _ = uiWebView.stringByEvaluatingJavaScript(from: jsCode)
         }
     }
     
     
-    func resetTimer(seconds: NSTimeInterval) {
+    func resetTimer(_ seconds: TimeInterval) {
         timer?.invalidate()
-        let nextTimer = NSTimer.scheduledTimerWithTimeInterval(seconds, target: self, selector: #selector(ViewController.handleIdleEvent(_:)), userInfo: nil, repeats: false)
+        let nextTimer = Timer.scheduledTimer(timeInterval: seconds, target: self, selector: #selector(ViewController.handleIdleEvent(_:)), userInfo: nil, repeats: false)
         timer = nextTimer
     }
     
-    func handleIdleEvent(timer: NSTimer) {
+    func handleIdleEvent(_ timer: Timer) {
         // do whatever you want when idle after certain period of time
         displayWebView()
     }
     
     func displayWebView() {
-        if pageStatus != .WebViewDisplayed {
+        if pageStatus != .webViewDisplayed {
             for subUIView in overlayView!.subviews {
                 subUIView.removeFromSuperview()
             }
             overlayView!.removeFromSuperview()
             overlayView = nil
             self.view.viewWithTag(111)?.removeFromSuperview()
-            pageStatus = .WebViewDisplayed
+            pageStatus = .webViewDisplayed
             //trigger prefersStatusBarHidden
             setNeedsStatusBarAppearanceUpdate()
             getUserId()
@@ -574,20 +576,20 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     
     //iOS 7 link clicked
-    func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
-        let urlString = request.URL!.absoluteString
+    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+        let urlString = request.url!.absoluteString
         if (urlString != startUrl && urlString != "about:blank") {
             resetTimer(maxAdTimeAfterWebRequest)
         }
-        if request.URL!.scheme == "ftcweixin" {
+        if request.url!.scheme == "ftcweixin" {
             shareToWeChat(urlString)
             return false
-        }  else if request.URL!.scheme == "iosaction" {
+        }  else if request.url!.scheme == "iosaction" {
             turnOnActionSheet(urlString)
             return false
-        } else if navigationType == .LinkClicked{
-            if urlString.rangeOfString("mailto:") != nil{
-                UIApplication.sharedApplication().openURL(request.URL!)
+        } else if navigationType == .linkClicked{
+            if urlString.range(of: "mailto:") != nil{
+                UIApplication.shared.openURL(request.url!)
             } else {
                 openInView (urlString)
             }
@@ -599,44 +601,44 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     //iOS 8 link clicked
     @available(iOS 8.0, *)
-    func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: ((WKNavigationActionPolicy) -> Void)) {
-        let urlString = navigationAction.request.URL!.absoluteString
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: (@escaping (WKNavigationActionPolicy) -> Void)) {
+        let urlString = navigationAction.request.url!.absoluteString
         if (urlString != startUrl && urlString != "about:blank") {
             resetTimer(maxAdTimeAfterWebRequest)
         }
-        if navigationAction.request.URL!.scheme == "ftcweixin" {
+        if navigationAction.request.url!.scheme == "ftcweixin" {
             shareToWeChat(urlString)
-            decisionHandler(.Cancel)
-        } else if navigationAction.request.URL!.scheme == "iosaction" {
+            decisionHandler(.cancel)
+        } else if navigationAction.request.url!.scheme == "iosaction" {
             turnOnActionSheet(urlString)
-            decisionHandler(.Cancel)
-        } else if navigationAction.navigationType == .LinkActivated{
-            if urlString.rangeOfString("mailto:") != nil{
-                UIApplication.sharedApplication().openURL(navigationAction.request.URL!)
+            decisionHandler(.cancel)
+        } else if navigationAction.navigationType == .linkActivated{
+            if urlString.range(of: "mailto:") != nil{
+                UIApplication.shared.openURL(navigationAction.request.url!)
             } else {
                 openInView (urlString)
             }
-            decisionHandler(.Cancel)
+            decisionHandler(.cancel)
         } else {
-            decisionHandler(.Allow)
+            decisionHandler(.allow)
         }
     }
     
-    func turnOnActionSheet(originalUrlString : String) {
+    func turnOnActionSheet(_ originalUrlString : String) {
         let originalURL = originalUrlString
         var queryStringDictionary = ["url":""]
-        let urlComponents : NSArray = (originalURL as NSString!).substringFromIndex(13).componentsSeparatedByString("&")
+        let urlComponents = (originalURL as NSString!).substring(from: 13).components(separatedBy: "&")
         for keyValuePair in urlComponents {
-            let stringSeparate = keyValuePair.rangeOfString("=").location
+            let stringSeparate = (keyValuePair as AnyObject).range(of: "=").location
             if (stringSeparate>0 && stringSeparate < 100) {
-                let pairKey = (keyValuePair as! NSString).substringToIndex(stringSeparate)
-                let pairValue = (keyValuePair as! NSString).substringFromIndex(stringSeparate+1)
-                queryStringDictionary[pairKey] = pairValue.stringByRemovingPercentEncoding
+                let pairKey = (keyValuePair as NSString).substring(to: stringSeparate)
+                let pairValue = (keyValuePair as NSString).substring(from: stringSeparate+1)
+                queryStringDictionary[pairKey] = pairValue.removingPercentEncoding
             }
         }
         //weChatShareIcon = UIImage(named: "ftcicon.jpg")!
         //print(queryStringDictionary)
-        webPageUrl = queryStringDictionary["url"]!.stringByRemovingPercentEncoding!
+        webPageUrl = queryStringDictionary["url"]!.removingPercentEncoding!
         webPageTitle = queryStringDictionary["title"]!
         if queryStringDictionary["description"] != nil {
             webPageDescription = queryStringDictionary["description"]!
@@ -657,19 +659,19 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         let openInSafari = OpenInSafari()
         let ccodeInActionSheet = ccode["actionsheet"]! as String
         let urlWithCCode = "\(webPageUrl)#ccode=\(ccodeInActionSheet)"
-        let url = NSURL(string: urlWithCCode)
+        let url = URL(string: urlWithCCode)
         if let myWebsite = url {
             let shareData = DataForShare()
             //let image = UIImage(named: "ftcicon.jpg")!
             let image = ShareImageActivityProvider(placeholderItem: UIImage(named: "ftcicon.jpg")!)
-            let objectsToShare = [shareData, myWebsite, image]
+            let objectsToShare = [shareData, myWebsite, image] as [Any]
             let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcCircle, wcFav, openInSafari])
-            activityVC.excludedActivityTypes = [UIActivityTypeAirDrop, UIActivityTypeAddToReadingList]
-            if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+            activityVC.excludedActivityTypes = [UIActivityType.airDrop, UIActivityType.addToReadingList]
+            if UIDevice.current.userInterfaceIdiom == .pad {
                 let popup: UIPopoverController = UIPopoverController(contentViewController: activityVC)
-                popup.presentPopoverFromRect(CGRectMake(self.view.frame.size.width / 2, self.view.frame.size.height / 4, 0, 0), inView: self.view, permittedArrowDirections: UIPopoverArrowDirection.Any, animated: true)
+                popup.present(from: CGRect(x: self.view.frame.size.width / 2, y: self.view.frame.size.height / 4, width: 0, height: 0), in: self.view, permittedArrowDirections: UIPopoverArrowDirection.any, animated: true)
             } else {
-                self.presentViewController(activityVC, animated: true, completion: nil)
+                self.present(activityVC, animated: true, completion: nil)
             }
             //            let imageNew = UIImage(named: "WeChatFav")!
             //            objectsToShare = [shareData, myWebsite, imageNew]
@@ -677,43 +679,43 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             //            self.presentViewController(activityVC, animated: true, completion: nil)
         }
         
-        if webPageImageIcon.rangeOfString("https://image.webservices.ft.com") == nil{
+        if webPageImageIcon.range(of: "https://image.webservices.ft.com") == nil{
             webPageImageIcon = "https://image.webservices.ft.com/v1/images/raw/\(webPageImageIcon)?source=ftchinese&width=72&height=72"
         }
-        if let imgUrl = NSURL(string: webPageImageIcon) {
+        if let imgUrl = URL(string: webPageImageIcon) {
             updateWeChatShareIcon(imgUrl)
         }
     }
     
-    func openInView(urlString : String) {
+    func openInView(_ urlString : String) {
         webPageUrl = urlString
         if #available(iOS 9.0, *) {
             // use the safariview for iOS 9
-            if urlString.rangeOfString("http://www.ftchinese.com") == nil {
+            if urlString.range(of: "http://www.ftchinese.com") == nil {
                 //when opening an outside url which we have no control over
-                let url = NSURL(string:urlString)
-                let webVC = SFSafariViewController(URL: url!)
+                let url = URL(string:urlString)
+                let webVC = SFSafariViewController(url: url!)
                 webVC.delegate = self
-                self.presentViewController(webVC, animated: true, completion: nil)
+                self.present(webVC, animated: true, completion: nil)
             } else {
                 //when opening a url on a page that I can control
-                self.performSegueWithIdentifier("WKWebPageSegue", sender: nil)
+                self.performSegue(withIdentifier: "WKWebPageSegue", sender: nil)
             }
         } else {
             // Fallback on earlier versions
-            self.performSegueWithIdentifier("WKWebPageSegue", sender: nil)
+            self.performSegue(withIdentifier: "WKWebPageSegue", sender: nil)
         }
     }
     
     @available(iOS 9.0, *)
-    func safariViewControllerDidFinish(controller: SFSafariViewController) {
-        controller.dismissViewControllerAnimated(true, completion: nil)
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        controller.dismiss(animated: true, completion: nil)
         checkBlankPage()
     }
     
     
     @available(iOS 9.0, *)
-    func safariViewController(controller: SFSafariViewController, didCompleteInitialLoad didLoadSuccessfully: Bool) {
+    func safariViewController(_ controller: SFSafariViewController, didCompleteInitialLoad didLoadSuccessfully: Bool) {
         if didLoadSuccessfully == false {
             //print("Page did not load!")
             //controller.dismissViewControllerAnimated(true, completion: nil)
@@ -724,7 +726,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     
     @available(iOS 9.0, *)
-    func safariViewController(controler: SFSafariViewController, activityItemsForURL: NSURL, title: String?) -> [UIActivity] {
+    func safariViewController(_ controler: SFSafariViewController, activityItemsFor activityItemsForURL: URL, title: String?) -> [UIActivity] {
         webPageUrl = activityItemsForURL.absoluteString
         //http://www.chaumet.cn/?utm_source=FTCMobile-HPFullscreen
         //the title for the above page, which is not utf-8, cannot be captured
@@ -791,7 +793,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 }
             }
         } else {
-            if let uId = uiWebView.stringByEvaluatingJavaScriptFromString("getCookie('USER_ID')") {
+            if let uId = uiWebView.stringByEvaluatingJavaScript(from: "getCookie('USER_ID')") {
                 if uId != "null" && uId != "" {
                     userId = uId
                 }
@@ -800,7 +802,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
-    func sendToken(userId: String) {
+    func sendToken(_ userId: String) {
         var userIdString = userId
         if userId != "" {
             userIdString = "&u=\(userId)"
