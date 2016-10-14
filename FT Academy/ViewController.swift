@@ -26,7 +26,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     var maxAdTimeAfterLaunch = 6.0
     var maxAdTimeAfterWebRequest = 3.0
     lazy var overlayView: UIView? = UIView()
-    var adType = "video"
+    var adType = "none"
     let adLink = "http://www.rolex.com"
     let lauchAdSchedule = "http://m.ftchinese.com/test.json?3"
     let videoFile = "P38938019__AT_video_gr5.mp4"
@@ -69,8 +69,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
         
 
-        adOverlayView()
-        //normalOverlayView()
+        //adOverlayView()
+        normalOverlayView()
     }
     
     
