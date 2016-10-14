@@ -15,6 +15,8 @@
 		<dict>
 			<key>isShown</key>
 			<false/>
+			<key>orderHint</key>
+			<integer>2</integer>
 		</dict>
 		<key>FT中文网 copy.xcscheme</key>
 		<dict>
@@ -32,6 +34,11 @@
 			<true/>
 		</dict>
 		<key>50256CAD1A4B9D0B005950B9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>507C7E4B1DB0BCE800A8EF50</key>
 		<dict>
 			<key>primary</key>
 			<true/>
