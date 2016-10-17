@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		500018E61DACE70800AA6476 /* P38938019__AT_video_gr5.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 500018E51DACE70800AA6476 /* P38938019__AT_video_gr5.mp4 */; };
-		500018E71DACE70800AA6476 /* P38938019__AT_video_gr5.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 500018E51DACE70800AA6476 /* P38938019__AT_video_gr5.mp4 */; };
 		5005FB821D9D090800E2B3DC /* schedule.json in Resources */ = {isa = PBXBuildFile; fileRef = 5005FB811D9D090800E2B3DC /* schedule.json */; };
 		5005FB831D9D090800E2B3DC /* schedule.json in Resources */ = {isa = PBXBuildFile; fileRef = 5005FB811D9D090800E2B3DC /* schedule.json */; };
 		50159E451B98A70B00F22FFC /* WeChatActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E441B98A70B00F22FFC /* WeChatActivity.swift */; };
@@ -35,8 +33,6 @@
 		5039A4B71C61FB170008F2AD /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5039A4B61C61FB170008F2AD /* AdSupport.framework */; };
 		5039A4B81C6208780008F2AD /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5039A4B61C61FB170008F2AD /* AdSupport.framework */; };
 		50604A631A5552F2003803E6 /* webview.html in Resources */ = {isa = PBXBuildFile; fileRef = 50604A621A5552F1003803E6 /* webview.html */; };
-		506DD4841D93BCC90098F367 /* yyk001.html in Resources */ = {isa = PBXBuildFile; fileRef = 506DD4831D93BCC90098F367 /* yyk001.html */; };
-		506DD4851D93BCC90098F367 /* yyk001.html in Resources */ = {isa = PBXBuildFile; fileRef = 506DD4831D93BCC90098F367 /* yyk001.html */; };
 		507C7E4D1DB0BCE800A8EF50 /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50256CC21A4BFAE7005950B9 /* Globals.swift */; };
 		507C7E4E1DB0BCE800A8EF50 /* WeChatActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E441B98A70B00F22FFC /* WeChatActivity.swift */; };
 		507C7E4F1DB0BCE800A8EF50 /* WKWebPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50256CC41A4C1916005950B9 /* WKWebPageController.swift */; };
@@ -63,10 +59,7 @@
 		507C7E661DB0BCE800A8EF50 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50256CA21A4B9D0B005950B9 /* Main.storyboard */; };
 		507C7E671DB0BCE800A8EF50 /* webview.html in Resources */ = {isa = PBXBuildFile; fileRef = 50604A621A5552F1003803E6 /* webview.html */; };
 		507C7E681DB0BCE800A8EF50 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 50A677261A4EBFBC002B347F /* index.html */; };
-		507C7E691DB0BCE800A8EF50 /* P38938019__AT_video_gr5.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 500018E51DACE70800AA6476 /* P38938019__AT_video_gr5.mp4 */; };
-		507C7E6B1DB0BCE800A8EF50 /* yyk001.html in Resources */ = {isa = PBXBuildFile; fileRef = 506DD4831D93BCC90098F367 /* yyk001.html */; };
 		507C7E6C1DB0BCE800A8EF50 /* ftcicon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 50159E5C1BA05EBD00F22FFC /* ftcicon.jpg */; };
-		507C7E6D1DB0BCE800A8EF50 /* rolex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 50FDEB1B1D9B52A600930B6B /* rolex.jpg */; };
 		507C7E6E1DB0BCE800A8EF50 /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5039A4B11C61FAD40008F2AD /* README.txt */; };
 		507C7E6F1DB0BCE800A8EF50 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50256CA51A4B9D0B005950B9 /* Images.xcassets */; };
 		507C7E701DB0BCE800A8EF50 /* schedule.json in Resources */ = {isa = PBXBuildFile; fileRef = 5005FB811D9D090800E2B3DC /* schedule.json */; };
@@ -110,8 +103,6 @@
 		50FCC9C11D34C1D300FC1892 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FCC9C01D34C1D300FC1892 /* User.swift */; };
 		50FCC9C21D34C1D300FC1892 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FCC9C01D34C1D300FC1892 /* User.swift */; };
 		50FCC9C31D34C1D300FC1892 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FCC9C01D34C1D300FC1892 /* User.swift */; };
-		50FDEB1C1D9B52A600930B6B /* rolex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 50FDEB1B1D9B52A600930B6B /* rolex.jpg */; };
-		50FDEB1D1D9B52A600930B6B /* rolex.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 50FDEB1B1D9B52A600930B6B /* rolex.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -125,7 +116,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		500018E51DACE70800AA6476 /* P38938019__AT_video_gr5.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = P38938019__AT_video_gr5.mp4; sourceTree = "<group>"; };
 		5005FB811D9D090800E2B3DC /* schedule.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = schedule.json; sourceTree = "<group>"; };
 		50159E441B98A70B00F22FFC /* WeChatActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeChatActivity.swift; sourceTree = "<group>"; };
 		50159E461B9B147500F22FFC /* DataForShare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataForShare.swift; sourceTree = "<group>"; };
@@ -154,7 +144,6 @@
 		5039A4B11C61FAD40008F2AD /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		5039A4B61C61FB170008F2AD /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		50604A621A5552F1003803E6 /* webview.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = webview.html; path = supporting/webview.html; sourceTree = "<group>"; };
-		506DD4831D93BCC90098F367 /* yyk001.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = yyk001.html; sourceTree = "<group>"; };
 		507C7E741DB0BCE800A8EF50 /* FT中文网-iPad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FT中文网-iPad.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		507C7E751DB0BCE800A8EF50 /* FT中文网 copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "FT中文网 copy-Info.plist"; path = "/Users/zhangoliver/sandbox/FTCiPhone/FT中文网 copy-Info.plist"; sourceTree = "<absolute>"; };
 		50873CC91A503A870027955A /* FT Academy-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FT Academy-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -175,7 +164,6 @@
 		50FC07E91A53A44C006EE23F /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		50FC07EB1A53A589006EE23F /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		50FCC9C01D34C1D300FC1892 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
-		50FDEB1B1D9B52A600930B6B /* rolex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = rolex.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -309,13 +297,10 @@
 			isa = PBXGroup;
 			children = (
 				5005FB811D9D090800E2B3DC /* schedule.json */,
-				50FDEB1B1D9B52A600930B6B /* rolex.jpg */,
 				50159E5C1BA05EBD00F22FFC /* ftcicon.jpg */,
-				500018E51DACE70800AA6476 /* P38938019__AT_video_gr5.mp4 */,
 				50256C9D1A4B9D0B005950B9 /* Info.plist */,
 				50A677261A4EBFBC002B347F /* index.html */,
 				50604A621A5552F1003803E6 /* webview.html */,
-				506DD4831D93BCC90098F367 /* yyk001.html */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -515,11 +500,8 @@
 				50256CA41A4B9D0B005950B9 /* Main.storyboard in Resources */,
 				50604A631A5552F2003803E6 /* webview.html in Resources */,
 				50A677271A4EBFBC002B347F /* index.html in Resources */,
-				500018E61DACE70800AA6476 /* P38938019__AT_video_gr5.mp4 in Resources */,
 				50256CA91A4B9D0B005950B9 /* LaunchScreen.xib in Resources */,
-				506DD4841D93BCC90098F367 /* yyk001.html in Resources */,
 				50159E5D1BA05EBD00F22FFC /* ftcicon.jpg in Resources */,
-				50FDEB1C1D9B52A600930B6B /* rolex.jpg in Resources */,
 				5039A4B41C61FAD40008F2AD /* README.txt in Resources */,
 				50256CA61A4B9D0B005950B9 /* Images.xcassets in Resources */,
 				5005FB821D9D090800E2B3DC /* schedule.json in Resources */,
@@ -540,10 +522,7 @@
 				507C7E661DB0BCE800A8EF50 /* Main.storyboard in Resources */,
 				507C7E671DB0BCE800A8EF50 /* webview.html in Resources */,
 				507C7E681DB0BCE800A8EF50 /* index.html in Resources */,
-				507C7E691DB0BCE800A8EF50 /* P38938019__AT_video_gr5.mp4 in Resources */,
-				507C7E6B1DB0BCE800A8EF50 /* yyk001.html in Resources */,
 				507C7E6C1DB0BCE800A8EF50 /* ftcicon.jpg in Resources */,
-				507C7E6D1DB0BCE800A8EF50 /* rolex.jpg in Resources */,
 				507C7E6E1DB0BCE800A8EF50 /* README.txt in Resources */,
 				507C7E6F1DB0BCE800A8EF50 /* Images.xcassets in Resources */,
 				507C7E761DB0BCF100A8EF50 /* LaunchScreen.xib in Resources */,
@@ -558,11 +537,8 @@
 				50C34C2B1BC664AD00C8A8CB /* Main.storyboard in Resources */,
 				50C34C2C1BC664AD00C8A8CB /* webview.html in Resources */,
 				50C34C2D1BC664AD00C8A8CB /* index.html in Resources */,
-				500018E71DACE70800AA6476 /* P38938019__AT_video_gr5.mp4 in Resources */,
 				50C34C2F1BC664AD00C8A8CB /* ftcicon.jpg in Resources */,
-				506DD4851D93BCC90098F367 /* yyk001.html in Resources */,
 				50C34C391BC664B300C8A8CB /* LaunchScreen.xib in Resources */,
-				50FDEB1D1D9B52A600930B6B /* rolex.jpg in Resources */,
 				5039A4B51C61FAD40008F2AD /* README.txt in Resources */,
 				50C34C301BC664AD00C8A8CB /* Images.xcassets in Resources */,
 				5005FB831D9D090800E2B3DC /* schedule.json in Resources */,
