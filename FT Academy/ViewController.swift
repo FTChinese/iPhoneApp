@@ -23,16 +23,20 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     //var startUrl = "https://backyard.ftchinese.com/"
     //var startUrl = "http://192.168.253.25:9000/?isInSWIFT&iOSShareWechat&gShowStatusBar"
     let iPadStartUrl = "http://app005.ftmailbox.com/ipad-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
+    
+    
     var maxAdTimeAfterLaunch = 6.0
     var maxAdTimeAfterWebRequest = 3.0
-    lazy var overlayView: UIView? = UIView()
-    var adType = "none"
-    let adLink = "http://www.rolex.com"
+    
     let lauchAdSchedule = "http://m.ftchinese.com/test.json?3"
-    let videoFile = "P38938019__AT_video_gr5.mp4"
-    let imageFile = "rolex.jpg"
-    let htmlFile = "yyk001.html"
-    let htmlBaseUrl = "http://www3.ftchinese.com/adv/yyk/"
+    lazy var overlayView: UIView? = UIView()
+    var adType = "video"
+    var adLink = "http://www.rolex.com"
+    var videoFile = "P38938019__AT_video_gr5.mp4"
+    var videoBackgroundFile = "BD_TRW_NA_GMTII_M116719BLRO-0001_ZHS_600x900_STATIC-JPEG_160908.jpg"
+    var imageFile = "BD_TRW_NA_GMTII_M116719BLRO-0001_ZHS_600x900_STATIC-JPEG_160908.jpg"
+    var htmlFile = "yyk001.html"
+    var htmlBaseUrl = "http://www3.ftchinese.com/adv/yyk/"
     let screenWidth = UIScreen.main.bounds.width
     let screenHeight = UIScreen.main.bounds.height
     
@@ -69,8 +73,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
         
 
-        //adOverlayView()
-        normalOverlayView()
+        adOverlayView()
+        //normalOverlayView()
     }
     
     
@@ -174,11 +178,13 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     
-    // if there's ad image to load
+    // if there's a full screen screen ad to show
     func adOverlayView() {
+        if adType == "none" {
+            normalOverlayView()
+            return
+        }
         parseSchedule()
-        
-        
         if adType == "page" {
             addOverlayView()
             showHTMLAd()
@@ -187,15 +193,14 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             showImage()
         } else if adType == "video" {
             do {
-                try playVideo()
+                try playVideo(videoType: "")
             } catch AppError.invalidResource(let name, let type) {
                 debugPrint("Could not find resource \(name).\(type)")
             } catch {
                 debugPrint("Generic error")
             }
         }
-        
-        //跳过广告的按钮
+        //button to close the full screen ad
         addCloseButton()
     }
     
@@ -211,21 +216,35 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     func addCloseButton() {
-        let button: UIButton? = UIButton(frame: CGRect(x: 0, y: 0, width: 100, height: 44))
-        button!.setTitle("跳过广告", for: UIControlState())
+        let filename: NSString = "close.png" as NSString
+        let pathExtention = filename.pathExtension
+        let pathPrefix = filename.deletingPathExtension
+        let templatepath = Bundle.main.path(forResource: pathPrefix, ofType: pathExtention)!
+        let image: UIImage? = UIImage(contentsOfFile: templatepath)
+        
+        
+        //let button: UIButton? = UIButton(frame: CGRect(x: 0, y: 0, width: 100, height: 44))
+        //button!.setTitle("跳过广告", for: UIControlState())
+        let button: UIButton? = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+        button?.backgroundColor = UIColor(white: 0, alpha: 0.382)
+        button?.setImage(image, for: UIControlState())
+        
+        button?.layer.masksToBounds = true
+        button?.layer.cornerRadius = 20
+        
         if adType == "video" {
             self.view.viewWithTag(111)!.addSubview(button!)
         } else {
             self.overlayView!.addSubview(button!)
         }
         
-        button!.translatesAutoresizingMaskIntoConstraints = false
-        button!.addTarget(self, action: #selector(ViewController.displayWebView), for: .touchUpInside)
+        button?.translatesAutoresizingMaskIntoConstraints = false
+        button?.addTarget(self, action: #selector(ViewController.displayWebView), for: .touchUpInside)
         
-        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.right, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.right, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.bottom, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 100))
-        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 44))
+        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.right, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.right, multiplier: 1, constant: -16))
+        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 16))
+        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 40))
+        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 40))
     }
     
     func showImage() {
@@ -247,31 +266,26 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     func showHTMLAd() {
-        if #available(iOS 8.0, *) {
-            let filename: NSString = htmlFile as NSString
-            let pathExtention = filename.pathExtension
-            let pathPrefix = filename.deletingPathExtension
-            let adPageView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight - 44))
-            let templatepath = Bundle.main.path(forResource: pathPrefix, ofType: pathExtention)!
-            let base = URL(string: htmlBaseUrl)
-            let s = try! NSString(contentsOfFile:templatepath, encoding:String.Encoding.utf8.rawValue)
-            adPageView.loadHTMLString(s as String, baseURL:base)
-            overlayView!.addSubview(adPageView)
-            
-            if adLink != "" {
-                let adPageLinkOverlay = UIView(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight - 44))
-                let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.clickAd))
-                overlayView!.addSubview(adPageLinkOverlay)
-                adPageLinkOverlay.addGestureRecognizer(tapRecognizer)
-            }
-            
-        } else {
-            adType = "image"
-            showImage()
+        let filename: NSString = htmlFile as NSString
+        let pathExtention = filename.pathExtension
+        let pathPrefix = filename.deletingPathExtension
+        let adPageView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight))
+        let templatepath = Bundle.main.path(forResource: pathPrefix, ofType: pathExtention)!
+        let base = URL(string: htmlBaseUrl)
+        let s = try! NSString(contentsOfFile:templatepath, encoding:String.Encoding.utf8.rawValue)
+        adPageView.loadHTMLString(s as String, baseURL:base)
+        overlayView!.addSubview(adPageView)
+        
+        if adLink != "" {
+            let adPageLinkOverlay = UIView(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight))
+            let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.clickAd))
+            overlayView!.addSubview(adPageLinkOverlay)
+            adPageLinkOverlay.addGestureRecognizer(tapRecognizer)
         }
     }
     
-    func playVideo() throws {
+    
+    func playVideo(videoType: String) throws {
         let filename: NSString = videoFile as NSString
         let pathExtention = filename.pathExtension
         let pathPrefix = filename.deletingPathExtension
@@ -280,35 +294,81 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             throw AppError.invalidResource(pathPrefix, pathExtention)
         }
         
-        if #available(iOS 8.0, *) {
-            maxAdTimeAfterLaunch = 525.0
-            maxAdTimeAfterWebRequest = 523.0
-            let player = AVPlayer(url: URL(fileURLWithPath: path))
-            let playerController = AVPlayerViewController()
-            
-            // this code doesn't make Xcode complain about constraints
-            // video view must be added to the self.view, not a subview
-            playerController.player = player
-            // this code seems to be useless and causes memory leak when video is closed
-            // self.addChildViewController(playerController)
-            playerController.showsPlaybackControls = false
-            //player.muted = true
-            player.play()
-            self.view.addSubview(playerController.view)
-            playerController.view.tag = 111
-            playerController.view.frame = self.view.frame
-            player.play()
-            NotificationCenter.default.addObserver(self, selector: #selector(ViewController.displayWebView), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player.currentItem)
-            if adLink != "" {
-                let adPageLinkOverlay = UIView(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight - 44))
-                let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.clickAd))
-                playerController.view.addSubview(adPageLinkOverlay)
-                adPageLinkOverlay.addGestureRecognizer(tapRecognizer)
-            }
-        } else {
-            adType = "image"
-            showImage()
+        maxAdTimeAfterLaunch = 525.0
+        maxAdTimeAfterWebRequest = 523.0
+        let player = AVPlayer(url: URL(fileURLWithPath: path))
+        let playerController = AVPlayerViewController()
+        
+        let asset = AVURLAsset(url: URL(fileURLWithPath: path))
+        let videoDuration = asset.duration
+        
+        
+        // this code doesn't make Xcode complain about constraints
+        // video view must be added to the self.view, not a subview
+        playerController.player = player
+
+        // this code seems to be useless and causes memory leak when video is closed
+        // self.addChildViewController(playerController)
+        playerController.showsPlaybackControls = false
+        
+        //player.muted = true
+        player.play()
+        
+        self.view.addSubview(playerController.view)
+        playerController.view.tag = 111
+        playerController.view.frame = self.view.frame
+        
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 21))
+        //let timeLeft = Int(CMTimeGetSeconds(videoDuration))
+        let timeLabel = String(format:"%.0f", CMTimeGetSeconds(videoDuration))
+        label.textAlignment = NSTextAlignment.center
+        label.text = timeLabel
+        label.textColor = UIColor.white
+        label.backgroundColor = UIColor(white: 0, alpha: 0.382)
+        label.layer.masksToBounds = true
+        label.layer.cornerRadius = 15
+        label.tag = 112
+        playerController.view.addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.left, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.left, multiplier: 1, constant: 20))
+        view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.bottom, multiplier: 1, constant: -20))
+        view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 30))
+        view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 30))
+        
+        
+        
+        
+
+
+        //playerController.view.frame = CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight*9/16)
+        //playerController.videoGravity = AVLayerVideoGravityResize
+        if videoType == "landscape" {
+            let filename: NSString = videoBackgroundFile as NSString
+            let pathExtention = filename.pathExtension
+            let pathPrefix = filename.deletingPathExtension
+            let templatepath = Bundle.main.path(forResource: pathPrefix, ofType: pathExtention)!
+            let image: UIImage? = UIImage(contentsOfFile: templatepath)
+            playerController.view.backgroundColor = UIColor(patternImage: image!)
         }
+
+
+        //playerController.view
+        //player.play()
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.displayWebView), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player.currentItem)
+        if adLink != "" {
+            let adPageLinkOverlay = UIView(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight - 44))
+            let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.clickAd))
+            playerController.view.addSubview(adPageLinkOverlay)
+            adPageLinkOverlay.addGestureRecognizer(tapRecognizer)
+        }
+        
+        let _ = player.addPeriodicTimeObserver(forInterval: CMTimeMake(1,10), queue: DispatchQueue.main, using: { [weak self] timeInterval in
+            let timeLeft = CMTimeGetSeconds(videoDuration-timeInterval)
+            if let theLabel = self?.view.viewWithTag(112) as? UILabel {
+                theLabel.text = String(format:"%.0f", timeLeft)
+            }
+            })
     }
     
     
