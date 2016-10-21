@@ -28,11 +28,13 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     var maxAdTimeAfterLaunch = 6.0
     var maxAdTimeAfterWebRequest = 3.0
     
+    lazy var player: AVPlayer? = {return nil} ()
+    lazy var token: Any? = {return nil} ()
     let lauchAdSchedule = "http://m.ftchinese.com/test.json?3"
     lazy var overlayView: UIView? = UIView()
-    var adType = "video"
+    var adType = "page"
     var adLink = "http://www.rolex.com"
-    var videoFile = "P38938019__AT_video_gr5.mp4"
+    var videoFile = "NUNU.MOV"
     var videoBackgroundFile = "BD_TRW_NA_GMTII_M116719BLRO-0001_ZHS_600x900_STATIC-JPEG_160908.jpg"
     var imageFile = "BD_TRW_NA_GMTII_M116719BLRO-0001_ZHS_600x900_STATIC-JPEG_160908.jpg"
     var htmlFile = "yyk001.html"
@@ -216,13 +218,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     func addCloseButton() {
-        let filename: NSString = "close.png" as NSString
-        let pathExtention = filename.pathExtension
-        let pathPrefix = filename.deletingPathExtension
-        let templatepath = Bundle.main.path(forResource: pathPrefix, ofType: pathExtention)!
-        let image: UIImage? = UIImage(contentsOfFile: templatepath)
-        
-        
+        let image = getImageFromSupportingFile(imageFileName: "close.png")
         //let button: UIButton? = UIButton(frame: CGRect(x: 0, y: 0, width: 100, height: 44))
         //button!.setTitle("跳过广告", for: UIControlState())
         let button: UIButton? = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
@@ -296,30 +292,29 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         
         maxAdTimeAfterLaunch = 525.0
         maxAdTimeAfterWebRequest = 523.0
-        let player = AVPlayer(url: URL(fileURLWithPath: path))
+        player = AVPlayer(url: URL(fileURLWithPath: path))
         let playerController = AVPlayerViewController()
         
         let asset = AVURLAsset(url: URL(fileURLWithPath: path))
         let videoDuration = asset.duration
         
-        
-        // this code doesn't make Xcode complain about constraints
         // video view must be added to the self.view, not a subview
+        // otherwise Xcode complains about constraints
         playerController.player = player
 
-        // this code seems to be useless and causes memory leak when video is closed
+        // the following line seems to be useless
         // self.addChildViewController(playerController)
         playerController.showsPlaybackControls = false
         
-        //player.muted = true
-        player.play()
+        player?.isMuted = true
+        player?.play()
         
         self.view.addSubview(playerController.view)
         playerController.view.tag = 111
         playerController.view.frame = self.view.frame
         
+        // label for time at the left bottom
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 21))
-        //let timeLeft = Int(CMTimeGetSeconds(videoDuration))
         let timeLabel = String(format:"%.0f", CMTimeGetSeconds(videoDuration))
         label.textAlignment = NSTextAlignment.center
         label.text = timeLabel
@@ -330,19 +325,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         label.tag = 112
         playerController.view.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
-        
         view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.left, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.left, multiplier: 1, constant: 20))
         view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.bottom, multiplier: 1, constant: -20))
         view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 30))
         view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 30))
         
-        
-        
-        
-
-
-        //playerController.view.frame = CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight*9/16)
-        //playerController.videoGravity = AVLayerVideoGravityResize
         if videoType == "landscape" {
             let filename: NSString = videoBackgroundFile as NSString
             let pathExtention = filename.pathExtension
@@ -353,9 +340,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
 
 
-        //playerController.view
-        //player.play()
-        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.displayWebView), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player.currentItem)
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.displayWebView), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player?.currentItem)
         if adLink != "" {
             let adPageLinkOverlay = UIView(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight - 44))
             let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.clickAd))
@@ -363,14 +348,52 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             adPageLinkOverlay.addGestureRecognizer(tapRecognizer)
         }
         
-        let _ = player.addPeriodicTimeObserver(forInterval: CMTimeMake(1,10), queue: DispatchQueue.main, using: { [weak self] timeInterval in
+        token = player?.addPeriodicTimeObserver(forInterval: CMTimeMake(1,10), queue: DispatchQueue.main, using: { [weak self] timeInterval in
             let timeLeft = CMTimeGetSeconds(videoDuration-timeInterval)
             if let theLabel = self?.view.viewWithTag(112) as? UILabel {
                 theLabel.text = String(format:"%.0f", timeLeft)
             }
             })
+        
+        // button for switching off mute mode
+        let imageForMute = getImageFromSupportingFile(imageFileName: "mute.png")
+        let imageForSound = getImageFromSupportingFile(imageFileName: "sound.png")
+        let button: UIButton? = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+        //button?.backgroundColor = UIColor(white: 0, alpha: 0.382)
+        button?.setImage(imageForMute, for: UIControlState())
+        button?.setImage(imageForSound, for: .selected)
+//        button?.layer.masksToBounds = true
+//        button?.layer.cornerRadius = 20
+        playerController.view.addSubview(button!)
+        button?.translatesAutoresizingMaskIntoConstraints = false
+        button?.addTarget(self, action: #selector(ViewController.videoMuteSwitch), for: .touchUpInside)
+        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.left, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.left, multiplier: 1, constant: 16))
+        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 16))
+        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 40))
+        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 40))
     }
     
+
+    @IBAction func videoMuteSwitch(sender: UIButton) {
+        if sender.isSelected {
+            print("turn off the sound")
+            player?.isMuted = true
+            sender.isSelected = false
+        } else {
+            print("turn on the sound")
+            player?.isMuted = false
+            sender.isSelected = true
+        }
+    }
+    
+    func getImageFromSupportingFile(imageFileName: String) -> UIImage {
+        let filename: NSString = imageFileName as NSString
+        let pathExtention = filename.pathExtension
+        let pathPrefix = filename.deletingPathExtension
+        let templatepath = Bundle.main.path(forResource: pathPrefix, ofType: pathExtention)!
+        let image: UIImage? = UIImage(contentsOfFile: templatepath)
+        return image!
+    }
     
     func clickAd() {
         openInView(adLink)
@@ -621,6 +644,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     func displayWebView() {
         if pageStatus != .webViewDisplayed {
+
             for subUIView in overlayView!.subviews {
                 subUIView.removeFromSuperview()
             }
@@ -631,6 +655,12 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             //trigger prefersStatusBarHidden
             setNeedsStatusBarAppearanceUpdate()
             getUserId()
+            player?.pause()
+            if let t = token {
+                player?.removeTimeObserver(t)
+                token = nil
+            }
+            //player?.removeTimeObserver(token)
         }
     }
     
@@ -804,33 +834,33 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     // MARK: NSCoding
     
-    //    var users = [User]()
-    //
-    //    func saveUsers() {
-    //        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(users, toFile: User.ArchiveURL.path!)
-    //        if !isSuccessfulSave {
-    //            print ("Failed to save meals...")
-    //        } else {
-    //            print ("save user id \(users[0].userid)")
-    //        }
-    //    }
-    //
-    //    func loadUsers() -> [User]? {
-    //        print ("load from saved Users")
-    //        return NSKeyedUnarchiver.unarchiveObjectWithFile(User.ArchiveURL.path!) as? [User]
-    //    }
-    //
-    //
-    //    func updateUserId(userId: String) {
-    //        if let savedUsers = loadUsers() {
-    //            users = savedUsers
-    //        } else {
-    //            let user1 = User(userid: "")!
-    //            users += [user1]
-    //        }
-    //        users[0].userid = userId
-    //        saveUsers()
-    //    }
+//        var users = [User]()
+//    
+//        func saveUsers() {
+//            let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(users, toFile: User.ArchiveURL.path!)
+//            if !isSuccessfulSave {
+//                print ("Failed to save meals...")
+//            } else {
+//                print ("save user id \(users[0].userid)")
+//            }
+//        }
+//    
+//        func loadUsers() -> [User]? {
+//            print ("load from saved Users")
+//            return NSKeyedUnarchiver.unarchiveObjectWithFile(User.ArchiveURL.path!) as? [User]
+//        }
+//    
+//    
+//        func updateUserId(userId: String) {
+//            if let savedUsers = loadUsers() {
+//                users = savedUsers
+//            } else {
+//                let user1 = User(userid: "")!
+//                users += [user1]
+//            }
+//            users[0].userid = userId
+//            saveUsers()
+//        }
     
     func getUserId() {
         var userId = ""

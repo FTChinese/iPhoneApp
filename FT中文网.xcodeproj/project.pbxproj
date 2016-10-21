@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		5005FB821D9D090800E2B3DC /* schedule.json in Resources */ = {isa = PBXBuildFile; fileRef = 5005FB811D9D090800E2B3DC /* schedule.json */; };
-		5005FB831D9D090800E2B3DC /* schedule.json in Resources */ = {isa = PBXBuildFile; fileRef = 5005FB811D9D090800E2B3DC /* schedule.json */; };
 		50159E451B98A70B00F22FFC /* WeChatActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E441B98A70B00F22FFC /* WeChatActivity.swift */; };
 		50159E471B9B147500F22FFC /* DataForShare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E461B9B147500F22FFC /* DataForShare.swift */; };
 		50159E491B9B249900F22FFC /* WeChatMoment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E481B9B249900F22FFC /* WeChatMoment.swift */; };
@@ -24,14 +23,16 @@
 		50256CC11A4BF7F4005950B9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50256CC01A4BF7F4005950B9 /* UIKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		50256CC31A4BFAE7005950B9 /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50256CC21A4BFAE7005950B9 /* Globals.swift */; };
 		50256CC51A4C1916005950B9 /* WKWebPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50256CC41A4C1916005950B9 /* WKWebPageController.swift */; };
+		503435161DB9C61B00B2F686 /* sound.png in Resources */ = {isa = PBXBuildFile; fileRef = 503435141DB9C61B00B2F686 /* sound.png */; };
+		503435171DB9C61B00B2F686 /* sound.png in Resources */ = {isa = PBXBuildFile; fileRef = 503435141DB9C61B00B2F686 /* sound.png */; };
+		503435181DB9C61B00B2F686 /* mute.png in Resources */ = {isa = PBXBuildFile; fileRef = 503435151DB9C61B00B2F686 /* mute.png */; };
+		503435191DB9C61B00B2F686 /* mute.png in Resources */ = {isa = PBXBuildFile; fileRef = 503435151DB9C61B00B2F686 /* mute.png */; };
+		5034351B1DB9DD6C00B2F686 /* NUNU.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 5034351A1DB9DD6C00B2F686 /* NUNU.MOV */; };
+		5034351C1DB9DD6C00B2F686 /* NUNU.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 5034351A1DB9DD6C00B2F686 /* NUNU.MOV */; };
 		50357D161BE10ED100D388EB /* WeChatFav.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50357D151BE10ED100D388EB /* WeChatFav.swift */; };
-		50357D171BE10ED100D388EB /* WeChatFav.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50357D151BE10ED100D388EB /* WeChatFav.swift */; };
 		5039A4B21C61FAD40008F2AD /* libGoogleConversionTracking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5039A4B01C61FAD40008F2AD /* libGoogleConversionTracking.a */; };
-		5039A4B31C61FAD40008F2AD /* libGoogleConversionTracking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5039A4B01C61FAD40008F2AD /* libGoogleConversionTracking.a */; };
 		5039A4B41C61FAD40008F2AD /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5039A4B11C61FAD40008F2AD /* README.txt */; };
-		5039A4B51C61FAD40008F2AD /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5039A4B11C61FAD40008F2AD /* README.txt */; };
 		5039A4B71C61FB170008F2AD /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5039A4B61C61FB170008F2AD /* AdSupport.framework */; };
-		5039A4B81C6208780008F2AD /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5039A4B61C61FB170008F2AD /* AdSupport.framework */; };
 		50604A631A5552F2003803E6 /* webview.html in Resources */ = {isa = PBXBuildFile; fileRef = 50604A621A5552F1003803E6 /* webview.html */; };
 		507C7E4D1DB0BCE800A8EF50 /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50256CC21A4BFAE7005950B9 /* Globals.swift */; };
 		507C7E4E1DB0BCE800A8EF50 /* WeChatActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E441B98A70B00F22FFC /* WeChatActivity.swift */; };
@@ -64,34 +65,10 @@
 		507C7E6F1DB0BCE800A8EF50 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50256CA51A4B9D0B005950B9 /* Images.xcassets */; };
 		507C7E701DB0BCE800A8EF50 /* schedule.json in Resources */ = {isa = PBXBuildFile; fileRef = 5005FB811D9D090800E2B3DC /* schedule.json */; };
 		507C7E761DB0BCF100A8EF50 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50C34C371BC664B300C8A8CB /* LaunchScreen.xib */; };
-		50982C7E1BC7A7C800907575 /* IJReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50982C7D1BC7A7C800907575 /* IJReachability.swift */; };
 		50982C7F1BC7A7C800907575 /* IJReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50982C7D1BC7A7C800907575 /* IJReachability.swift */; };
 		50982C801BC7A7C800907575 /* IJReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50982C7D1BC7A7C800907575 /* IJReachability.swift */; };
 		50A677271A4EBFBC002B347F /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 50A677261A4EBFBC002B347F /* index.html */; };
-		50C34C181BC664AD00C8A8CB /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50256CC21A4BFAE7005950B9 /* Globals.swift */; };
-		50C34C191BC664AD00C8A8CB /* WeChatActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E441B98A70B00F22FFC /* WeChatActivity.swift */; };
-		50C34C1A1BC664AD00C8A8CB /* WKWebPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50256CC41A4C1916005950B9 /* WKWebPageController.swift */; };
-		50C34C1B1BC664AD00C8A8CB /* WeChatMoment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E481B9B249900F22FFC /* WeChatMoment.swift */; };
-		50C34C1C1BC664AD00C8A8CB /* OpenInSafari.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E4A1B9B2ED900F22FFC /* OpenInSafari.swift */; };
-		50C34C1E1BC664AD00C8A8CB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50256CA01A4B9D0B005950B9 /* ViewController.swift */; };
-		50C34C1F1BC664AD00C8A8CB /* DataForShare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E461B9B147500F22FFC /* DataForShare.swift */; };
-		50C34C201BC664AD00C8A8CB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50256C9E1A4B9D0B005950B9 /* AppDelegate.swift */; };
-		50C34C221BC664AD00C8A8CB /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FC07EB1A53A589006EE23F /* libsqlite3.dylib */; };
-		50C34C231BC664AD00C8A8CB /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FC07E91A53A44C006EE23F /* libz.dylib */; };
-		50C34C241BC664AD00C8A8CB /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FC07E71A53A419006EE23F /* SystemConfiguration.framework */; };
-		50C34C251BC664AD00C8A8CB /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FC07E51A53A33D006EE23F /* libc++.dylib */; };
-		50C34C261BC664AD00C8A8CB /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FC07E31A53A2B3006EE23F /* CoreLocation.framework */; };
-		50C34C271BC664AD00C8A8CB /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50256CC01A4BF7F4005950B9 /* UIKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		50C34C281BC664AD00C8A8CB /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50256CBE1A4BF7E4005950B9 /* WebKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		50C34C291BC664AD00C8A8CB /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FC07DF1A539BF3006EE23F /* libWeChatSDK.a */; };
-		50C34C2B1BC664AD00C8A8CB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50256CA21A4B9D0B005950B9 /* Main.storyboard */; };
-		50C34C2C1BC664AD00C8A8CB /* webview.html in Resources */ = {isa = PBXBuildFile; fileRef = 50604A621A5552F1003803E6 /* webview.html */; };
-		50C34C2D1BC664AD00C8A8CB /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 50A677261A4EBFBC002B347F /* index.html */; };
-		50C34C2F1BC664AD00C8A8CB /* ftcicon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 50159E5C1BA05EBD00F22FFC /* ftcicon.jpg */; };
-		50C34C301BC664AD00C8A8CB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50256CA51A4B9D0B005950B9 /* Images.xcassets */; };
-		50C34C391BC664B300C8A8CB /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50C34C371BC664B300C8A8CB /* LaunchScreen.xib */; };
 		50DF3E9F1D484B3C0054DDD2 /* ShareImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DF3E9E1D484B3C0054DDD2 /* ShareImage.swift */; };
-		50DF3EA01D484B3C0054DDD2 /* ShareImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DF3E9E1D484B3C0054DDD2 /* ShareImage.swift */; };
 		50E577CF1DB60D8E0016A73F /* BD_TRW_NA_GMTII_M116719BLRO-0001_ZHS_600x900_STATIC-JPEG_160908.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 50E577CE1DB60D8E0016A73F /* BD_TRW_NA_GMTII_M116719BLRO-0001_ZHS_600x900_STATIC-JPEG_160908.jpg */; };
 		50E577D71DB754880016A73F /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E577D61DB754880016A73F /* close.png */; };
 		50E577D81DB754880016A73F /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E577D61DB754880016A73F /* close.png */; };
@@ -100,7 +77,6 @@
 		50E577E01DB84A4C0016A73F /* yyk001.html in Resources */ = {isa = PBXBuildFile; fileRef = 50E577DF1DB84A4C0016A73F /* yyk001.html */; };
 		50E577E11DB84A4C0016A73F /* yyk001.html in Resources */ = {isa = PBXBuildFile; fileRef = 50E577DF1DB84A4C0016A73F /* yyk001.html */; };
 		50E5E6F21BD8A21B00F4A33E /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50E5E6F11BD8A21B00F4A33E /* CoreTelephony.framework */; };
-		50E5E6F31BD8A2BA00F4A33E /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50E5E6F11BD8A21B00F4A33E /* CoreTelephony.framework */; };
 		50FC07E21A539BF3006EE23F /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FC07DF1A539BF3006EE23F /* libWeChatSDK.a */; };
 		50FC07E41A53A2B3006EE23F /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FC07E31A53A2B3006EE23F /* CoreLocation.framework */; };
 		50FC07E61A53A33D006EE23F /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FC07E51A53A33D006EE23F /* libc++.dylib */; };
@@ -108,7 +84,6 @@
 		50FC07EA1A53A44C006EE23F /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FC07E91A53A44C006EE23F /* libz.dylib */; };
 		50FC07EC1A53A589006EE23F /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FC07EB1A53A589006EE23F /* libsqlite3.dylib */; };
 		50FCC9C11D34C1D300FC1892 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FCC9C01D34C1D300FC1892 /* User.swift */; };
-		50FCC9C21D34C1D300FC1892 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FCC9C01D34C1D300FC1892 /* User.swift */; };
 		50FCC9C31D34C1D300FC1892 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FCC9C01D34C1D300FC1892 /* User.swift */; };
 /* End PBXBuildFile section */
 
@@ -143,6 +118,9 @@
 		50256CC01A4BF7F4005950B9 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		50256CC21A4BFAE7005950B9 /* Globals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Globals.swift; sourceTree = "<group>"; };
 		50256CC41A4C1916005950B9 /* WKWebPageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WKWebPageController.swift; sourceTree = "<group>"; };
+		503435141DB9C61B00B2F686 /* sound.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sound.png; sourceTree = "<group>"; };
+		503435151DB9C61B00B2F686 /* mute.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mute.png; sourceTree = "<group>"; };
+		5034351A1DB9DD6C00B2F686 /* NUNU.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = NUNU.MOV; sourceTree = "<group>"; };
 		50357D151BE10ED100D388EB /* WeChatFav.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeChatFav.swift; sourceTree = "<group>"; };
 		5039A4AB1C61FAD40008F2AD /* ACTReporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACTReporter.h; sourceTree = "<group>"; };
 		5039A4AD1C61FAD40008F2AD /* GoogleConversionPing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleConversionPing.h; sourceTree = "<group>"; };
@@ -157,7 +135,6 @@
 		50982C7D1BC7A7C800907575 /* IJReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IJReachability.swift; sourceTree = "<group>"; };
 		50A677261A4EBFBC002B347F /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = index.html; path = supporting/index.html; sourceTree = "<group>"; };
 		50B5D05D1DAF1E450052C954 /* FT中文网.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "FT中文网.entitlements"; sourceTree = SOURCE_ROOT; };
-		50C34C341BC664AD00C8A8CB /* FT中文网.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FT中文网.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		50C34C361BC664AE00C8A8CB /* FT中文网HD.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "FT中文网HD.plist"; path = "/Users/zhangoliver/sandbox/FTCiPhone/FT中文网HD.plist"; sourceTree = "<absolute>"; };
 		50C34C381BC664B300C8A8CB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = "Resources-iPad/FT Academy/Base.lproj/LaunchScreen.xib"; sourceTree = "<group>"; };
 		50DF3E9E1D484B3C0054DDD2 /* ShareImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareImage.swift; sourceTree = "<group>"; };
@@ -221,24 +198,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		50C34C211BC664AD00C8A8CB /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5039A4B81C6208780008F2AD /* AdSupport.framework in Frameworks */,
-				50E5E6F31BD8A2BA00F4A33E /* CoreTelephony.framework in Frameworks */,
-				50C34C221BC664AD00C8A8CB /* libsqlite3.dylib in Frameworks */,
-				50C34C231BC664AD00C8A8CB /* libz.dylib in Frameworks */,
-				50C34C241BC664AD00C8A8CB /* SystemConfiguration.framework in Frameworks */,
-				50C34C251BC664AD00C8A8CB /* libc++.dylib in Frameworks */,
-				50C34C261BC664AD00C8A8CB /* CoreLocation.framework in Frameworks */,
-				50C34C271BC664AD00C8A8CB /* UIKit.framework in Frameworks */,
-				5039A4B31C61FAD40008F2AD /* libGoogleConversionTracking.a in Frameworks */,
-				50C34C281BC664AD00C8A8CB /* WebKit.framework in Frameworks */,
-				50C34C291BC664AD00C8A8CB /* libWeChatSDK.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -272,7 +231,6 @@
 			children = (
 				50256C991A4B9D0B005950B9 /* FT中文网.app */,
 				50256CAE1A4B9D0B005950B9 /* FT中文网.xctest */,
-				50C34C341BC664AD00C8A8CB /* FT中文网.app */,
 				507C7E741DB0BCE800A8EF50 /* FT中文网-iPad.app */,
 			);
 			name = Products;
@@ -312,7 +270,10 @@
 				50E577D61DB754880016A73F /* close.png */,
 				50159E5C1BA05EBD00F22FFC /* ftcicon.jpg */,
 				50E577DF1DB84A4C0016A73F /* yyk001.html */,
+				5034351A1DB9DD6C00B2F686 /* NUNU.MOV */,
 				50E577DC1DB755E70016A73F /* P38938019__AT_video_gr5.mp4 */,
+				503435141DB9C61B00B2F686 /* sound.png */,
+				503435151DB9C61B00B2F686 /* mute.png */,
 				50256C9D1A4B9D0B005950B9 /* Info.plist */,
 				50A677261A4EBFBC002B347F /* index.html */,
 				50604A621A5552F1003803E6 /* webview.html */,
@@ -428,23 +389,6 @@
 			productReference = 507C7E741DB0BCE800A8EF50 /* FT中文网-iPad.app */;
 			productType = "com.apple.product-type.application";
 		};
-		50C34C161BC664AD00C8A8CB /* FT中文网HD */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 50C34C311BC664AD00C8A8CB /* Build configuration list for PBXNativeTarget "FT中文网HD" */;
-			buildPhases = (
-				50C34C171BC664AD00C8A8CB /* Sources */,
-				50C34C211BC664AD00C8A8CB /* Frameworks */,
-				50C34C2A1BC664AD00C8A8CB /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "FT中文网HD";
-			productName = "FT Academy";
-			productReference = 50C34C341BC664AD00C8A8CB /* FT中文网.app */;
-			productType = "com.apple.product-type.application";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -476,14 +420,6 @@
 					507C7E4B1DB0BCE800A8EF50 = {
 						DevelopmentTeam = CAEDT8EKGV;
 					};
-					50C34C161BC664AD00C8A8CB = {
-						DevelopmentTeam = CAEDT8EKGV;
-						SystemCapabilities = {
-							com.apple.Push = {
-								enabled = 1;
-							};
-						};
-					};
 				};
 			};
 			buildConfigurationList = 50256C941A4B9D0B005950B9 /* Build configuration list for PBXProject "FT中文网" */;
@@ -501,7 +437,6 @@
 			targets = (
 				50256C981A4B9D0B005950B9 /* FT中文网 */,
 				507C7E4B1DB0BCE800A8EF50 /* FT中文网-iPad */,
-				50C34C161BC664AD00C8A8CB /* FT中文网HD */,
 				50256CAD1A4B9D0B005950B9 /* FT中文网Tests */,
 			);
 		};
@@ -515,10 +450,13 @@
 				50E577D71DB754880016A73F /* close.png in Resources */,
 				50256CA41A4B9D0B005950B9 /* Main.storyboard in Resources */,
 				50604A631A5552F2003803E6 /* webview.html in Resources */,
+				503435161DB9C61B00B2F686 /* sound.png in Resources */,
 				50E577DD1DB755E70016A73F /* P38938019__AT_video_gr5.mp4 in Resources */,
 				50E577E01DB84A4C0016A73F /* yyk001.html in Resources */,
 				50A677271A4EBFBC002B347F /* index.html in Resources */,
 				50256CA91A4B9D0B005950B9 /* LaunchScreen.xib in Resources */,
+				503435181DB9C61B00B2F686 /* mute.png in Resources */,
+				5034351B1DB9DD6C00B2F686 /* NUNU.MOV in Resources */,
 				50159E5D1BA05EBD00F22FFC /* ftcicon.jpg in Resources */,
 				50E577CF1DB60D8E0016A73F /* BD_TRW_NA_GMTII_M116719BLRO-0001_ZHS_600x900_STATIC-JPEG_160908.jpg in Resources */,
 				5039A4B41C61FAD40008F2AD /* README.txt in Resources */,
@@ -539,31 +477,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				507C7E661DB0BCE800A8EF50 /* Main.storyboard in Resources */,
+				503435171DB9C61B00B2F686 /* sound.png in Resources */,
 				507C7E671DB0BCE800A8EF50 /* webview.html in Resources */,
 				507C7E681DB0BCE800A8EF50 /* index.html in Resources */,
 				507C7E6C1DB0BCE800A8EF50 /* ftcicon.jpg in Resources */,
 				507C7E6E1DB0BCE800A8EF50 /* README.txt in Resources */,
 				507C7E6F1DB0BCE800A8EF50 /* Images.xcassets in Resources */,
+				503435191DB9C61B00B2F686 /* mute.png in Resources */,
 				50E577E11DB84A4C0016A73F /* yyk001.html in Resources */,
 				507C7E761DB0BCF100A8EF50 /* LaunchScreen.xib in Resources */,
+				5034351C1DB9DD6C00B2F686 /* NUNU.MOV in Resources */,
 				507C7E701DB0BCE800A8EF50 /* schedule.json in Resources */,
 				50E577D81DB754880016A73F /* close.png in Resources */,
 				50E577DE1DB755E70016A73F /* P38938019__AT_video_gr5.mp4 in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		50C34C2A1BC664AD00C8A8CB /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				50C34C2B1BC664AD00C8A8CB /* Main.storyboard in Resources */,
-				50C34C2C1BC664AD00C8A8CB /* webview.html in Resources */,
-				50C34C2D1BC664AD00C8A8CB /* index.html in Resources */,
-				50C34C2F1BC664AD00C8A8CB /* ftcicon.jpg in Resources */,
-				50C34C391BC664B300C8A8CB /* LaunchScreen.xib in Resources */,
-				5039A4B51C61FAD40008F2AD /* README.txt in Resources */,
-				50C34C301BC664AD00C8A8CB /* Images.xcassets in Resources */,
-				5005FB831D9D090800E2B3DC /* schedule.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -615,25 +541,6 @@
 				507C7E561DB0BCE800A8EF50 /* AppDelegate.swift in Sources */,
 				507C7E571DB0BCE800A8EF50 /* WeChatFav.swift in Sources */,
 				507C7E581DB0BCE800A8EF50 /* User.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		50C34C171BC664AD00C8A8CB /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				50C34C181BC664AD00C8A8CB /* Globals.swift in Sources */,
-				50C34C191BC664AD00C8A8CB /* WeChatActivity.swift in Sources */,
-				50C34C1A1BC664AD00C8A8CB /* WKWebPageController.swift in Sources */,
-				50C34C1B1BC664AD00C8A8CB /* WeChatMoment.swift in Sources */,
-				50C34C1C1BC664AD00C8A8CB /* OpenInSafari.swift in Sources */,
-				50DF3EA01D484B3C0054DDD2 /* ShareImage.swift in Sources */,
-				50C34C1E1BC664AD00C8A8CB /* ViewController.swift in Sources */,
-				50982C7E1BC7A7C800907575 /* IJReachability.swift in Sources */,
-				50C34C1F1BC664AD00C8A8CB /* DataForShare.swift in Sources */,
-				50C34C201BC664AD00C8A8CB /* AppDelegate.swift in Sources */,
-				50357D171BE10ED100D388EB /* WeChatFav.swift in Sources */,
-				50FCC9C21D34C1D300FC1892 /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -920,65 +827,6 @@
 			};
 			name = Release;
 		};
-		50C34C321BC664AD00C8A8CB /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "FT中文网.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = CAEDT8EKGV;
-				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "";
-				INFOPLIST_FILE = "FT中文网HD.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/GoogleConversionTrackingSDK-iOS-3.3.1",
-				);
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ft.ftchinese.ipad;
-				PRODUCT_NAME = "FT中文网";
-				PROVISIONING_PROFILE = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "FT Academy/FT Academy-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				TARGETED_DEVICE_FAMILY = 2;
-				VALID_ARCHS = "arm64 armv7 armv7s";
-			};
-			name = Debug;
-		};
-		50C34C331BC664AD00C8A8CB /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "FT中文网.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = CAEDT8EKGV;
-				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "";
-				INFOPLIST_FILE = "FT中文网HD.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/GoogleConversionTrackingSDK-iOS-3.3.1",
-				);
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ft.ftchinese.ipad;
-				PRODUCT_NAME = "FT中文网";
-				PROVISIONING_PROFILE = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "FT Academy/FT Academy-Bridging-Header.h";
-				TARGETED_DEVICE_FAMILY = 2;
-				VALID_ARCHS = "arm64 armv7 armv7s";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1014,15 +862,6 @@
 			buildConfigurations = (
 				507C7E721DB0BCE800A8EF50 /* Debug */,
 				507C7E731DB0BCE800A8EF50 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		50C34C311BC664AD00C8A8CB /* Build configuration list for PBXNativeTarget "FT中文网HD" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				50C34C321BC664AD00C8A8CB /* Debug */,
-				50C34C331BC664AD00C8A8CB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
