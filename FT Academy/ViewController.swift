@@ -32,7 +32,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     lazy var token: Any? = {return nil} ()
     let lauchAdSchedule = "http://m.ftchinese.com/test.json?3"
     lazy var overlayView: UIView? = UIView()
-    var adType = "page"
+    var adType = "video"
     var adLink = "http://www.rolex.com"
     var videoFile = "NUNU.MOV"
     var videoBackgroundFile = "BD_TRW_NA_GMTII_M116719BLRO-0001_ZHS_600x900_STATIC-JPEG_160908.jpg"
@@ -74,9 +74,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             uiWebView?.delegate = self
         }
         
-
         adOverlayView()
         //normalOverlayView()
+
     }
     
     
@@ -85,6 +85,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
         pageStatus = .viewLoaded
         loadFromLocal()
         pageStatus = .webViewLoading
@@ -303,9 +304,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         playerController.player = player
 
         // the following line seems to be useless
-        // self.addChildViewController(playerController)
+        self.addChildViewController(playerController)
         playerController.showsPlaybackControls = false
         
+        //player?.setMediaSelectionCriteria(criteria: AVPlayerMediaSelectionCriteria?, forMediaCharacteristic: <#T##String#>)
         player?.isMuted = true
         player?.play()
         
@@ -359,11 +361,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         let imageForMute = getImageFromSupportingFile(imageFileName: "mute.png")
         let imageForSound = getImageFromSupportingFile(imageFileName: "sound.png")
         let button: UIButton? = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
-        //button?.backgroundColor = UIColor(white: 0, alpha: 0.382)
+        button?.backgroundColor = UIColor(white: 0, alpha: 0.382)
         button?.setImage(imageForMute, for: UIControlState())
         button?.setImage(imageForSound, for: .selected)
-//        button?.layer.masksToBounds = true
-//        button?.layer.cornerRadius = 20
+        button?.layer.masksToBounds = true
+        button?.layer.cornerRadius = 20
         playerController.view.addSubview(button!)
         button?.translatesAutoresizingMaskIntoConstraints = false
         button?.addTarget(self, action: #selector(ViewController.videoMuteSwitch), for: .touchUpInside)
@@ -376,13 +378,17 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
 
     @IBAction func videoMuteSwitch(sender: UIButton) {
         if sender.isSelected {
-            print("turn off the sound")
             player?.isMuted = true
             sender.isSelected = false
         } else {
-            print("turn on the sound")
+            // this will make the video play sound even when iPhone is muted
             player?.isMuted = false
             sender.isSelected = true
+            do {
+                try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+            } catch let error as NSError {
+                print("Couldn't turn on sound: \(error.localizedDescription)")
+            }
         }
     }
     
