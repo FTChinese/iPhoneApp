@@ -14,24 +14,20 @@ import AVFoundation
 
 class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, SFSafariViewControllerDelegate {
     
-    var uiWebView: UIWebView!
-    @available(iOS 8.0, *)
     lazy var webView: WKWebView? = { return nil }()
     weak var timer: Timer?
     var pageStatus: WebViewStatus?
     var startUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
-    //var startUrl = "https://backyard.ftchinese.com/"
-    //var startUrl = "http://192.168.253.25:9000/?isInSWIFT&iOSShareWechat&gShowStatusBar"
     let iPadStartUrl = "http://app005.ftmailbox.com/ipad-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
-    
-    
     var maxAdTimeAfterLaunch = 6.0
     var maxAdTimeAfterWebRequest = 3.0
     
+    let adSchedule = AdSchedule()
+    
     lazy var player: AVPlayer? = {return nil} ()
     lazy var token: Any? = {return nil} ()
-    let lauchAdSchedule = "http://m.ftchinese.com/test.json?3"
     lazy var overlayView: UIView? = UIView()
+    
     var adType = "video"
     var adLink = "http://www.rolex.com"
     var videoFile = "NUNU.MOV"
@@ -41,7 +37,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     var htmlBaseUrl = "http://www3.ftchinese.com/adv/yyk/"
     let screenWidth = UIScreen.main.bounds.width
     let screenHeight = UIScreen.main.bounds.height
-    
     
     deinit {
         //print("main view is being deinitialized")
@@ -53,47 +48,31 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         if UIDevice.current.userInterfaceIdiom == .pad {
             startUrl = iPadStartUrl
         }
-        
-        if #available(iOS 8.0, *) {
-            //var webView: WKWebView!
-            self.webView = WKWebView()
-            self.view = self.webView
-            self.webView!.navigationDelegate = self
-            NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "statusBarSelected"), object: nil, queue: nil) { event in
-                self.webView!.evaluateJavaScript("scrollToTop()") { (result, error) in
-                    if error != nil {
-                        //print("an error occored when trying to scroll to Top! ")
-                    } else {
-                        //print("scrolled to Top!")
-                    }
+        self.webView = WKWebView()
+        self.view = self.webView
+        self.webView!.navigationDelegate = self
+        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "statusBarSelected"), object: nil, queue: nil) { event in
+            self.webView!.evaluateJavaScript("scrollToTop()") { (result, error) in
+                if error != nil {
+                    //print("an error occored when trying to scroll to Top! ")
+                } else {
+                    //print("scrolled to Top!")
                 }
             }
-        } else {
-            self.uiWebView = UIWebView()
-            self.view = self.uiWebView
-            uiWebView?.delegate = self
         }
-        
         adOverlayView()
         //normalOverlayView()
-
     }
-    
-    
-    
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         pageStatus = .viewLoaded
         loadFromLocal()
         pageStatus = .webViewLoading
         resetTimer(maxAdTimeAfterLaunch)
-        updateAdSchedule()
+        adSchedule.updateAdSchedule()
     }
-    
-    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
@@ -140,7 +119,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             return false
         }
     }
-
+    
     
     // if there's no ad to load
     func normalOverlayView() {
@@ -187,7 +166,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             normalOverlayView()
             return
         }
-        parseSchedule()
+        adSchedule.parseSchedule()
+//        print("adtype: ")
+//        print(adSchedule.adType)
+        //parseSchedule()
         if adType == "page" {
             addOverlayView()
             showHTMLAd()
@@ -302,7 +284,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         // video view must be added to the self.view, not a subview
         // otherwise Xcode complains about constraints
         playerController.player = player
-
+        
         // the following line seems to be useless
         self.addChildViewController(playerController)
         playerController.showsPlaybackControls = false
@@ -340,8 +322,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             let image: UIImage? = UIImage(contentsOfFile: templatepath)
             playerController.view.backgroundColor = UIColor(patternImage: image!)
         }
-
-
+        
+        
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.displayWebView), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player?.currentItem)
         if adLink != "" {
             let adPageLinkOverlay = UIView(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight - 44))
@@ -375,7 +357,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 40))
     }
     
-
+    
     @IBAction func videoMuteSwitch(sender: UIButton) {
         if sender.isSelected {
             player?.isMuted = true
@@ -404,46 +386,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     func clickAd() {
         openInView(adLink)
     }
-    func updateAdSchedule() {
-        let urlLauchAdSchedule = URL(string: lauchAdSchedule)
-        grabFileFromWeb(urlLauchAdSchedule!)
-    }
-    func grabFileFromWeb(_ url: URL) {
-        //print("lastPathComponent: " + (url.lastPathComponent ?? ""))
-        //weChatShareIcon = UIImage(named: "ftcicon.jpg")
-        getDataFromUrl(url) { (data, response, error)  in
-            DispatchQueue.main.async { () -> Void in
-                guard let data = data , error == nil else { return }
-                //print(response?.suggestedFilename ?? "")
-                //print(data)
-                self.saveFile(data, filename: "schedule.json")
-                //print(data)
-                //print("Download Finished")
-                //weChatShareIcon = UIImage(data: data)
-            }
-        }
-    }
-    
-    func saveFile(_ data: Data, filename: String) {
-        let documentsDirectoryPathString = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
-        let documentsDirectoryPath = URL(string: documentsDirectoryPathString)!
-        let jsonFilePath = documentsDirectoryPath.appendingPathComponent(filename)
-        let fileManager = FileManager.default
-        let created = fileManager.createFile(atPath: jsonFilePath.absoluteString, contents: nil, attributes: nil)
-        if created {
-            //print("File created ")
-        } else {
-            //print("Couldn't create file for some reason")
-        }
-        // Write that JSON to the file created earlier
-        do {
-            let file = try FileHandle(forWritingTo: jsonFilePath)
-            file.write(data)
-            //print("JSON data was written to the file successfully!")
-        } catch let error as NSError {
-            print("Couldn't write to file: \(error.localizedDescription)")
-        }
-    }
+
     
     //Load HTML String from Bundle to start the App
     func loadFromLocal() {
@@ -455,117 +398,30 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         let s = try! NSString(contentsOfFile:templatepath, encoding:String.Encoding.utf8.rawValue)
         //let ss = "<content>"
         
-        if #available(iOS 8.0, *) {
-            //            let webView = self.view as! WKWebView
-            //            webView.loadRequest(req)
-            self.webView!.loadHTMLString(s as String, baseURL:base)
-        } else {
-            //uiWebView?.loadRequest(req)
-            uiWebView.loadHTMLString(s as String, baseURL: base)
-        }
+        
+        //            let webView = self.view as! WKWebView
+        //            webView.loadRequest(req)
+        self.webView!.loadHTMLString(s as String, baseURL:base)
+        
         checkConnectionType()
     }
     
-    func parseSchedule() {
-        let scheduleDataFinal: Data
-        let jsonFileTime: Int
-        let jsonFileTimeBundle: Int
-        let scheduleData = readFile("schedule.json", fileLocation: "download")
-        let scheduleDataBundle = readFile("schedule.json", fileLocation: "bundle")
-        if scheduleData != nil {
-            jsonFileTime = getJSONFileTime(scheduleData!)
-        } else {
-            jsonFileTime = 0
-        }
-        if scheduleDataBundle != nil {
-            jsonFileTimeBundle = getJSONFileTime(scheduleDataBundle!)
-        } else {
-            jsonFileTimeBundle = 0
-        }
-        // compare two versions of schedule.json file
-        // use whichever is latest
-        if jsonFileTime > jsonFileTimeBundle {
-            scheduleDataFinal = scheduleData!
-            print("get schedule from download")
-        } else {
-            scheduleDataFinal = scheduleDataBundle!
-            print("get schedule from bundle")
-        }
-        
 
-        do {
-            let JSON = try JSONSerialization.jsonObject(with: scheduleDataFinal, options:JSONSerialization.ReadingOptions(rawValue: 0))
-            guard let JSONDictionary: NSDictionary = JSON as? NSDictionary else {
-                print("Not a Dictionary")
-                return
-            }
-            guard let creatives = JSONDictionary["creatives"] as? NSArray else {
-                print("creatives Not an Array")
-                return
-            }
-            for (creative) in creatives {
-                print(creative)
-            }
-        }
-        catch let JSONError as NSError {
-            print("\(JSONError)")
-        }
+    
 
-    }
     
-    func getJSONFileTime(_ jsonData: Data) -> Int {
-        do {
-            let JSON = try JSONSerialization.jsonObject(with: jsonData, options:JSONSerialization.ReadingOptions(rawValue: 0))
-            guard let JSONDictionary: NSDictionary = JSON as? NSDictionary else {
-                print("Not a Dictionary")
-                return 0
-            }
-            //print("JSONDictionary! \(JSONDictionary)")
-            guard let fileTime = JSONDictionary["fileTime"] as? Int else {
-                print("No File Time")
-                return 0
-            }
-            return fileTime
-        }
-        catch let JSONError as NSError {
-            print("\(JSONError)")
-        }
-        return 0
-    }
-    
-    func readFile(_ fileName: String, fileLocation: String) -> Data? {
-        if fileLocation == "download" {
-            let DocumentDirURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-            let fileURL = DocumentDirURL.appendingPathComponent(fileName)
-            return (try? Data(contentsOf: fileURL))
-        } else {
-            let filename: NSString = fileName as NSString
-            let pathExtention = filename.pathExtension
-            let pathPrefix = filename.deletingPathExtension
-            guard let fileURLBuddle = Bundle.main.path(forResource: pathPrefix, ofType: pathExtention) else {
-                return nil
-            }
-            return (try? Data(contentsOf: URL(fileURLWithPath: fileURLBuddle)))
-        }
-    }
+
     
     func checkBlankPage() {
-        if #available(iOS 8.0, *) {
-            //let webView = self.view as! WKWebView
-            self.webView!.evaluateJavaScript("document.querySelector('body').innerHTML") { (result, error) in
-                if error != nil {
-                    self.loadFromLocal()
-                } else {
-                    self.checkConnectionType()
-                }
-            }
-        } else {
-            if let _ = uiWebView.stringByEvaluatingJavaScript(from: "document.querySelector('body').innerHTML") {
-                checkConnectionType()
-            } else {
+        //let webView = self.view as! WKWebView
+        self.webView!.evaluateJavaScript("document.querySelector('body').innerHTML") { (result, error) in
+            if error != nil {
                 self.loadFromLocal()
+            } else {
+                self.checkConnectionType()
             }
         }
+        
     }
     
     //when user tap on a remote notification
@@ -597,14 +453,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
         if jsCode != "" {
             jsCode = "try{ga('set', 'campaignName', '\(action)');ga('set', 'campaignSource', 'Apple Push Service');ga('set', 'campaignMedium', 'Push Notification');}catch(ignore){}\(jsCode);ga('send','event', 'Tap Notification', '\(action)', '\(id)');fa('send','event', 'Tap Notification', '\(action)', '\(id)');"
-            if #available(iOS 8.0, *) {
-                //let webView = self.view as! WKWebView
-                self.webView!.evaluateJavaScript(jsCode) { (result, error) in
-                }
-            } else {
-                if let _ = self.uiWebView.stringByEvaluatingJavaScript(from: jsCode) {
-                }
+            //let webView = self.view as! WKWebView
+            self.webView!.evaluateJavaScript(jsCode) { (result, error) in
             }
+            
         }
     }
     
@@ -627,13 +479,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     func updateConnectionToWeb(_ connectionType: String) {
         let jsCode = "window.gConnectionType = '\(connectionType)';"
-        if #available(iOS 8.0, *) {
-            //let webView = self.view as! WKWebView
-            self.webView!.evaluateJavaScript(jsCode) { (result, error) in
-            }
-        } else {
-            let _ = uiWebView.stringByEvaluatingJavaScript(from: jsCode)
+        //let webView = self.view as! WKWebView
+        self.webView!.evaluateJavaScript(jsCode) { (result, error) in
         }
+        
     }
     
     
@@ -650,7 +499,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     func displayWebView() {
         if pageStatus != .webViewDisplayed {
-
+            
             for subUIView in overlayView!.subviews {
                 subUIView.removeFromSuperview()
             }
@@ -671,32 +520,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     
-    //iOS 7 link clicked
-    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
-        let urlString = request.url!.absoluteString
-        if (urlString != startUrl && urlString != "about:blank") {
-            resetTimer(maxAdTimeAfterWebRequest)
-        }
-        if request.url!.scheme == "ftcweixin" {
-            shareToWeChat(urlString)
-            return false
-        }  else if request.url!.scheme == "iosaction" {
-            turnOnActionSheet(urlString)
-            return false
-        } else if navigationType == .linkClicked{
-            if urlString.range(of: "mailto:") != nil{
-                UIApplication.shared.openURL(request.url!)
-            } else {
-                openInView (urlString)
-            }
-            return false
-        } else {
-            return true
-        }
-    }
-    
-    //iOS 8 link clicked
-    @available(iOS 8.0, *)
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: (@escaping (WKNavigationActionPolicy) -> Void)) {
         let urlString = navigationAction.request.url!.absoluteString
         if (urlString != startUrl && urlString != "about:blank") {
@@ -840,62 +663,54 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     // MARK: NSCoding
     
-//        var users = [User]()
-//    
-//        func saveUsers() {
-//            let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(users, toFile: User.ArchiveURL.path!)
-//            if !isSuccessfulSave {
-//                print ("Failed to save meals...")
-//            } else {
-//                print ("save user id \(users[0].userid)")
-//            }
-//        }
-//    
-//        func loadUsers() -> [User]? {
-//            print ("load from saved Users")
-//            return NSKeyedUnarchiver.unarchiveObjectWithFile(User.ArchiveURL.path!) as? [User]
-//        }
-//    
-//    
-//        func updateUserId(userId: String) {
-//            if let savedUsers = loadUsers() {
-//                users = savedUsers
-//            } else {
-//                let user1 = User(userid: "")!
-//                users += [user1]
-//            }
-//            users[0].userid = userId
-//            saveUsers()
-//        }
+    //        var users = [User]()
+    //
+    //        func saveUsers() {
+    //            let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(users, toFile: User.ArchiveURL.path!)
+    //            if !isSuccessfulSave {
+    //                print ("Failed to save meals...")
+    //            } else {
+    //                print ("save user id \(users[0].userid)")
+    //            }
+    //        }
+    //
+    //        func loadUsers() -> [User]? {
+    //            print ("load from saved Users")
+    //            return NSKeyedUnarchiver.unarchiveObjectWithFile(User.ArchiveURL.path!) as? [User]
+    //        }
+    //
+    //
+    //        func updateUserId(userId: String) {
+    //            if let savedUsers = loadUsers() {
+    //                users = savedUsers
+    //            } else {
+    //                let user1 = User(userid: "")!
+    //                users += [user1]
+    //            }
+    //            users[0].userid = userId
+    //            saveUsers()
+    //        }
     
     func getUserId() {
         var userId = ""
-        if #available(iOS 8.0, *) {
-            self.webView!.evaluateJavaScript("getCookie('USER_ID')") { (result, error) in
-                if error != nil {
-                    print ("error running js")
-                    //self.loadFromLocal()
+        self.webView!.evaluateJavaScript("getCookie('USER_ID')") { (result, error) in
+            if error != nil {
+                print ("error running js")
+                //self.loadFromLocal()
+            } else {
+                //get the user id
+                let resultString = result as? String
+                if resultString != nil {
+                    userId = resultString!
+                    //print ("the cookie value is \(resultString!)")
+                    //self.updateUserId(resultString!)
                 } else {
-                    //get the user id
-                    let resultString = result as? String
-                    if resultString != nil {
-                        userId = resultString!
-                        //print ("the cookie value is \(resultString!)")
-                        //self.updateUserId(resultString!)
-                    } else {
-                        //print ("cookie is not available")
-                    }
-                    self.sendToken(userId)
-                }
-            }
-        } else {
-            if let uId = uiWebView.stringByEvaluatingJavaScript(from: "getCookie('USER_ID')") {
-                if uId != "null" && uId != "" {
-                    userId = uId
+                    //print ("cookie is not available")
                 }
                 self.sendToken(userId)
             }
         }
+        
     }
     
     func sendToken(_ userId: String) {

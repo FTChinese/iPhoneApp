@@ -1,1 +1,36 @@
-{"fileTime":201609290001,"creatives":[{"fileName":"1.jpg","impression":"http://www.ftchinese.com/","click":"http://www.baidu.com/"},{"fileName":"2.jpg","impression":"http://www.ftchinese.com/","click":"http://www.baidu.com/"}]}
+{
+    "fileTime": 201609290000,
+    "creatives": [
+                  {
+                  "fileName": "1.jpg",
+                  "impression": ["http://www.ftchinese.com/", "http://www.baidu.com/"],
+                  "click": "http://www.baidu.com/",
+                  "dates": [20160930,20161001]
+                  },
+                  {
+                  "fileName": "2.mp4",
+                  "impression": ["http://www.ftchinese.com/", "http://www.baidu.com/"],
+                  "click": "http://www.baidu.com/",
+                  "dates": [20161002,20161003]
+                  },
+                  {
+                  "fileName": "3.mp4",
+                  "backupImage": "1.jpg",
+                  "impression": ["http://www.ftchinese.com/", "http://www.baidu.com/"],
+                  "click": "http://www.baidu.com/",
+                  "dates": [20161004,20161005]
+                  },
+                  {
+                  "fileName": "3.mp4",
+                  "impression": ["http://www.ftchinese.com/", "http://www.baidu.com/"],
+                  "click": "http://www.baidu.com/",
+                  "dates": [20161006,20161007]
+                  },
+                  {
+                  "fileName": "http://www.ftchinese.com/5.html",
+                  "impression": ["http://www.ftchinese.com/", "http://www.baidu.com/"],
+                  "click": "http://www.baidu.com/",
+                  "dates": [20161006,20161007]
+                  }
+                  ]
+}
