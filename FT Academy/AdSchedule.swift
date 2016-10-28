@@ -133,6 +133,10 @@ class AdSchedule {
                 print("creatives Not an Array")
                 return
             }
+            // the creatives that are needed for now or a future date
+            // other creatives should be deleted
+            // the schedule.json file is always needed
+            var creativesNeededInFuture = [self.adScheduleFileName]
             // check each crative in the schedule
             for (creative) in creatives {
                 guard let currentCreative = creative as? NSDictionary else {
@@ -165,20 +169,49 @@ class AdSchedule {
                     let url = NSURL(string:currentFileName)
                     let pathExtention = url?.pathExtension
                     
-                    // if the file exists locally
-                    // return its path
-                    // otherwise return nil
+                    // if the file exists locally, return its path. otherwise return nil
                     let templatePath = checkFilePath(fileUrl: currentFileName)
-                    // if the file does not exit
-                    // download it
-                    if templatePath == nil && pathExtention != nil{
-                        print("\(currentFileName) about to be downloaded")
-                        if let lastComponent = url?.lastPathComponent {
-                                grabFileFromWeb(url: url as! URL, fileName: lastComponent, parseScheduleForDownload: false)
+                    // if the file does not exit, download it
+                    if let lastComponent = url?.lastPathComponent {
+                        if templatePath == nil && pathExtention != nil{
+                            print("\(currentFileName) about to be downloaded")
+                            grabFileFromWeb(url: url as! URL, fileName: lastComponent, parseScheduleForDownload: false)
                         }
+                        creativesNeededInFuture.append(lastComponent)
                     }
                 }
             }
+            // delete files that not need for the future
+            print(creativesNeededInFuture)
+            
+            // Get the document directory url
+            let documentsUrl =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            
+            do {
+                // Get the directory contents urls (including subfolders urls)
+                let directoryContents = try FileManager.default.contentsOfDirectory(at: documentsUrl, includingPropertiesForKeys: nil, options: [])
+                // print(directoryContents)
+                
+                // if you want to filter the directory contents you can do like this:
+                let creativeTypes = videoTypes + htmlTypes + imageTypes
+                let creativeFiles = directoryContents.filter{ creativeTypes.contains($0.pathExtension) }
+                
+                for creativeFile in creativeFiles {
+                    // print(creativeFile.lastPathComponent)
+                    let creativeFileString = creativeFile.lastPathComponent
+                    if !creativesNeededInFuture.contains(creativeFileString) {
+                        try FileManager.default.removeItem(at: creativeFile)
+                        print("remove file: \(creativeFileString)")
+                    }
+                }
+                // print("creatives:",creativeFiles)
+                //                let mp3FileNames = mp3Files.map{ $0.deletingPathExtension().lastPathComponent }
+                //                print("mp3 list:", mp3FileNames)
+                
+            } catch let error as NSError {
+                print(error.localizedDescription)
+            }
+            
         } catch let JSONError as NSError {
             print("\(JSONError)")
         }

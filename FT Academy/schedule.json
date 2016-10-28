@@ -2,14 +2,14 @@
     "fileTime": 201610270001,
     "creatives": [
                   {
-                  "fileName": "https://api.ftmailbox.com/ad/20161018/BD_TRW_NA_GMTII_M116719BLRO-0001_ZHS_600x900_STATIC-JPEG_160908.jpg",
+                  "fileName": "http://m.ftchinese.com/ad/20161018/BD_TRW_NA_GMTII_M116719BLRO-0001_ZHS_600x900_STATIC-JPEG_160908.jpg",
                   "impression": ["http://www.ftchinese.com/", "http://www.baidu.com/"],
                   "click": "http://www.baidu.com/",
                   "platforms": ["iphone","android"],
-                  "dates": [20160930,20161029]
+                  "dates": [20160930,20161020]
                   },
                   {
-                  "fileName": "https://api.ftmailbox.com/ad/20161018/P38938019__AT_video_gr5.mp4",
+                  "fileName": "http://m.ftchinese.com/ad/20161018/P38938019__AT_video_gr5.mp4",
                   "impression": ["http://www.ftchinese.com/", "http://www.baidu.com/"],
                   "click": "http://www.baidu.com/",
                   "platforms": ["iphone","android"],
@@ -17,15 +17,15 @@
                   "showSoundButton": false
                   },
                   {
-                  "fileName": "https://api.ftmailbox.com/ad/20161018/NUNU.MOV",
+                  "fileName": "http://m.ftchinese.com/ad/20161018/NUNU.MOV",
                   "impression": ["http://www.ftchinese.com/", "http://www.baidu.com/"],
                   "click": "http://www.baidu.com/",
                   "platforms": ["iphone","android"],
-                  "dates": [20161002,20161029],
+                  "dates": [20161002,20161028],
                   "showSoundButton": true
                   },
                   {
-                  "fileName": "https://api.ftmailbox.com/ad/20161018/P39246260__AT_video_gr5.mp4",
+                  "fileName": "http://m.ftchinese.com/ad/20161018/P39246260__AT_video_gr5.mp4",
                   "backupImage": "https://api.ftmailbox.com/ad/20161018/BD_TRW_NA_GMTII_M116719BLRO-0001_ZHS_600x900_STATIC-JPEG_160908.jpg",
                   "impression": ["http://www.ftchinese.com/", "http://www.baidu.com/"],
                   "click": "http://www.baidu.com/",
@@ -37,14 +37,14 @@
                   "impression": ["http://www.ftchinese.com/", "http://www.baidu.com/"],
                   "click": "http://www.baidu.com/",
                   "platforms": ["iphone","android"],
-                  "dates": [20161006,20161028]
+                  "dates": [20161006,20161029]
                   },
                   {
-                  "fileName": "https://api.ftmailbox.com/ad/20161018/yyk001.html",
+                  "fileName": "http://m.ftchinese.com/ad/20161018/yyk001.html",
                   "impression": ["http://www.ftchinese.com/", "http://www.baidu.com/"],
                   "click": "http://www.baidu.com/",
                   "platforms": ["iphone","android"],
-                  "dates": [20161006,20161028]
+                  "dates": [20161006,20161020]
                   }
                   ]
 }

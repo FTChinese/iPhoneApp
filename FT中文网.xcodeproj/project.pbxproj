@@ -69,19 +69,12 @@
 		507C7E6F1DB0BCE800A8EF50 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50256CA51A4B9D0B005950B9 /* Images.xcassets */; };
 		507C7E701DB0BCE800A8EF50 /* schedule.json in Resources */ = {isa = PBXBuildFile; fileRef = 5005FB811D9D090800E2B3DC /* schedule.json */; };
 		507C7E761DB0BCF100A8EF50 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50C34C371BC664B300C8A8CB /* LaunchScreen.xib */; };
-		5082FE091DC2EB5C005BA41D /* P39246260__AT_video_gr5.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5082FE081DC2EB5C005BA41D /* P39246260__AT_video_gr5.mp4 */; };
-		5082FE0A1DC2EB5C005BA41D /* P39246260__AT_video_gr5.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 5082FE081DC2EB5C005BA41D /* P39246260__AT_video_gr5.mp4 */; };
 		50982C7F1BC7A7C800907575 /* IJReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50982C7D1BC7A7C800907575 /* IJReachability.swift */; };
 		50982C801BC7A7C800907575 /* IJReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50982C7D1BC7A7C800907575 /* IJReachability.swift */; };
 		50A677271A4EBFBC002B347F /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 50A677261A4EBFBC002B347F /* index.html */; };
 		50DF3E9F1D484B3C0054DDD2 /* ShareImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DF3E9E1D484B3C0054DDD2 /* ShareImage.swift */; };
-		50E577CF1DB60D8E0016A73F /* BD_TRW_NA_GMTII_M116719BLRO-0001_ZHS_600x900_STATIC-JPEG_160908.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 50E577CE1DB60D8E0016A73F /* BD_TRW_NA_GMTII_M116719BLRO-0001_ZHS_600x900_STATIC-JPEG_160908.jpg */; };
 		50E577D71DB754880016A73F /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E577D61DB754880016A73F /* close.png */; };
 		50E577D81DB754880016A73F /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E577D61DB754880016A73F /* close.png */; };
-		50E577DD1DB755E70016A73F /* P38938019__AT_video_gr5.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 50E577DC1DB755E70016A73F /* P38938019__AT_video_gr5.mp4 */; };
-		50E577DE1DB755E70016A73F /* P38938019__AT_video_gr5.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 50E577DC1DB755E70016A73F /* P38938019__AT_video_gr5.mp4 */; };
-		50E577E01DB84A4C0016A73F /* yyk001.html in Resources */ = {isa = PBXBuildFile; fileRef = 50E577DF1DB84A4C0016A73F /* yyk001.html */; };
-		50E577E11DB84A4C0016A73F /* yyk001.html in Resources */ = {isa = PBXBuildFile; fileRef = 50E577DF1DB84A4C0016A73F /* yyk001.html */; };
 		50E5E6F21BD8A21B00F4A33E /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50E5E6F11BD8A21B00F4A33E /* CoreTelephony.framework */; };
 		50FC07E21A539BF3006EE23F /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FC07DF1A539BF3006EE23F /* libWeChatSDK.a */; };
 		50FC07E41A53A2B3006EE23F /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FC07E31A53A2B3006EE23F /* CoreLocation.framework */; };
@@ -139,7 +132,6 @@
 		50604A621A5552F1003803E6 /* webview.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = webview.html; path = supporting/webview.html; sourceTree = "<group>"; };
 		507C7E741DB0BCE800A8EF50 /* FT中文网-iPad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FT中文网-iPad.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		507C7E751DB0BCE800A8EF50 /* FT中文网 copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "FT中文网 copy-Info.plist"; path = "/Users/zhangoliver/sandbox/FTCiPhone/FT中文网 copy-Info.plist"; sourceTree = "<absolute>"; };
-		5082FE081DC2EB5C005BA41D /* P39246260__AT_video_gr5.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = P39246260__AT_video_gr5.mp4; sourceTree = "<group>"; };
 		50873CC91A503A870027955A /* FT Academy-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FT Academy-Bridging-Header.h"; sourceTree = "<group>"; };
 		50982C7D1BC7A7C800907575 /* IJReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IJReachability.swift; sourceTree = "<group>"; };
 		50A677261A4EBFBC002B347F /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = index.html; path = supporting/index.html; sourceTree = "<group>"; };
@@ -147,10 +139,7 @@
 		50C34C361BC664AE00C8A8CB /* FT中文网HD.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "FT中文网HD.plist"; path = "/Users/zhangoliver/sandbox/FTCiPhone/FT中文网HD.plist"; sourceTree = "<absolute>"; };
 		50C34C381BC664B300C8A8CB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = "Resources-iPad/FT Academy/Base.lproj/LaunchScreen.xib"; sourceTree = "<group>"; };
 		50DF3E9E1D484B3C0054DDD2 /* ShareImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareImage.swift; sourceTree = "<group>"; };
-		50E577CE1DB60D8E0016A73F /* BD_TRW_NA_GMTII_M116719BLRO-0001_ZHS_600x900_STATIC-JPEG_160908.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "BD_TRW_NA_GMTII_M116719BLRO-0001_ZHS_600x900_STATIC-JPEG_160908.jpg"; sourceTree = "<group>"; };
 		50E577D61DB754880016A73F /* close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = close.png; sourceTree = "<group>"; };
-		50E577DC1DB755E70016A73F /* P38938019__AT_video_gr5.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = P38938019__AT_video_gr5.mp4; sourceTree = "<group>"; };
-		50E577DF1DB84A4C0016A73F /* yyk001.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = yyk001.html; sourceTree = "<group>"; };
 		50E5E6F11BD8A21B00F4A33E /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		50FC07DF1A539BF3006EE23F /* libWeChatSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeChatSDK.a; sourceTree = "<group>"; };
 		50FC07E01A539BF3006EE23F /* WXApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApi.h; sourceTree = "<group>"; };
@@ -281,10 +270,6 @@
 				5005FB811D9D090800E2B3DC /* schedule.json */,
 				50E577D61DB754880016A73F /* close.png */,
 				50159E5C1BA05EBD00F22FFC /* ftcicon.jpg */,
-				50E577DF1DB84A4C0016A73F /* yyk001.html */,
-				50E577CE1DB60D8E0016A73F /* BD_TRW_NA_GMTII_M116719BLRO-0001_ZHS_600x900_STATIC-JPEG_160908.jpg */,
-				50E577DC1DB755E70016A73F /* P38938019__AT_video_gr5.mp4 */,
-				5082FE081DC2EB5C005BA41D /* P39246260__AT_video_gr5.mp4 */,
 				503435291DBA01F900B2F686 /* NUNU.MOV */,
 				50256C9D1A4B9D0B005950B9 /* Info.plist */,
 				50A677261A4EBFBC002B347F /* index.html */,
@@ -459,16 +444,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5082FE091DC2EB5C005BA41D /* P39246260__AT_video_gr5.mp4 in Resources */,
 				50E577D71DB754880016A73F /* close.png in Resources */,
 				50256CA41A4B9D0B005950B9 /* Main.storyboard in Resources */,
 				50604A631A5552F2003803E6 /* webview.html in Resources */,
-				50E577DD1DB755E70016A73F /* P38938019__AT_video_gr5.mp4 in Resources */,
-				50E577E01DB84A4C0016A73F /* yyk001.html in Resources */,
 				50A677271A4EBFBC002B347F /* index.html in Resources */,
 				50256CA91A4B9D0B005950B9 /* LaunchScreen.xib in Resources */,
 				50159E5D1BA05EBD00F22FFC /* ftcicon.jpg in Resources */,
-				50E577CF1DB60D8E0016A73F /* BD_TRW_NA_GMTII_M116719BLRO-0001_ZHS_600x900_STATIC-JPEG_160908.jpg in Resources */,
 				5034352A1DBA01F900B2F686 /* NUNU.MOV in Resources */,
 				5039A4B41C61FAD40008F2AD /* README.txt in Resources */,
 				503435271DB9FDC200B2F686 /* mute.png in Resources */,
@@ -496,14 +477,11 @@
 				507C7E6C1DB0BCE800A8EF50 /* ftcicon.jpg in Resources */,
 				507C7E6E1DB0BCE800A8EF50 /* README.txt in Resources */,
 				507C7E6F1DB0BCE800A8EF50 /* Images.xcassets in Resources */,
-				50E577E11DB84A4C0016A73F /* yyk001.html in Resources */,
 				503435281DB9FDC200B2F686 /* mute.png in Resources */,
 				507C7E761DB0BCF100A8EF50 /* LaunchScreen.xib in Resources */,
 				5034352B1DBA01F900B2F686 /* NUNU.MOV in Resources */,
 				507C7E701DB0BCE800A8EF50 /* schedule.json in Resources */,
 				50E577D81DB754880016A73F /* close.png in Resources */,
-				50E577DE1DB755E70016A73F /* P38938019__AT_video_gr5.mp4 in Resources */,
-				5082FE0A1DC2EB5C005BA41D /* P39246260__AT_video_gr5.mp4 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
