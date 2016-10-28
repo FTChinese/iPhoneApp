@@ -28,13 +28,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     lazy var token: Any? = {return nil} ()
     lazy var overlayView: UIView? = UIView()
     
-    var adType = "video"
-    var adLink = "http://www.rolex.com"
-    var videoFile = "NUNU.MOV"
-    var videoBackgroundFile = "BD_TRW_NA_GMTII_M116719BLRO-0001_ZHS_600x900_STATIC-JPEG_160908.jpg"
-    var imageFile = "BD_TRW_NA_GMTII_M116719BLRO-0001_ZHS_600x900_STATIC-JPEG_160908.jpg"
-    var htmlFile = "yyk001.html"
-    var htmlBaseUrl = "http://www3.ftchinese.com/adv/yyk/"
+    // set to none before releasing this publicly
+    var adType = ""
+    
     let screenWidth = UIScreen.main.bounds.width
     let screenHeight = UIScreen.main.bounds.height
     
@@ -162,28 +158,29 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     // if there's a full screen screen ad to show
     func adOverlayView() {
-        if adType == "none" {
+        if self.adType == "none" {
             normalOverlayView()
             return
         }
         adSchedule.parseSchedule()
-//        print("adtype: ")
-//        print(adSchedule.adType)
-        //parseSchedule()
-        if adType == "page" {
+        //print (adSchedule.image)
+        if adSchedule.adType == "page" {
             addOverlayView()
             showHTMLAd()
-        } else if adType == "image" {
+        } else if adSchedule.adType == "image" {
             addOverlayView()
             showImage()
-        } else if adType == "video" {
+        } else if adSchedule.adType == "video" {
             do {
-                try playVideo(videoType: "")
+                try playVideo()
             } catch AppError.invalidResource(let name, let type) {
                 debugPrint("Could not find resource \(name).\(type)")
             } catch {
                 debugPrint("Generic error")
             }
+        } else {
+            normalOverlayView()
+            return
         }
         //button to close the full screen ad
         addCloseButton()
@@ -211,7 +208,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         button?.layer.masksToBounds = true
         button?.layer.cornerRadius = 20
         
-        if adType == "video" {
+        if adSchedule.adType == "video" {
             self.view.viewWithTag(111)!.addSubview(button!)
         } else {
             self.overlayView!.addSubview(button!)
@@ -227,12 +224,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     func showImage() {
-        let filename: NSString = imageFile as NSString
-        let pathExtention = filename.pathExtension
-        let pathPrefix = filename.deletingPathExtension
-        let templatepath = Bundle.main.path(forResource: pathPrefix, ofType: pathExtention)!
-        let image: UIImage? = UIImage(contentsOfFile: templatepath)
-        let imageView: UIImageView? = UIImageView(image: image!)
+        let image = adSchedule.image
+        let imageView: UIImageView? = UIImageView(image: image)
         imageView?.frame = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
         imageView?.contentMode = .scaleAspectFit
         self.overlayView!.addSubview(imageView!)
@@ -245,17 +238,12 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     func showHTMLAd() {
-        let filename: NSString = htmlFile as NSString
-        let pathExtention = filename.pathExtension
-        let pathPrefix = filename.deletingPathExtension
         let adPageView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight))
-        let templatepath = Bundle.main.path(forResource: pathPrefix, ofType: pathExtention)!
-        let base = URL(string: htmlBaseUrl)
-        let s = try! NSString(contentsOfFile:templatepath, encoding:String.Encoding.utf8.rawValue)
+        let base = URL(string: adSchedule.htmlBase)
+        let s = adSchedule.htmlFile
         adPageView.loadHTMLString(s as String, baseURL:base)
         overlayView!.addSubview(adPageView)
-        
-        if adLink != "" {
+        if adSchedule.adLink != "" {
             let adPageLinkOverlay = UIView(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight))
             let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.clickAd))
             overlayView!.addSubview(adPageLinkOverlay)
@@ -264,15 +252,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     
-    func playVideo(videoType: String) throws {
-        let filename: NSString = videoFile as NSString
-        let pathExtention = filename.pathExtension
-        let pathPrefix = filename.deletingPathExtension
-        
-        guard let path = Bundle.main.path(forResource: pathPrefix, ofType:pathExtention) else {
-            throw AppError.invalidResource(pathPrefix, pathExtention)
-        }
-        
+    func playVideo() throws {
+        let path = adSchedule.videoFilePath
         maxAdTimeAfterLaunch = 525.0
         maxAdTimeAfterWebRequest = 523.0
         player = AVPlayer(url: URL(fileURLWithPath: path))
@@ -314,18 +295,14 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 30))
         view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 30))
         
-        if videoType == "landscape" {
-            let filename: NSString = videoBackgroundFile as NSString
-            let pathExtention = filename.pathExtension
-            let pathPrefix = filename.deletingPathExtension
-            let templatepath = Bundle.main.path(forResource: pathPrefix, ofType: pathExtention)!
-            let image: UIImage? = UIImage(contentsOfFile: templatepath)
+        if adSchedule.backupImage != nil {
+            let image = adSchedule.backupImage
             playerController.view.backgroundColor = UIColor(patternImage: image!)
         }
         
         
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.displayWebView), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player?.currentItem)
-        if adLink != "" {
+        if adSchedule.adLink != "" {
             let adPageLinkOverlay = UIView(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight - 44))
             let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.clickAd))
             playerController.view.addSubview(adPageLinkOverlay)
@@ -340,21 +317,24 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             })
         
         // button for switching off mute mode
-        let imageForMute = getImageFromSupportingFile(imageFileName: "mute.png")
-        let imageForSound = getImageFromSupportingFile(imageFileName: "sound.png")
-        let button: UIButton? = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
-        button?.backgroundColor = UIColor(white: 0, alpha: 0.382)
-        button?.setImage(imageForMute, for: UIControlState())
-        button?.setImage(imageForSound, for: .selected)
-        button?.layer.masksToBounds = true
-        button?.layer.cornerRadius = 20
-        playerController.view.addSubview(button!)
-        button?.translatesAutoresizingMaskIntoConstraints = false
-        button?.addTarget(self, action: #selector(ViewController.videoMuteSwitch), for: .touchUpInside)
-        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.left, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.left, multiplier: 1, constant: 16))
-        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 16))
-        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 40))
-        view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 40))
+        if adSchedule.showSoundButton == true {
+            let imageForMute = getImageFromSupportingFile(imageFileName: "sound.png")
+            let imageForSound = getImageFromSupportingFile(imageFileName: "mute.png")
+            let button: UIButton? = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+            button?.backgroundColor = UIColor(white: 0, alpha: 0.382)
+            button?.setImage(imageForMute, for: UIControlState())
+            button?.setImage(imageForSound, for: .selected)
+            button?.layer.masksToBounds = true
+            button?.layer.cornerRadius = 20
+            playerController.view.addSubview(button!)
+            button?.translatesAutoresizingMaskIntoConstraints = false
+            button?.addTarget(self, action: #selector(ViewController.videoMuteSwitch), for: .touchUpInside)
+            view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.left, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.left, multiplier: 1, constant: 16))
+            view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 16))
+            view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 40))
+            view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 40))
+        }
+
     }
     
     
@@ -384,7 +364,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     func clickAd() {
-        openInView(adLink)
+        openInView(adSchedule.adLink)
     }
 
     

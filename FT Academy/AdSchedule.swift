@@ -8,11 +8,183 @@
 
 import Foundation
 class AdSchedule {
+    // common properties for all types of creatives
     var adType = "none"
+    var htmlBase = ""
+    var adLink = ""
+    
+    // specific properties for each type of creative
+    lazy var image: UIImage? = nil
+    var htmlFile: NSString = ""
+    var videoFilePath = ""
+    lazy var backupImage: UIImage? = nil
+    var showSoundButton = true
+    
     private let adScheduleFileName = "schedule.json"
-    private let lauchAdSchedule = "http://m.ftchinese.com/test.json?4"
+    private let lauchAdSchedule = "http://m.ftchinese.com/test.json"
+    private let imageTypes = ["png","jpg","gif"]
+    private let videoTypes = ["mov","mp4"]
+    private let htmlTypes = ["html"]
+    
+    private var currentPlatform = "iphone"
     
     func parseSchedule() {
+        
+        let scheduleDataFinal = getLatestScheduleData()
+        
+        //Get Current Date in String format of YYYYMMDD
+        let dateInString = getCurrentDateString(dateFormat: "yyyyMMdd")
+        let dateInInt = Int(dateInString)!
+        
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            self.currentPlatform = "ipad"
+        }
+        
+        do {
+            let JSON = try JSONSerialization.jsonObject(with: scheduleDataFinal, options:JSONSerialization.ReadingOptions(rawValue: 0))
+            guard let JSONDictionary: NSDictionary = JSON as? NSDictionary else {
+                print("Not a Dictionary")
+                return
+            }
+            guard let creatives = JSONDictionary["creatives"] as? NSArray else {
+                print("creatives Not an Array")
+                return
+            }
+            // check each crative in the schedule
+            for (creative) in creatives {
+                guard let currentCreative = creative as? NSDictionary else {
+                    print("creative Not a dictionary")
+                    continue
+                }
+                guard let dates = currentCreative["dates"] as? NSArray else {
+                    print("creative dates Not an Array")
+                    continue
+                }
+                guard let platforms = currentCreative["platforms"] as? NSArray else {
+                    print("creative platforms Not an Array")
+                    continue
+                }
+                // if this creaive is scheduled for today
+                // and for this type of device(platform)
+                if dates.contains(dateInInt) && platforms.contains(self.currentPlatform){
+                    guard let currentFileName = currentCreative["fileName"] as? String else {
+                        print("cannot find file name of creative")
+                        continue
+                    }
+                    
+                    // extract the file name to figure out the adType
+                    let url = NSURL(string:currentFileName)
+                    let pathExtention = url?.pathExtension
+                    
+                    // if the file exists locally
+                    // return its path
+                    // otherwise return nil
+                    let templatePath = checkFilePath(fileUrl: currentFileName)
+                    // if the file exits
+                    if templatePath != nil && pathExtention != nil{
+                        // common properties like htmlBase, impressions and links
+                        self.htmlBase = currentFileName
+                        self.adLink = currentCreative["click"] as? String ?? ""
+                        
+                        // specific properties like image file, video file, backup image file
+                        if imageTypes.contains(pathExtention!.lowercased()) {
+                            //print("it is image \(templatePath)")
+                            self.adType = "image"
+                            self.image = UIImage(contentsOfFile: templatePath!)
+                            break
+                        } else if htmlTypes.contains(pathExtention!.lowercased()) {
+                            self.adType = "page"
+                            self.htmlFile = try! NSString(contentsOfFile:templatePath!, encoding:String.Encoding.utf8.rawValue)
+                            break
+                        } else if videoTypes.contains(pathExtention!.lowercased()) {
+                            self.adType = "video"
+                            self.videoFilePath = templatePath!
+                            if let backupImageString = currentCreative["backupImage"] as? String {
+                                if let templatePath = checkFilePath(fileUrl: backupImageString) {
+                                    self.backupImage = UIImage(contentsOfFile: templatePath)
+                                }
+                            }
+                            if let showSoundButtonBool = currentCreative["showSoundButton"] as? Bool {
+                                self.showSoundButton = showSoundButtonBool
+                            }
+                            break
+                        }
+                    }
+                }
+            }
+        } catch let JSONError as NSError {
+            print("\(JSONError)")
+        }
+        
+    }
+    
+    private func parseScheduleForDownloading() {
+        let scheduleDataFinal = getLatestScheduleData()
+        //Get Current Date in String format of YYYYMMDD
+        let dateInString = getCurrentDateString(dateFormat: "yyyyMMdd")
+        let dateInInt = Int(dateInString)!
+        do {
+            let JSON = try JSONSerialization.jsonObject(with: scheduleDataFinal, options:JSONSerialization.ReadingOptions(rawValue: 0))
+            guard let JSONDictionary: NSDictionary = JSON as? NSDictionary else {
+                print("Not a Dictionary")
+                return
+            }
+            guard let creatives = JSONDictionary["creatives"] as? NSArray else {
+                print("creatives Not an Array")
+                return
+            }
+            // check each crative in the schedule
+            for (creative) in creatives {
+                guard let currentCreative = creative as? NSDictionary else {
+                    print("creative Not a dictionary")
+                    continue
+                }
+                guard let dates = currentCreative["dates"] as? NSArray else {
+                    print("creative dates Not an Array")
+                    continue
+                }
+                guard let platforms = currentCreative["platforms"] as? NSArray else {
+                    print("creative platforms Not an Array")
+                    continue
+                }
+                // check if this creaive is scheduled for today or a later date
+                var creativeIsNeededForFuture = false
+                for dateStamp in (dates as? [Int])! {
+                    if dateStamp >= dateInInt {
+                        creativeIsNeededForFuture = true
+                    }
+                }
+                
+                // and for this type of device(platform)
+                if creativeIsNeededForFuture == true && platforms.contains(self.currentPlatform){
+                    guard let currentFileName = currentCreative["fileName"] as? String else {
+                        print("cannot find file name of creative")
+                        continue
+                    }
+                    // extract the file name to figure out the adType
+                    let url = NSURL(string:currentFileName)
+                    let pathExtention = url?.pathExtension
+                    
+                    // if the file exists locally
+                    // return its path
+                    // otherwise return nil
+                    let templatePath = checkFilePath(fileUrl: currentFileName)
+                    // if the file does not exit
+                    // download it
+                    if templatePath == nil && pathExtention != nil{
+                        print("\(currentFileName) about to be downloaded")
+                        if let lastComponent = url?.lastPathComponent {
+                                grabFileFromWeb(url: url as! URL, fileName: lastComponent, parseScheduleForDownload: false)
+                        }
+                    }
+                }
+            }
+        } catch let JSONError as NSError {
+            print("\(JSONError)")
+        }
+    }
+    
+    private func getLatestScheduleData() -> Data {
         let scheduleDataFinal: Data
         let jsonFileTime: Int
         let jsonFileTimeBundle: Int
@@ -37,27 +209,25 @@ class AdSchedule {
             scheduleDataFinal = scheduleDataBundle!
             print("get schedule from bundled json")
         }
-        
-        
-        do {
-            let JSON = try JSONSerialization.jsonObject(with: scheduleDataFinal, options:JSONSerialization.ReadingOptions(rawValue: 0))
-            guard let JSONDictionary: NSDictionary = JSON as? NSDictionary else {
-                print("Not a Dictionary")
-                return
-            }
-            guard let creatives = JSONDictionary["creatives"] as? NSArray else {
-                print("creatives Not an Array")
-                return
-            }
-            for (creative) in creatives {
-                print("This Creative: ")
-                print(creative)
-            }
-        } catch let JSONError as NSError {
-            print("\(JSONError)")
-        }
-        
+        return scheduleDataFinal
     }
+    
+    private func checkFilePath(fileUrl: String) -> String? {
+        let url = NSURL(string:fileUrl)
+        let lastComponent = url?.lastPathComponent
+        let templatepathInBuddle = Bundle.main.bundlePath + "/" + lastComponent!
+        let DocumentDirURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        let templatepathInDocument = DocumentDirURL.appendingPathComponent(lastComponent!)
+        var templatePath: String? = nil
+        if FileManager.default.fileExists(atPath: templatepathInBuddle)
+        {
+            templatePath = templatepathInBuddle
+        } else if FileManager().fileExists(atPath: templatepathInDocument.path) {
+            templatePath = templatepathInDocument.path
+        }
+        return templatePath
+    }
+    
     private func readFile(_ fileName: String, fileLocation: String) -> Data? {
         if fileLocation == "download" {
             let DocumentDirURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
@@ -73,6 +243,7 @@ class AdSchedule {
             return (try? Data(contentsOf: URL(fileURLWithPath: fileURLBuddle)))
         }
     }
+    
     private func getJSONFileTime(_ jsonData: Data) -> Int {
         do {
             let JSON = try JSONSerialization.jsonObject(with: jsonData, options:JSONSerialization.ReadingOptions(rawValue: 0))
@@ -96,24 +267,36 @@ class AdSchedule {
     
     // download the latest ad schedule and creatives
     func updateAdSchedule() {
-        let urlLauchAdSchedule = URL(string: lauchAdSchedule)
-        grabFileFromWeb(urlLauchAdSchedule!)
+        let dateInString = getCurrentDateString(dateFormat: "yyyyMMddHHmm")
+        let urlString = lauchAdSchedule + "?" + dateInString
+        let urlLauchAdSchedule = URL(string: urlString)
+        grabFileFromWeb(url: urlLauchAdSchedule!, fileName: self.adScheduleFileName, parseScheduleForDownload: true)
     }
-    private func grabFileFromWeb(_ url: URL) {
+    
+    private func getCurrentDateString(dateFormat: String) -> String {
+        let currentDate = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = dateFormat
+        let dateInString = dateFormatter.string(from: currentDate)
+        return dateInString
+    }
+    
+    private func grabFileFromWeb(url: URL, fileName: String, parseScheduleForDownload: Bool) {
         //print("lastPathComponent: " + (url.lastPathComponent ?? ""))
         //weChatShareIcon = UIImage(named: "ftcicon.jpg")
         getDataFromUrl(url) { (data, response, error)  in
             DispatchQueue.main.async { () -> Void in
                 guard let data = data , error == nil else { return }
-                //print(response?.suggestedFilename ?? "")
-                //print(data)
-                self.saveFile(data, filename: self.adScheduleFileName)
-                //print(data)
-                //print("Download Finished")
-                //weChatShareIcon = UIImage(data: data)
+                self.saveFile(data, filename: fileName)
+                print ("file saved as \(fileName)")
+                if parseScheduleForDownload == true {
+                    //print("\(fileName) should be parsed for downloading creatives")
+                    self.parseScheduleForDownloading()
+                }
             }
         }
     }
+    
     private func saveFile(_ data: Data, filename: String) {
         let documentsDirectoryPathString = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
         let documentsDirectoryPath = URL(string: documentsDirectoryPathString)!
