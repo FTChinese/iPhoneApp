@@ -19,6 +19,7 @@ class AdSchedule {
     var videoFilePath = ""
     lazy var backupImage: UIImage? = nil
     var showSoundButton = true
+    lazy var impression: [String] = []
     
     private let adScheduleFileName = "schedule.json"
     private let lauchAdSchedule = "http://m.ftchinese.com/test.json"
@@ -85,6 +86,7 @@ class AdSchedule {
                         // common properties like htmlBase, impressions and links
                         self.htmlBase = currentFileName
                         self.adLink = currentCreative["click"] as? String ?? ""
+                        self.impression = currentCreative["impression"] as? Array ?? []
                         
                         // specific properties like image file, video file, backup image file
                         if imageTypes.contains(pathExtention!.lowercased()) {
@@ -109,6 +111,8 @@ class AdSchedule {
                             }
                             break
                         }
+                        
+                        
                     }
                 }
             }

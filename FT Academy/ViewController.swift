@@ -495,6 +495,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 player?.removeTimeObserver(t)
                 token = nil
             }
+            
+            //send impression ping
+            reportImpressionToWeb(impressions: adSchedule.impression)
+            
             //player?.removeTimeObserver(token)
         }
     }
@@ -708,6 +712,32 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
+    // report ad impressions
+    private func reportImpressionToWeb(impressions: [String]) {
+        var deviceType = "iPhone"
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            deviceType = "iPad"
+        }
+        for impressionUrlString in impressions {
+            if let url = URL(string: impressionUrlString) {
+            getDataFromUrl(url) { (data, response, error)  in
+                DispatchQueue.main.async { () -> Void in
+                    guard let _ = data , error == nil else {
+                        let jsCode = "try{ga('send','event', '\(deviceType) Launch Ad', 'Fail', '\(impressionUrlString)', {'nonInteraction':1});}catch(ignore){}"
+                        self.webView!.evaluateJavaScript(jsCode) { (result, error) in
+                        }
+                        print ("Fail to send impression to \(url.absoluteString)")
+                        return
+                    }
+                    let jsCode = "try{ga('send','event', '\(deviceType) Launch Ad', 'Sent', '\(impressionUrlString)', {'nonInteraction':1});}catch(ignore){}"
+                    self.webView!.evaluateJavaScript(jsCode) { (result, error) in
+                    }
+                    print("sent impression to \(url.absoluteString)")
+                }
+            }
+            }
+        }
+    }
     
     /*
      func webView(webView: UIWebView, shouldStartLoadWithRequest r: NSURLRequest, navigationType nt: UIWebViewNavigationType) -> Bool {
