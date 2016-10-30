@@ -334,7 +334,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 40))
             view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 40))
         }
-
+        
     }
     
     
@@ -366,7 +366,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     func clickAd() {
         openInView(adSchedule.adLink)
     }
-
+    
     
     //Load HTML String from Bundle to start the App
     func loadFromLocal() {
@@ -386,11 +386,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         checkConnectionType()
     }
     
-
     
-
     
-
+    
+    
+    
     
     func checkBlankPage() {
         //let webView = self.view as! WKWebView
@@ -720,21 +720,21 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
         for impressionUrlString in impressions {
             if let url = URL(string: impressionUrlString) {
-            getDataFromUrl(url) { (data, response, error)  in
-                DispatchQueue.main.async { () -> Void in
-                    guard let _ = data , error == nil else {
-                        let jsCode = "try{ga('send','event', '\(deviceType) Launch Ad', 'Fail', '\(impressionUrlString)', {'nonInteraction':1});}catch(ignore){}"
+                getDataFromUrl(url) { (data, response, error)  in
+                    DispatchQueue.main.async { () -> Void in
+                        guard let _ = data , error == nil else {
+                            let jsCode = "try{ga('send','event', '\(deviceType) Launch Ad', 'Fail', '\(impressionUrlString)', {'nonInteraction':1});}catch(ignore){}"
+                            self.webView!.evaluateJavaScript(jsCode) { (result, error) in
+                            }
+                            print ("Fail to send impression to \(url.absoluteString)")
+                            return
+                        }
+                        let jsCode = "try{ga('send','event', '\(deviceType) Launch Ad', 'Sent', '\(impressionUrlString)', {'nonInteraction':1});}catch(ignore){}"
                         self.webView!.evaluateJavaScript(jsCode) { (result, error) in
                         }
-                        print ("Fail to send impression to \(url.absoluteString)")
-                        return
+                        print("sent impression to \(url.absoluteString)")
                     }
-                    let jsCode = "try{ga('send','event', '\(deviceType) Launch Ad', 'Sent', '\(impressionUrlString)', {'nonInteraction':1});}catch(ignore){}"
-                    self.webView!.evaluateJavaScript(jsCode) { (result, error) in
-                    }
-                    print("sent impression to \(url.absoluteString)")
                 }
-            }
             }
         }
     }

@@ -179,8 +179,8 @@ class AdSchedule {
                     
                     if let lastComponent = url?.lastPathComponent {
                         if templatePath == nil && pathExtention != nil{
-                            let statusType = IJReachability().connectedToNetworkOfType()
                             // download only when user is using wifi
+                            let statusType = IJReachability().connectedToNetworkOfType()
                             if statusType == .wiFi {
                                 print("\(currentFileName) about to be downloaded")
                                 grabFileFromWeb(url: url as! URL, fileName: lastComponent, parseScheduleForDownload: false)
