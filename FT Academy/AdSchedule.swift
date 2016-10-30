@@ -176,10 +176,15 @@ class AdSchedule {
                     // if the file exists locally, return its path. otherwise return nil
                     let templatePath = checkFilePath(fileUrl: currentFileName)
                     // if the file does not exit, download it
+                    
                     if let lastComponent = url?.lastPathComponent {
                         if templatePath == nil && pathExtention != nil{
-                            print("\(currentFileName) about to be downloaded")
-                            grabFileFromWeb(url: url as! URL, fileName: lastComponent, parseScheduleForDownload: false)
+                            let statusType = IJReachability().connectedToNetworkOfType()
+                            // download only when user is using wifi
+                            if statusType == .wiFi {
+                                print("\(currentFileName) about to be downloaded")
+                                grabFileFromWeb(url: url as! URL, fileName: lastComponent, parseScheduleForDownload: false)
+                            }
                         }
                         creativesNeededInFuture.append(lastComponent)
                     }

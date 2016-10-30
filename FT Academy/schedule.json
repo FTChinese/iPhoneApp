@@ -6,14 +6,14 @@
                   "impression": ["http://www.ftchinese.com/", "http://www.baidu.com/", "https://faf.com"],
                   "click": "http://www.baidu.com/",
                   "platforms": ["iphone","android"],
-                  "dates": [20160930,20161030]
+                  "dates": [20160930,20161101]
                   },
                   {
                   "fileName": "http://m.ftchinese.com/ad/20161018/P38938019__AT_video_gr5.mp4",
                   "impression": ["http://www.ftchinese.com/", "http://www.baidu.com/"],
                   "click": "http://www.baidu.com/",
                   "platforms": ["iphone","android"],
-                  "dates": [20161002,20161029],
+                  "dates": [20161002,20161030],
                   "showSoundButton": false
                   },
                   {
