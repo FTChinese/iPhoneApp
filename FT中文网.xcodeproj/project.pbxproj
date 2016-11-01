@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		5005FB821D9D090800E2B3DC /* schedule.json in Resources */ = {isa = PBXBuildFile; fileRef = 5005FB811D9D090800E2B3DC /* schedule.json */; };
-		50159E451B98A70B00F22FFC /* WeChatActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E441B98A70B00F22FFC /* WeChatActivity.swift */; };
+		50119E7D1DC873C6003667DE /* WeChatShare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50119E7C1DC873C6003667DE /* WeChatShare.swift */; };
+		50119E7E1DC873C6003667DE /* WeChatShare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50119E7C1DC873C6003667DE /* WeChatShare.swift */; };
 		50159E471B9B147500F22FFC /* DataForShare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E461B9B147500F22FFC /* DataForShare.swift */; };
-		50159E491B9B249900F22FFC /* WeChatMoment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E481B9B249900F22FFC /* WeChatMoment.swift */; };
 		50159E4B1B9B2ED900F22FFC /* OpenInSafari.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E4A1B9B2ED900F22FFC /* OpenInSafari.swift */; };
 		50159E5D1BA05EBD00F22FFC /* ftcicon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 50159E5C1BA05EBD00F22FFC /* ftcicon.jpg */; };
 		50256C9F1A4B9D0B005950B9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50256C9E1A4B9D0B005950B9 /* AppDelegate.swift */; };
@@ -27,8 +27,6 @@
 		503435261DB9FDC200B2F686 /* sound.png in Resources */ = {isa = PBXBuildFile; fileRef = 503435231DB9FDC200B2F686 /* sound.png */; };
 		503435271DB9FDC200B2F686 /* mute.png in Resources */ = {isa = PBXBuildFile; fileRef = 503435241DB9FDC200B2F686 /* mute.png */; };
 		503435281DB9FDC200B2F686 /* mute.png in Resources */ = {isa = PBXBuildFile; fileRef = 503435241DB9FDC200B2F686 /* mute.png */; };
-		5034352A1DBA01F900B2F686 /* NUNU.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 503435291DBA01F900B2F686 /* NUNU.MOV */; };
-		5034352B1DBA01F900B2F686 /* NUNU.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 503435291DBA01F900B2F686 /* NUNU.MOV */; };
 		5034356A1DBDEC8300B2F686 /* AdSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 503435691DBDEC8200B2F686 /* AdSchedule.swift */; };
 		5034356B1DBDEC8300B2F686 /* AdSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 503435691DBDEC8200B2F686 /* AdSchedule.swift */; };
 		5034356D1DBDF8D700B2F686 /* UpdateAdSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5034356C1DBDF8D700B2F686 /* UpdateAdSchedule.swift */; };
@@ -39,9 +37,7 @@
 		5039A4B71C61FB170008F2AD /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5039A4B61C61FB170008F2AD /* AdSupport.framework */; };
 		50604A631A5552F2003803E6 /* webview.html in Resources */ = {isa = PBXBuildFile; fileRef = 50604A621A5552F1003803E6 /* webview.html */; };
 		507C7E4D1DB0BCE800A8EF50 /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50256CC21A4BFAE7005950B9 /* Globals.swift */; };
-		507C7E4E1DB0BCE800A8EF50 /* WeChatActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E441B98A70B00F22FFC /* WeChatActivity.swift */; };
 		507C7E4F1DB0BCE800A8EF50 /* WKWebPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50256CC41A4C1916005950B9 /* WKWebPageController.swift */; };
-		507C7E501DB0BCE800A8EF50 /* WeChatMoment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E481B9B249900F22FFC /* WeChatMoment.swift */; };
 		507C7E511DB0BCE800A8EF50 /* OpenInSafari.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50159E4A1B9B2ED900F22FFC /* OpenInSafari.swift */; };
 		507C7E521DB0BCE800A8EF50 /* ShareImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DF3E9E1D484B3C0054DDD2 /* ShareImage.swift */; };
 		507C7E531DB0BCE800A8EF50 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50256CA01A4B9D0B005950B9 /* ViewController.swift */; };
@@ -98,9 +94,8 @@
 
 /* Begin PBXFileReference section */
 		5005FB811D9D090800E2B3DC /* schedule.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = schedule.json; sourceTree = "<group>"; };
-		50159E441B98A70B00F22FFC /* WeChatActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeChatActivity.swift; sourceTree = "<group>"; };
+		50119E7C1DC873C6003667DE /* WeChatShare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeChatShare.swift; sourceTree = "<group>"; };
 		50159E461B9B147500F22FFC /* DataForShare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataForShare.swift; sourceTree = "<group>"; };
-		50159E481B9B249900F22FFC /* WeChatMoment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeChatMoment.swift; sourceTree = "<group>"; };
 		50159E4A1B9B2ED900F22FFC /* OpenInSafari.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInSafari.swift; sourceTree = "<group>"; };
 		50159E5C1BA05EBD00F22FFC /* ftcicon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ftcicon.jpg; sourceTree = "<group>"; };
 		50256C991A4B9D0B005950B9 /* FT中文网.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FT中文网.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -119,7 +114,6 @@
 		50256CC41A4C1916005950B9 /* WKWebPageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WKWebPageController.swift; sourceTree = "<group>"; };
 		503435231DB9FDC200B2F686 /* sound.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sound.png; sourceTree = "<group>"; };
 		503435241DB9FDC200B2F686 /* mute.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mute.png; sourceTree = "<group>"; };
-		503435291DBA01F900B2F686 /* NUNU.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = NUNU.MOV; sourceTree = "<group>"; };
 		503435691DBDEC8200B2F686 /* AdSchedule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdSchedule.swift; sourceTree = "<group>"; };
 		5034356C1DBDF8D700B2F686 /* UpdateAdSchedule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateAdSchedule.swift; sourceTree = "<group>"; };
 		50357D151BE10ED100D388EB /* WeChatFav.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeChatFav.swift; sourceTree = "<group>"; };
@@ -238,19 +232,18 @@
 			isa = PBXGroup;
 			children = (
 				50256CA01A4B9D0B005950B9 /* ViewController.swift */,
+				503435691DBDEC8200B2F686 /* AdSchedule.swift */,
 				50256CC41A4C1916005950B9 /* WKWebPageController.swift */,
+				50119E7C1DC873C6003667DE /* WeChatShare.swift */,
+				50357D151BE10ED100D388EB /* WeChatFav.swift */,
 				50256C9E1A4B9D0B005950B9 /* AppDelegate.swift */,
 				50256CC21A4BFAE7005950B9 /* Globals.swift */,
-				503435691DBDEC8200B2F686 /* AdSchedule.swift */,
 				5034356C1DBDF8D700B2F686 /* UpdateAdSchedule.swift */,
 				50256CA21A4B9D0B005950B9 /* Main.storyboard */,
 				50B5D05D1DAF1E450052C954 /* FT中文网.entitlements */,
 				50159E461B9B147500F22FFC /* DataForShare.swift */,
 				50DF3E9E1D484B3C0054DDD2 /* ShareImage.swift */,
-				50159E441B98A70B00F22FFC /* WeChatActivity.swift */,
 				50159E4A1B9B2ED900F22FFC /* OpenInSafari.swift */,
-				50159E481B9B249900F22FFC /* WeChatMoment.swift */,
-				50357D151BE10ED100D388EB /* WeChatFav.swift */,
 				50982C7D1BC7A7C800907575 /* IJReachability.swift */,
 				50FCC9C01D34C1D300FC1892 /* User.swift */,
 				50256CA51A4B9D0B005950B9 /* Images.xcassets */,
@@ -270,7 +263,6 @@
 				5005FB811D9D090800E2B3DC /* schedule.json */,
 				50E577D61DB754880016A73F /* close.png */,
 				50159E5C1BA05EBD00F22FFC /* ftcicon.jpg */,
-				503435291DBA01F900B2F686 /* NUNU.MOV */,
 				50256C9D1A4B9D0B005950B9 /* Info.plist */,
 				50A677261A4EBFBC002B347F /* index.html */,
 				50604A621A5552F1003803E6 /* webview.html */,
@@ -450,7 +442,6 @@
 				50A677271A4EBFBC002B347F /* index.html in Resources */,
 				50256CA91A4B9D0B005950B9 /* LaunchScreen.xib in Resources */,
 				50159E5D1BA05EBD00F22FFC /* ftcicon.jpg in Resources */,
-				5034352A1DBA01F900B2F686 /* NUNU.MOV in Resources */,
 				5039A4B41C61FAD40008F2AD /* README.txt in Resources */,
 				503435271DB9FDC200B2F686 /* mute.png in Resources */,
 				503435251DB9FDC200B2F686 /* sound.png in Resources */,
@@ -479,7 +470,6 @@
 				507C7E6F1DB0BCE800A8EF50 /* Images.xcassets in Resources */,
 				503435281DB9FDC200B2F686 /* mute.png in Resources */,
 				507C7E761DB0BCF100A8EF50 /* LaunchScreen.xib in Resources */,
-				5034352B1DBA01F900B2F686 /* NUNU.MOV in Resources */,
 				507C7E701DB0BCE800A8EF50 /* schedule.json in Resources */,
 				50E577D81DB754880016A73F /* close.png in Resources */,
 			);
@@ -492,12 +482,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50119E7D1DC873C6003667DE /* WeChatShare.swift in Sources */,
 				50256CC31A4BFAE7005950B9 /* Globals.swift in Sources */,
-				50159E451B98A70B00F22FFC /* WeChatActivity.swift in Sources */,
 				5034356D1DBDF8D700B2F686 /* UpdateAdSchedule.swift in Sources */,
 				50256CC51A4C1916005950B9 /* WKWebPageController.swift in Sources */,
 				5034356A1DBDEC8300B2F686 /* AdSchedule.swift in Sources */,
-				50159E491B9B249900F22FFC /* WeChatMoment.swift in Sources */,
 				50159E4B1B9B2ED900F22FFC /* OpenInSafari.swift in Sources */,
 				50DF3E9F1D484B3C0054DDD2 /* ShareImage.swift in Sources */,
 				50256CA11A4B9D0B005950B9 /* ViewController.swift in Sources */,
@@ -523,12 +512,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50119E7E1DC873C6003667DE /* WeChatShare.swift in Sources */,
 				507C7E4D1DB0BCE800A8EF50 /* Globals.swift in Sources */,
-				507C7E4E1DB0BCE800A8EF50 /* WeChatActivity.swift in Sources */,
 				5034356E1DBDF8D700B2F686 /* UpdateAdSchedule.swift in Sources */,
 				507C7E4F1DB0BCE800A8EF50 /* WKWebPageController.swift in Sources */,
 				5034356B1DBDEC8300B2F686 /* AdSchedule.swift in Sources */,
-				507C7E501DB0BCE800A8EF50 /* WeChatMoment.swift in Sources */,
 				507C7E511DB0BCE800A8EF50 /* OpenInSafari.swift in Sources */,
 				507C7E521DB0BCE800A8EF50 /* ShareImage.swift in Sources */,
 				507C7E531DB0BCE800A8EF50 /* ViewController.swift in Sources */,

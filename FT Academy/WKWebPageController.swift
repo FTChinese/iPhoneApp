@@ -200,8 +200,8 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     }
     
     @IBAction func share(_ sender: AnyObject) {
-        let wcActivity = WeChatActivity()
-        let wcMoment = WeChatMoment()
+        let wcActivity = WeChatShare(to: "chat")
+        let wcMoment = WeChatShare(to: "moment")
         let openInSafari = OpenInSafari()
         var url = URL(string:webPageUrl)
         if #available(iOS 8.0, *) {

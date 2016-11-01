@@ -29,7 +29,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     lazy var overlayView: UIView? = UIView()
     
     // set to none before releasing this publicly
-    var adType = ""
+    var adType = "none"
     
     let screenWidth = UIScreen.main.bounds.width
     let screenHeight = UIScreen.main.bounds.height
@@ -67,7 +67,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         loadFromLocal()
         pageStatus = .webViewLoading
         resetTimer(maxAdTimeAfterLaunch)
-        adSchedule.updateAdSchedule()
+        // download the latest ad schedule from the internet
+        if (adType != "none") {
+            adSchedule.updateAdSchedule()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -159,6 +162,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     // if there's a full screen screen ad to show
     func adOverlayView() {
         if self.adType == "none" {
+            maxAdTimeAfterLaunch = 3.0
+            maxAdTimeAfterWebRequest = 1.0
             normalOverlayView()
             return
         }
@@ -556,8 +561,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         
         webPageImageIcon = webPageImage
         
-        let wcActivity = WeChatActivity()
-        let wcCircle = WeChatMoment()
+        let wcActivity = WeChatShare(to: "chat")
+        let wcCircle = WeChatShare(to: "moment")
         let wcFav = WeChatFav()
         let openInSafari = OpenInSafari()
         let ccodeInActionSheet = ccode["actionsheet"]! as String
@@ -637,8 +642,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         if webPageTitle == "" {
             webPageTitle = webPageTitle0
         }
-        let wcActivity = WeChatActivity()
-        let wcMoment = WeChatMoment()
+        let wcActivity = WeChatShare(to: "chat")
+        let wcMoment = WeChatShare(to: "moment")
         return [wcActivity, wcMoment]
     }
     
