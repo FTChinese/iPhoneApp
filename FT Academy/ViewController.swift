@@ -6,6 +6,9 @@
 //  Copyright (c) 2014年 Zhang Oliver. All rights reserved.
 //
 
+
+
+
 import UIKit
 import WebKit
 import SafariServices
@@ -29,7 +32,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     lazy var overlayView: UIView? = UIView()
     
     // set to none before releasing this publicly
-    var adType = "none"
+    var adType = ""
     
     let screenWidth = UIScreen.main.bounds.width
     let screenHeight = UIScreen.main.bounds.height
@@ -62,7 +65,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         pageStatus = .viewLoaded
         loadFromLocal()
         pageStatus = .webViewLoading
@@ -168,7 +170,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             return
         }
         adSchedule.parseSchedule()
-        //print (adSchedule.image)
         if adSchedule.adType == "page" {
             addOverlayView()
             showHTMLAd()
@@ -520,6 +521,16 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         } else if navigationAction.request.url!.scheme == "iosaction" {
             turnOnActionSheet(urlString)
             decisionHandler(.cancel)
+        } else if navigationAction.request.url!.scheme == "weixinlogin" {
+            // launch weixin login and switch to wechat
+            let req = SendAuthReq()
+            req.scope = "snsapi_userinfo"
+            req.state = "weliveinfinancialtimes"
+            
+            WXApi.send(req)
+            decisionHandler(.cancel)
+            
+        // all new url schemes should be above here, otherwise the app will crash after clicking
         } else if navigationAction.navigationType == .linkActivated{
             if urlString.range(of: "mailto:") != nil{
                 UIApplication.shared.openURL(navigationAction.request.url!)
@@ -527,7 +538,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 openInView (urlString)
             }
             decisionHandler(.cancel)
-        } else {
+        }  else {
             decisionHandler(.allow)
         }
     }

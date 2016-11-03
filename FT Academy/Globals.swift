@@ -9,6 +9,11 @@
 import Foundation
 import UIKit
 
+// wechat developer appid
+let wechatAppId = "wxc1bc20ee7478536a"
+let wechatAppSecret = "14999fe35546acc84ecdddab197ed0fd"
+
+
 // campaign codes that changes every year
 let ccode = [
     "wechat": "2G168002",

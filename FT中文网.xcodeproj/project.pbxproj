@@ -29,8 +29,6 @@
 		503435281DB9FDC200B2F686 /* mute.png in Resources */ = {isa = PBXBuildFile; fileRef = 503435241DB9FDC200B2F686 /* mute.png */; };
 		5034356A1DBDEC8300B2F686 /* AdSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 503435691DBDEC8200B2F686 /* AdSchedule.swift */; };
 		5034356B1DBDEC8300B2F686 /* AdSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 503435691DBDEC8200B2F686 /* AdSchedule.swift */; };
-		5034356D1DBDF8D700B2F686 /* UpdateAdSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5034356C1DBDF8D700B2F686 /* UpdateAdSchedule.swift */; };
-		5034356E1DBDF8D700B2F686 /* UpdateAdSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5034356C1DBDF8D700B2F686 /* UpdateAdSchedule.swift */; };
 		50357D161BE10ED100D388EB /* WeChatFav.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50357D151BE10ED100D388EB /* WeChatFav.swift */; };
 		5039A4B21C61FAD40008F2AD /* libGoogleConversionTracking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5039A4B01C61FAD40008F2AD /* libGoogleConversionTracking.a */; };
 		5039A4B41C61FAD40008F2AD /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5039A4B11C61FAD40008F2AD /* README.txt */; };
@@ -115,7 +113,6 @@
 		503435231DB9FDC200B2F686 /* sound.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sound.png; sourceTree = "<group>"; };
 		503435241DB9FDC200B2F686 /* mute.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mute.png; sourceTree = "<group>"; };
 		503435691DBDEC8200B2F686 /* AdSchedule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdSchedule.swift; sourceTree = "<group>"; };
-		5034356C1DBDF8D700B2F686 /* UpdateAdSchedule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateAdSchedule.swift; sourceTree = "<group>"; };
 		50357D151BE10ED100D388EB /* WeChatFav.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeChatFav.swift; sourceTree = "<group>"; };
 		5039A4AB1C61FAD40008F2AD /* ACTReporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACTReporter.h; sourceTree = "<group>"; };
 		5039A4AD1C61FAD40008F2AD /* GoogleConversionPing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleConversionPing.h; sourceTree = "<group>"; };
@@ -232,13 +229,12 @@
 			isa = PBXGroup;
 			children = (
 				50256CA01A4B9D0B005950B9 /* ViewController.swift */,
+				50256CC21A4BFAE7005950B9 /* Globals.swift */,
+				50256C9E1A4B9D0B005950B9 /* AppDelegate.swift */,
 				503435691DBDEC8200B2F686 /* AdSchedule.swift */,
 				50256CC41A4C1916005950B9 /* WKWebPageController.swift */,
 				50119E7C1DC873C6003667DE /* WeChatShare.swift */,
 				50357D151BE10ED100D388EB /* WeChatFav.swift */,
-				50256C9E1A4B9D0B005950B9 /* AppDelegate.swift */,
-				50256CC21A4BFAE7005950B9 /* Globals.swift */,
-				5034356C1DBDF8D700B2F686 /* UpdateAdSchedule.swift */,
 				50256CA21A4B9D0B005950B9 /* Main.storyboard */,
 				50B5D05D1DAF1E450052C954 /* FT中文网.entitlements */,
 				50159E461B9B147500F22FFC /* DataForShare.swift */,
@@ -484,7 +480,6 @@
 			files = (
 				50119E7D1DC873C6003667DE /* WeChatShare.swift in Sources */,
 				50256CC31A4BFAE7005950B9 /* Globals.swift in Sources */,
-				5034356D1DBDF8D700B2F686 /* UpdateAdSchedule.swift in Sources */,
 				50256CC51A4C1916005950B9 /* WKWebPageController.swift in Sources */,
 				5034356A1DBDEC8300B2F686 /* AdSchedule.swift in Sources */,
 				50159E4B1B9B2ED900F22FFC /* OpenInSafari.swift in Sources */,
@@ -514,7 +509,6 @@
 			files = (
 				50119E7E1DC873C6003667DE /* WeChatShare.swift in Sources */,
 				507C7E4D1DB0BCE800A8EF50 /* Globals.swift in Sources */,
-				5034356E1DBDF8D700B2F686 /* UpdateAdSchedule.swift in Sources */,
 				507C7E4F1DB0BCE800A8EF50 /* WKWebPageController.swift in Sources */,
 				5034356B1DBDEC8300B2F686 /* AdSchedule.swift in Sources */,
 				507C7E511DB0BCE800A8EF50 /* OpenInSafari.swift in Sources */,
