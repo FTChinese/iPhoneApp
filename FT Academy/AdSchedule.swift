@@ -22,7 +22,7 @@ class AdSchedule {
     lazy var impression: [String] = []
     
     private let adScheduleFileName = "schedule.json"
-    private let lauchAdSchedule = "http://m.ftchinese.com/test.json"
+    private let lauchAdSchedule = "http://m.ftchinese.com/index.php/jsapi/applaunchschedule"
     private let imageTypes = ["png","jpg","gif"]
     private let videoTypes = ["mov","mp4"]
     private let htmlTypes = ["html"]
@@ -45,7 +45,7 @@ class AdSchedule {
                     print("Not a Dictionary")
                     return
                 }
-                guard let creatives = JSONDictionary["creatives"] as? NSArray else {
+                guard let creatives = JSONDictionary["sections"] as? NSArray else {
                     print("creatives Not an Array")
                     return
                 }
@@ -56,14 +56,29 @@ class AdSchedule {
                         print("creative Not a dictionary")
                         continue
                     }
-                    guard let dates = currentCreative["dates"] as? NSArray else {
-                        print("creative dates Not an Array")
+                    guard var datesString = currentCreative["dates"] as? String else {
+                        print("creative dates Not a string")
                         continue
                     }
-                    guard let platforms = currentCreative["platforms"] as? NSArray else {
-                        print("creative platforms Not an Array")
-                        continue
+                    // convert dates string into NSArray for later parsing
+                    datesString = datesString.trimmingCharacters(in: .whitespaces)
+                        .replacingOccurrences(of: "/", with: "")
+                        .replacingOccurrences(of: "-", with: "")
+                    let datesStringArray = datesString.components(separatedBy: ",")
+                    let dates = datesStringArray.map{ Int($0) ?? 0}
+                    
+                    var platforms: [String] = []
+                    if let supportiPhone = currentCreative["iphone"] as? String {
+                        if supportiPhone == "yes" {
+                            platforms.append("iphone")
+                        }
                     }
+                    if let supportiPad = currentCreative["ipad"] as? String {
+                        if supportiPad == "yes" {
+                            platforms.append("ipad")
+                        }
+                    }
+                    
                     // if this creaive is scheduled for today
                     // and for this type of device(platform)
                     if dates.contains(dateInInt) && platforms.contains(self.currentPlatform){
@@ -85,7 +100,24 @@ class AdSchedule {
                             // common properties like htmlBase, impressions and links
                             self.htmlBase = currentFileName
                             self.adLink = currentCreative["click"] as? String ?? ""
-                            self.impression = currentCreative["impression"] as? Array ?? []
+                            self.impression = []
+                            if let impression_1 = currentCreative["impression_1"] as? String {
+                                if impression_1 != "" {
+                                    self.impression.append(impression_1)
+                                }
+                            }
+                            
+                            if let impression_2 = currentCreative["impression_2"] as? String {
+                                if impression_2 != "" {
+                                    self.impression.append(impression_2)
+                                }
+                            }
+                            if let impression_3 = currentCreative["impression_3"] as? String {
+                                if impression_3 != "" {
+                                    self.impression.append(impression_3)
+                                }
+                            }
+
                             
                             // specific properties like image file, video file, backup image file
                             if imageTypes.contains(pathExtention!.lowercased()) {
@@ -105,8 +137,12 @@ class AdSchedule {
                                         self.backupImage = UIImage(contentsOfFile: templatePath)
                                     }
                                 }
-                                if let showSoundButtonBool = currentCreative["showSoundButton"] as? Bool {
-                                    self.showSoundButton = showSoundButtonBool
+                                if let showSoundButtonBool = currentCreative["showSoundButton"] as? String {
+                                    if showSoundButtonBool == "yes" {
+                                        self.showSoundButton = true
+                                    } else {
+                                        self.showSoundButton = false
+                                    }
                                 }
                                 break
                             }
@@ -133,8 +169,8 @@ class AdSchedule {
                     print("Not a Dictionary")
                     return
                 }
-                guard let creatives = JSONDictionary["creatives"] as? NSArray else {
-                    print("creatives Not an Array")
+                guard let creatives = JSONDictionary["sections"] as? NSArray else {
+                    print("creatives Not an Array when parsing for download")
                     return
                 }
                 // the creatives that are needed for now or a future date
@@ -142,22 +178,38 @@ class AdSchedule {
                 // the schedule.json file is always needed
                 var creativesNeededInFuture = [self.adScheduleFileName]
                 // check each crative in the schedule
+                
+                
                 for (creative) in creatives {
                     guard let currentCreative = creative as? NSDictionary else {
                         print("creative Not a dictionary")
                         continue
                     }
-                    guard let dates = currentCreative["dates"] as? NSArray else {
-                        print("creative dates Not an Array")
+                    guard var datesString = currentCreative["dates"] as? String else {
+                        print("creative dates Not a string")
                         continue
                     }
-                    guard let platforms = currentCreative["platforms"] as? NSArray else {
-                        print("creative platforms Not an Array")
-                        continue
+                    // convert dates string into NSArray for later parsing
+                    datesString = datesString.trimmingCharacters(in: .whitespaces)
+                        .replacingOccurrences(of: "/", with: "")
+                        .replacingOccurrences(of: "-", with: "")
+                    let datesStringArray = datesString.components(separatedBy: ",")
+                    let dates = datesStringArray.map{ Int($0) ?? 0}
+                    
+                    var platforms: [String] = []
+                    if let supportiPhone = currentCreative["iphone"] as? String {
+                        if supportiPhone == "yes" {
+                            platforms.append("iphone")
+                        }
+                    }
+                    if let supportiPad = currentCreative["ipad"] as? String {
+                        if supportiPad == "yes" {
+                            platforms.append("ipad")
+                        }
                     }
                     // check if this creaive is scheduled for today or a later date
                     var creativeIsNeededForFuture = false
-                    for dateStamp in (dates as? [Int])! {
+                    for dateStamp in dates {
                         if dateStamp >= dateInInt {
                             creativeIsNeededForFuture = true
                         }
@@ -299,8 +351,12 @@ class AdSchedule {
                 return 0
             }
             //print("JSONDictionary! \(JSONDictionary)")
-            let fileTime = JSONDictionary["fileTime"] as? Double ?? 0
-            // print (fileTime)
+            guard let JSONMeta = JSONDictionary["meta"] as? NSDictionary else {
+                print ("No meta in the adchedule json file")
+                return 0
+            }
+            let fileTime = JSONMeta["fileTime"] as? Double ?? 0
+            print (fileTime)
             return fileTime
         }
         catch let JSONError as NSError {

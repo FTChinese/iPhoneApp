@@ -14,6 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
     var window: UIWindow?
     
     
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
@@ -42,39 +43,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
         UIApplication.shared.applicationIconBadgeNumber = 0
         
         
-        if #available(iOS 8.0, *) {
-            /*
-             let action1 = UIMutableUserNotificationAction()
-             action1.identifier = "ACTION_1"
-             action1.title = "first action"
-             action1.activationMode = UIUserNotificationActivationMode.Background
-             action1.destructive = false
-             action1.authenticationRequired = true
-             
-             let action2 = UIMutableUserNotificationAction()
-             action2.identifier = "ACTION_2"
-             action2.title = "second action"
-             action2.activationMode = UIUserNotificationActivationMode.Foreground
-             action2.destructive = false
-             action2.authenticationRequired = true
-             
-             let category1 = UIMutableUserNotificationCategory()
-             category1.identifier = "CATEGORY_1"
-             category1.setActions([action1], forContext: UIUserNotificationActionContext.Minimal)
-             category1.setActions([action1, action2], forContext: UIUserNotificationActionContext.Default)
-             
-             let categories = NSSet(objects: category1)
-             
-             
-             let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: categories as? Set<UIUserNotificationCategory>)
-             */
-            let settings = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
-            UIApplication.shared.registerUserNotificationSettings(settings)
-            UIApplication.shared.registerForRemoteNotifications()
-        } else {
-            let settings = UIRemoteNotificationType.alert.union(UIRemoteNotificationType.badge).union(UIRemoteNotificationType.sound)
-            UIApplication.shared.registerForRemoteNotifications(matching: settings)
-        }
+        /*
+         let action1 = UIMutableUserNotificationAction()
+         action1.identifier = "ACTION_1"
+         action1.title = "first action"
+         action1.activationMode = UIUserNotificationActivationMode.Background
+         action1.destructive = false
+         action1.authenticationRequired = true
+         
+         let action2 = UIMutableUserNotificationAction()
+         action2.identifier = "ACTION_2"
+         action2.title = "second action"
+         action2.activationMode = UIUserNotificationActivationMode.Foreground
+         action2.destructive = false
+         action2.authenticationRequired = true
+         
+         let category1 = UIMutableUserNotificationCategory()
+         category1.identifier = "CATEGORY_1"
+         category1.setActions([action1], forContext: UIUserNotificationActionContext.Minimal)
+         category1.setActions([action1, action2], forContext: UIUserNotificationActionContext.Default)
+         
+         let categories = NSSet(objects: category1)
+         
+         
+         let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: categories as? Set<UIUserNotificationCategory>)
+         */
+        let settings = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
+        UIApplication.shared.registerUserNotificationSettings(settings)
+        UIApplication.shared.registerForRemoteNotifications()
+        
         
         // if launched from a tap on a notification
         if let launchOptions = launchOptions {
@@ -104,9 +101,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
                     rootViewController.openNotification(action as! String, id: id as! String, title: title as! String)
                 })
             }
-            
-            
-            
         }
         
         
@@ -218,21 +212,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
             {
                 rootViewController.openNotification(notiAction as! String, id: id as! String, title: title)
             } else {
-                if #available(iOS 8.0, *) {
-                    let alert = UIAlertController(title: title, message: lead, preferredStyle: UIAlertControllerStyle.alert)
-                    alert.addAction(UIAlertAction(title: "去看看", style: .default, handler: { (action: UIAlertAction!) in
-                        //let rootViewController = self.window!.rootViewController as! ViewController
-                        rootViewController.openNotification(notiAction as! String, id: id as! String, title: title)
-                    }))
-                    alert.addAction(UIAlertAction(title: "不感兴趣", style: UIAlertActionStyle.default, handler: nil))
-                    rootViewController.present(alert, animated: true, completion: nil)
-                } else {
-                    let alertView = UIAlertView();
-                    alertView.addButton(withTitle: "知道了");
-                    alertView.title = title;
-                    alertView.message = lead;
-                    alertView.show();
-                }
+                let alert = UIAlertController(title: title, message: lead, preferredStyle: UIAlertControllerStyle.alert)
+                alert.addAction(UIAlertAction(title: "去看看", style: .default, handler: { (action: UIAlertAction!) in
+                    //let rootViewController = self.window!.rootViewController as! ViewController
+                    rootViewController.openNotification(notiAction as! String, id: id as! String, title: title)
+                }))
+                alert.addAction(UIAlertAction(title: "不感兴趣", style: UIAlertActionStyle.default, handler: nil))
+                rootViewController.present(alert, animated: true, completion: nil)
+                
             }
         }
     }
@@ -299,7 +286,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
     
-
+    
     
     
     
@@ -308,6 +295,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
     
     
     // code related to wechat authorization
+    
+    // wechat developer appid
+    private let wechatAppId = "wxc1bc20ee7478536a"
+    private let wechatAppSecret = "14999fe35546acc84ecdddab197ed0fd"
+    private let accessTokenPrefix = "https://api.weixin.qq.com/sns/oauth2/access_token?"
+    private let wechatUserInfoPrefix = "https://api.weixin.qq.com/sns/userinfo?"
+    
     
     func application(_ application: UIApplication, handleOpen url: URL) -> Bool {
         return WXApi.handleOpen(url, delegate: self)
@@ -323,22 +317,96 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
     
     func onResp(_ resp: BaseResp!) {
         if let authResp = resp as? SendAuthResp {
-            
-            if authResp.code != nil {
-                let dict = ["response": authResp.code]
-                print (dict)
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "WeChatAuthCodeResp"), object: nil, userInfo: dict)
+            if let wechatAuthCode = authResp.code {
+                //let dict = ["response": authResp.code]
+                
+                let wechatAccessTokenLink = accessTokenPrefix + "appid=" + wechatAppId + "&secret=" + wechatAppSecret + "&code=" + wechatAuthCode + "&grant_type=authorization_code"
+                if let url = URL(string: wechatAccessTokenLink) {
+                    
+                    getDataFromUrl(url) { (data, response, error)  in
+                        DispatchQueue.main.async { () -> Void in
+                            guard let data = data , error == nil else { return }
+                            do {
+                                let JSON = try JSONSerialization.jsonObject(with: data, options:JSONSerialization.ReadingOptions(rawValue: 0))
+                                guard let JSONDictionary = JSON as? NSDictionary else  {
+                                    print ("WeChat Return Value is Wrong")
+                                    return
+                                }
+                                guard let accessToken = JSONDictionary["access_token"] as? String else {
+                                    print ("WeChat Access Token is not a string")
+                                    return
+                                }
+                                guard let openId = JSONDictionary["openid"] as? String else {
+                                    print ("WeChat Open Id is not a string")
+                                    return
+                                }
+                                let userInfoUrlString = "\(self.wechatUserInfoPrefix)access_token=\(accessToken)&openid=\(openId)"
+                                if let userInfoUrl = URL(string: userInfoUrlString) {
+                                    getDataFromUrl(userInfoUrl) { (data, response, error)  in
+                                        DispatchQueue.main.async { () -> Void in
+                                            guard let data = data , error == nil else { return }
+                                            do {
+                                                let JSON = try JSONSerialization.jsonObject(with: data, options:JSONSerialization.ReadingOptions(rawValue: 0))
+                                                guard let JSONDictionary = JSON as? NSDictionary else  {
+                                                    print ("WeChat Return Value is Wrong")
+                                                    return
+                                                }
+                                                //print (JSONDictionary)
+                                                guard let nickname = JSONDictionary["nickname"] as? String else {
+                                                    print ("WeChat nickname is not a string")
+                                                    return
+                                                }
+                                                guard let openid = JSONDictionary["openid"] as? String else {
+                                                    print ("WeChat Open Id is not a string")
+                                                    return
+                                                }
+                                                guard let headimgurl = JSONDictionary["headimgurl"] as? String else {
+                                                    print ("WeChat headimgurl is not a string")
+                                                    return
+                                                }
+                                                let sex = JSONDictionary["sex"] as? Int ?? 999
+                                                print(JSONDictionary)
+                                                var info = ""
+                                                for (key, value) in JSONDictionary {
+                                                    if let k = key as? String, let v = value as? String {
+                                                        info += "\r\n" + k + ": " + v
+                                                    }
+                                                }
+                                                let title = "已经获得用户的微信信息"
+                                                let lead = "用户\(nickname)，开放Id是\(openid), 照片链接为“\(headimgurl)”，性别给了个编号为\(sex)，也许是指男性，接下来我们可以利用这些信息来帮助用户登录我们的应用。" + info
+                                                let alert = UIAlertController(title: title, message: lead, preferredStyle: UIAlertControllerStyle.alert)
+                                                alert.addAction(UIAlertAction(title: "知道了", style: UIAlertActionStyle.default, handler: nil))
+                                                let rootViewController = self.window!.rootViewController as! ViewController
+                                                rootViewController.present(alert, animated: true, completion: nil)
+                                                
+                                            } catch let JSONError as NSError {
+                                                print("\(JSONError)")
+                                            }
+                                        }
+                                    }
+                                }
+                            } catch let JSONError as NSError {
+                                print("\(JSONError)")
+                            }
+                        }
+                    }
+                }
+                
+                //NotificationCenter.default.post(name: NSNotification.Name(rawValue: "WeChatAuthCodeResp"), object: nil, userInfo: dict)
             } else {
-                let dict = ["response": "Fail"]
-                print("failel wechat auth")
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "WeChatAuthCodeResp"), object: nil, userInfo: dict)
+                //let dict = ["response": "Fail"]
+                //print("failed wechat auth")
+                //NotificationCenter.default.post(name: NSNotification.Name(rawValue: "WeChatAuthCodeResp"), object: nil, userInfo: dict)
             }
         } else {
-            let dict = ["response": "Fail"]
-            print("failel wechat auth")
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "WeChatAuthCodeResp"), object: nil, userInfo: dict)
+            //let dict = ["response": "Fail"]
+            //print("failed wechat auth")
+            //NotificationCenter.default.post(name: NSNotification.Name(rawValue: "WeChatAuthCodeResp"), object: nil, userInfo: dict)
         }
     }
+    
+    
+    
     
     // code related to wechat authorization end
     

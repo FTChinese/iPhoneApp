@@ -80,3 +80,10 @@ class WeChatShare : UIActivity{
     }
     
 }
+
+class WeChatShareFav: WeChatShare {
+    override class var activityCategory : UIActivityCategory {
+        // how to get the "to" value here to return different value for fav?
+        return UIActivityCategory.action
+    }
+}

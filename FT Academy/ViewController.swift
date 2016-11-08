@@ -574,7 +574,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         
         let wcActivity = WeChatShare(to: "chat")
         let wcCircle = WeChatShare(to: "moment")
-        let wcFav = WeChatFav()
+        let wcFav = WeChatShareFav(to: "fav")
         let openInSafari = OpenInSafari()
         let ccodeInActionSheet = ccode["actionsheet"]! as String
         let urlWithCCode = "\(webPageUrl)#ccode=\(ccodeInActionSheet)"
@@ -710,7 +710,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 self.sendToken(userId)
             }
         }
-        
     }
     
     func sendToken(_ userId: String) {

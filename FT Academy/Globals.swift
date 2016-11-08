@@ -9,9 +9,7 @@
 import Foundation
 import UIKit
 
-// wechat developer appid
-let wechatAppId = "wxc1bc20ee7478536a"
-let wechatAppSecret = "14999fe35546acc84ecdddab197ed0fd"
+
 
 
 // campaign codes that changes every year
@@ -204,11 +202,12 @@ func getDataFromUrl(_ url:URL, completion: @escaping ((_ data: Data?, _ response
 
 func updateWeChatShareIcon(_ url: URL) {
     print("Download Started")
+    print(url)
     print("lastPathComponent: " + (url.lastPathComponent ))
     weChatShareIcon = UIImage(named: "ftcicon.jpg")
     getDataFromUrl(url) { (data, response, error)  in
         DispatchQueue.main.async { () -> Void in
-            guard let data = data , error == nil else { return }
+            guard let data = data , error == nil else {return}
             //print(response?.suggestedFilename ?? "")
             //print("Download Finished")
             weChatShareIcon = UIImage(data: data)
@@ -244,3 +243,4 @@ extension UIColor {
 //        return randomValue as! Bound
 //    }
 //}
+

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina4_7" orientation="portrait">
+    <device id="retina4_7" orientation="landscape">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -18,7 +18,7 @@
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="667" height="375"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.0084822662174701691" green="0.13179358839988708" blue="0.29942241311073303" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
@@ -38,18 +38,16 @@
                         <viewControllerLayoutGuide type="bottom" id="zy6-az-tb3"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="27e-1q-xPU">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="667" height="375"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <webView contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JnL-pu-uVc">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JnL-pu-uVc">
+                                <rect key="frame" x="0.0" y="0.0" width="667" height="331"/>
+                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                             </webView>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" misplaced="YES" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="ohG-Tp-8Av">
-                                <rect key="frame" x="0.0" y="556" width="600" height="44"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="3dQ-pb-zq1"/>
-                                </constraints>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="ohG-Tp-8Av">
+                                <rect key="frame" x="0.0" y="331" width="667" height="44"/>
                                 <items>
                                     <barButtonItem systemItem="rewind" id="Lio-a3-5pQ">
                                         <connections>
@@ -87,14 +85,13 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="ohG-Tp-8Av" firstAttribute="leading" secondItem="JnL-pu-uVc" secondAttribute="leading" id="AzZ-9U-8iJ"/>
-                            <constraint firstItem="zy6-az-tb3" firstAttribute="top" secondItem="JnL-pu-uVc" secondAttribute="bottom" constant="44" id="NfV-wt-orq"/>
-                            <constraint firstItem="JnL-pu-uVc" firstAttribute="leading" secondItem="27e-1q-xPU" secondAttribute="leading" id="anR-Z4-03F"/>
-                            <constraint firstItem="ohG-Tp-8Av" firstAttribute="trailing" secondItem="JnL-pu-uVc" secondAttribute="trailing" id="cWi-1E-No8"/>
-                            <constraint firstAttribute="trailing" secondItem="JnL-pu-uVc" secondAttribute="trailing" id="jNi-ej-fsF"/>
-                            <constraint firstItem="JnL-pu-uVc" firstAttribute="top" secondItem="27e-1q-xPU" secondAttribute="top" id="oHA-o9-pxY"/>
-                            <constraint firstItem="ohG-Tp-8Av" firstAttribute="top" secondItem="JnL-pu-uVc" secondAttribute="bottom" id="p90-Ql-lP1"/>
-                            <constraint firstItem="zy6-az-tb3" firstAttribute="top" secondItem="ohG-Tp-8Av" secondAttribute="bottom" id="zSb-J4-BKs"/>
+                            <constraint firstItem="JnL-pu-uVc" firstAttribute="leading" secondItem="ohG-Tp-8Av" secondAttribute="leading" id="1kw-eC-PZQ"/>
+                            <constraint firstItem="ohG-Tp-8Av" firstAttribute="bottom" secondItem="zy6-az-tb3" secondAttribute="top" id="BHR-6I-QDB"/>
+                            <constraint firstItem="JnL-pu-uVc" firstAttribute="leading" secondItem="27e-1q-xPU" secondAttribute="leading" id="CWh-eq-mRJ"/>
+                            <constraint firstItem="JnL-pu-uVc" firstAttribute="bottom" secondItem="ohG-Tp-8Av" secondAttribute="top" id="cxT-So-jgu"/>
+                            <constraint firstItem="JnL-pu-uVc" firstAttribute="trailing" secondItem="ohG-Tp-8Av" secondAttribute="trailing" id="ggB-wA-UuP"/>
+                            <constraint firstItem="JnL-pu-uVc" firstAttribute="top" secondItem="27e-1q-xPU" secondAttribute="top" id="lG4-Pn-c6T"/>
+                            <constraint firstAttribute="trailing" secondItem="JnL-pu-uVc" secondAttribute="trailing" id="tro-ne-a9w"/>
                         </constraints>
                     </view>
                     <connections>
@@ -105,7 +102,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0Pe-pR-AQN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1261" y="288"/>
+            <point key="canvasLocation" x="1260" y="287.40629685157421"/>
         </scene>
     </scenes>
 </document>
