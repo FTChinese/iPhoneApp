@@ -117,7 +117,7 @@ class AdSchedule {
                                     self.impression.append(impression_3)
                                 }
                             }
-
+                            
                             
                             // specific properties like image file, video file, backup image file
                             if imageTypes.contains(pathExtention!.lowercased()) {
@@ -243,6 +243,7 @@ class AdSchedule {
                     }
                 }
                 // delete files that not need for the future
+                print("these creative files are needed for a future date: ")
                 print(creativesNeededInFuture)
                 
                 // Get the document directory url
@@ -262,7 +263,7 @@ class AdSchedule {
                         let creativeFileString = creativeFile.lastPathComponent
                         if !creativesNeededInFuture.contains(creativeFileString) {
                             try FileManager.default.removeItem(at: creativeFile)
-                            print("remove file: \(creativeFileString)")
+                            print("remove file from documents folder: \(creativeFileString)")
                         }
                     }
                     // print("creatives:",creativeFiles)
