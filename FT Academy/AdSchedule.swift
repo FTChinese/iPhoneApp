@@ -18,6 +18,7 @@ class AdSchedule {
     var htmlFile: NSString = ""
     var videoFilePath = ""
     lazy var backupImage: UIImage? = nil
+    lazy var backgroundColor: UIColor? = nil
     var showSoundButton = true
     lazy var impression: [String] = []
     
@@ -100,6 +101,12 @@ class AdSchedule {
                             // common properties like htmlBase, impressions and links
                             self.htmlBase = currentFileName
                             self.adLink = currentCreative["click"] as? String ?? ""
+                            // background color
+                            if let backgroundColorString = currentCreative["backgroundColor"] as? String {
+                                if backgroundColorString.range(of: "^#[0-9a-zA-Z]{6}$", options: .regularExpression) != nil {
+                                    self.backgroundColor = hexStringToUIColor (hex: backgroundColorString)
+                                }
+                            }
                             self.impression = []
                             if let impression_1 = currentCreative["impression_1"] as? String {
                                 if impression_1 != "" {
@@ -156,6 +163,29 @@ class AdSchedule {
             }
         }
         
+    }
+    
+    // convert a hex string into UIColor
+    private func hexStringToUIColor (hex:String) -> UIColor {
+        var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        
+        if (cString.hasPrefix("#")) {
+            cString.remove(at: cString.startIndex)
+        }
+        
+        if ((cString.characters.count) != 6) {
+            return UIColor.gray
+        }
+        
+        var rgbValue:UInt32 = 0
+        Scanner(string: cString).scanHexInt32(&rgbValue)
+        
+        return UIColor(
+            red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
+            green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
+            blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
+            alpha: CGFloat(1.0)
+        )
     }
     
     private func parseScheduleForDownloading() {

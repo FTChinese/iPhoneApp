@@ -190,6 +190,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
         //button to close the full screen ad
         addCloseButton()
+        //set custom background
+        setAdBackground()
     }
     
     func addOverlayView() {
@@ -227,6 +229,16 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 16))
         view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 40))
         view.addConstraint(NSLayoutConstraint(item: button!, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 40))
+    }
+    
+    private func setAdBackground() {
+        if let newBGColor = adSchedule.backgroundColor {
+            if adSchedule.adType == "video" {
+                self.view.viewWithTag(111)?.backgroundColor = newBGColor
+            } else {
+                self.overlayView?.backgroundColor = newBGColor
+            }
+        }
     }
     
     func showImage() {
