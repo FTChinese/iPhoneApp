@@ -183,21 +183,12 @@ func shareToWeChat(_ originalUrlString : String) {
 var weChatShareIcon = UIImage(named: "ftcicon.jpg")
 
 func getDataFromUrl(_ url:URL, completion: @escaping ((_ data: Data?, _ response: URLResponse?, _ error: NSError? ) -> Void)) {
-//    URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
-//        completion(data, response, error)
-//        }).resume()
-//    
-    
-    
     let listTask = URLSession.shared.dataTask(with: url, completionHandler:{(data, response, error) in
         completion(data, response, error as NSError?)
         return ()
         })
     listTask.resume()
 }
-
-
-
 
 
 func updateWeChatShareIcon(_ url: URL) {
@@ -208,16 +199,10 @@ func updateWeChatShareIcon(_ url: URL) {
     getDataFromUrl(url) { (data, response, error)  in
         DispatchQueue.main.async { () -> Void in
             guard let data = data , error == nil else {return}
-            //print(response?.suggestedFilename ?? "")
-            //print("Download Finished")
             weChatShareIcon = UIImage(data: data)
         }
     }
 }
-
-
-
-
 
 func setTimeout(_ delay:TimeInterval, block:@escaping ()->Void) -> Timer {
     return Timer.scheduledTimer(timeInterval: delay, target: BlockOperation(block: block), selector: #selector(Operation.main), userInfo: nil, repeats: false)

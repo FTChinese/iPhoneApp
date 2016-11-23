@@ -263,7 +263,7 @@ class AdSchedule {
                             if templatePath == nil && pathExtention != nil{
                                 // download only when user is using wifi
                                 let statusType = IJReachability().connectedToNetworkOfType()
-                                if statusType == .wiFi || 1>0{
+                                if statusType == .wiFi || !videoTypes.contains(pathExtention!.lowercased()){
                                     print("\(currentFileName) about to be downloaded")
                                     grabFileFromWeb(url: url as! URL, fileName: lastComponent, parseScheduleForDownload: false)
                                 }
@@ -344,10 +344,10 @@ class AdSchedule {
     
     private func checkFilePath(fileUrl: String) -> String? {
         let url = NSURL(string:fileUrl)
-        let lastComponent = url?.lastPathComponent
-        let templatepathInBuddle = Bundle.main.bundlePath + "/" + lastComponent!
+        if let lastComponent = url?.lastPathComponent {
+        let templatepathInBuddle = Bundle.main.bundlePath + "/" + lastComponent
         let DocumentDirURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        let templatepathInDocument = DocumentDirURL.appendingPathComponent(lastComponent!)
+        let templatepathInDocument = DocumentDirURL.appendingPathComponent(lastComponent)
         var templatePath: String? = nil
         if FileManager.default.fileExists(atPath: templatepathInBuddle)
         {
@@ -356,6 +356,8 @@ class AdSchedule {
             templatePath = templatepathInDocument.path
         }
         return templatePath
+        }
+        return nil
     }
     
     private func readFile(_ fileName: String, fileLocation: String) -> Data? {

@@ -15,32 +15,39 @@ import SafariServices
 import AVKit
 import AVFoundation
 
+
+
 class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, SFSafariViewControllerDelegate {
     
     lazy var webView: WKWebView? = { return nil }()
-    weak var timer: Timer?
+    private weak var timer: Timer?
     var pageStatus: WebViewStatus?
-    var startUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
-    let iPadStartUrl = "http://app005.ftmailbox.com/ipad-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
-    var maxAdTimeAfterLaunch = 6.0
-    var maxAdTimeAfterWebRequest = 3.0
+    private var startUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
+    private let iPadStartUrl = "http://app005.ftmailbox.com/ipad-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
+    // if the app use a native launch ad, suppress the pop up one
+    private let useNativeLaunchAd = "useNativeLaunchAd"
+    private var maxAdTimeAfterLaunch = 6.0
+    private var maxAdTimeAfterWebRequest = 3.0
     
-    let adSchedule = AdSchedule()
+    private let adSchedule = AdSchedule()
     
-    lazy var player: AVPlayer? = {return nil} ()
-    lazy var token: Any? = {return nil} ()
-    lazy var overlayView: UIView? = UIView()
+    private lazy var player: AVPlayer? = {return nil} ()
+    private lazy var token: Any? = {return nil} ()
+    private lazy var overlayView: UIView? = UIView()
     
     // set to none before releasing this publicly
-    var adType = ""
+    private var adType = ""
     
-    let screenWidth = UIScreen.main.bounds.width
-    let screenHeight = UIScreen.main.bounds.height
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
     
+
     deinit {
         //print("main view is being deinitialized")
     }
     
+    // start to load the webview as soon as possible
+    // and cover the whole view with an overlayview of either advertisement or launchscreen
     override func loadView() {
         super.loadView()
         pageStatus = .viewToLoad
@@ -63,6 +70,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         //normalOverlayView()
     }
     
+    // once view is loaded, load html into the webview
+    // wait for several seconds before removing the overlay to reveal the web view
+    // at the same time, check for new update of the ad schedule
     override func viewDidLoad() {
         super.viewDidLoad()
         pageStatus = .viewLoaded
@@ -75,12 +85,15 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
+    // this happens when starting the app and going back from a popover segue
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
         if pageStatus == .webViewDisplayed || pageStatus == .webViewWarned {
             //Deal with white screen when back from other scene
             checkBlankPage()
         }
+        print(player ?? "video player is now nil")
+        print(overlayView ?? "overlay view is now nil")
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -162,7 +175,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     
     // if there's a full screen screen ad to show
-    func adOverlayView() {
+    private func adOverlayView() {
         if self.adType == "none" {
             maxAdTimeAfterLaunch = 3.0
             maxAdTimeAfterWebRequest = 1.0
@@ -194,7 +207,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         setAdBackground()
     }
     
-    func addOverlayView() {
+
+    
+    private func addOverlayView() {
         overlayView!.backgroundColor = UIColor(netHex:0x000000)
         overlayView!.frame = self.view.bounds
         self.view.addSubview(overlayView!)
@@ -205,7 +220,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         view.addConstraint(NSLayoutConstraint(item: overlayView!, attribute: NSLayoutAttribute.trailing, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.trailing, multiplier: 1, constant: 0))
     }
     
-    func addCloseButton() {
+    private func addCloseButton() {
         let image = getImageFromSupportingFile(imageFileName: "close.png")
         //let button: UIButton? = UIButton(frame: CGRect(x: 0, y: 0, width: 100, height: 44))
         //button!.setTitle("跳过广告", for: UIControlState())
@@ -241,7 +256,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
-    func showImage() {
+    private func showImage() {
         let image = adSchedule.image
         let imageView: UIImageView? = UIImageView(image: image)
         imageView?.frame = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
@@ -255,7 +270,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         imageView!.addGestureRecognizer(tapRecognizer)
     }
     
-    func showHTMLAd() {
+    private func showHTMLAd() {
         let adPageView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight))
         let base = URL(string: adSchedule.htmlBase)
         let s = adSchedule.htmlFile
@@ -270,7 +285,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     
-    func playVideo() throws {
+    private func playVideo() throws {
         let path = adSchedule.videoFilePath
         maxAdTimeAfterLaunch = 525.0
         maxAdTimeAfterWebRequest = 523.0
@@ -356,7 +371,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     
-    @IBAction func videoMuteSwitch(sender: UIButton) {
+    @IBAction private func videoMuteSwitch(sender: UIButton) {
         if sender.isSelected {
             player?.isMuted = true
             sender.isSelected = false
@@ -372,7 +387,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
-    func getImageFromSupportingFile(imageFileName: String) -> UIImage {
+    private func getImageFromSupportingFile(imageFileName: String) -> UIImage {
         let filename: NSString = imageFileName as NSString
         let pathExtention = filename.pathExtension
         let pathPrefix = filename.deletingPathExtension
@@ -381,13 +396,45 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         return image!
     }
     
+    
+    // report ad impressions
+    private func reportImpressionToWeb(impressions: [String]) {
+        var deviceType = "iPhone"
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            deviceType = "iPad"
+        }
+        for impressionUrlString in impressions {
+            if let url = URL(string: impressionUrlString) {
+                getDataFromUrl(url) { (data, response, error)  in
+                    DispatchQueue.main.async { () -> Void in
+                        guard let _ = data , error == nil else {
+                            let jsCode = "try{ga('send','event', '\(deviceType) Launch Ad', 'Fail', '\(impressionUrlString)', {'nonInteraction':1});}catch(ignore){}"
+                            self.webView!.evaluateJavaScript(jsCode) { (result, error) in
+                            }
+                            print ("Fail to send impression to \(url.absoluteString)")
+                            return
+                        }
+                        let jsCode = "try{ga('send','event', '\(deviceType) Launch Ad', 'Sent', '\(impressionUrlString)', {'nonInteraction':1});}catch(ignore){}"
+                        self.webView!.evaluateJavaScript(jsCode) { (result, error) in
+                        }
+                        print("sent impression to \(url.absoluteString)")
+                    }
+                }
+            }
+        }
+    }
+    
+    // this should be public
     func clickAd() {
         openInView(adSchedule.adLink)
     }
     
     
     //Load HTML String from Bundle to start the App
-    func loadFromLocal() {
+    private func loadFromLocal() {
+        if adSchedule.adType != "none" {
+            startUrl = "\(startUrl)&\(useNativeLaunchAd)"
+        }
         //        let url = NSURL(string:startUrl)
         //        let req = NSURLRequest(URL:url!)
         let templatepath = Bundle.main.path(forResource: "index", ofType: "html")!
@@ -409,7 +456,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     
     
-    
+    // this is public because AppDelegate is going to use it
     func checkBlankPage() {
         //let webView = self.view as! WKWebView
         self.webView!.evaluateJavaScript("document.querySelector('body').innerHTML") { (result, error) in
@@ -422,7 +469,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         
     }
     
-    //when user tap on a remote notification
+    // when user tap on a remote notification
+    // this should be public
     func openNotification(_ action: String, id: String, title: String) {
         var jsCode: String
         switch(action) {
@@ -459,7 +507,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     
-    func checkConnectionType() {
+    private func checkConnectionType() {
         let statusType = IJReachability().connectedToNetworkOfType()
         var connectionType = "unknown"
         switch statusType {
@@ -475,7 +523,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     
     
-    func updateConnectionToWeb(_ connectionType: String) {
+    private func updateConnectionToWeb(_ connectionType: String) {
         let jsCode = "window.gConnectionType = '\(connectionType)';"
         //let webView = self.view as! WKWebView
         self.webView!.evaluateJavaScript(jsCode) { (result, error) in
@@ -484,20 +532,21 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     
-    func resetTimer(_ seconds: TimeInterval) {
+    private func resetTimer(_ seconds: TimeInterval) {
         timer?.invalidate()
         let nextTimer = Timer.scheduledTimer(timeInterval: seconds, target: self, selector: #selector(ViewController.handleIdleEvent(_:)), userInfo: nil, repeats: false)
         timer = nextTimer
     }
     
+    // this should be public
     func handleIdleEvent(_ timer: Timer) {
         // do whatever you want when idle after certain period of time
         displayWebView()
     }
     
+    // this should be public
     func displayWebView() {
         if pageStatus != .webViewDisplayed {
-            
             for subUIView in overlayView!.subviews {
                 subUIView.removeFromSuperview()
             }
@@ -513,11 +562,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 player?.removeTimeObserver(t)
                 token = nil
             }
-            
             //send impression ping
             reportImpressionToWeb(impressions: adSchedule.impression)
-            
-            //player?.removeTimeObserver(token)
+            player = nil
         }
     }
     
@@ -703,6 +750,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     //            saveUsers()
     //        }
     
+    // this should be public
     func getUserId() {
         var userId = ""
         self.webView!.evaluateJavaScript("getCookie('USER_ID')") { (result, error) in
@@ -724,7 +772,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
-    func sendToken(_ userId: String) {
+    private func sendToken(_ userId: String) {
         var userIdString = userId
         if userId != "" {
             userIdString = "&u=\(userId)"
@@ -739,32 +787,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
-    // report ad impressions
-    private func reportImpressionToWeb(impressions: [String]) {
-        var deviceType = "iPhone"
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            deviceType = "iPad"
-        }
-        for impressionUrlString in impressions {
-            if let url = URL(string: impressionUrlString) {
-                getDataFromUrl(url) { (data, response, error)  in
-                    DispatchQueue.main.async { () -> Void in
-                        guard let _ = data , error == nil else {
-                            let jsCode = "try{ga('send','event', '\(deviceType) Launch Ad', 'Fail', '\(impressionUrlString)', {'nonInteraction':1});}catch(ignore){}"
-                            self.webView!.evaluateJavaScript(jsCode) { (result, error) in
-                            }
-                            print ("Fail to send impression to \(url.absoluteString)")
-                            return
-                        }
-                        let jsCode = "try{ga('send','event', '\(deviceType) Launch Ad', 'Sent', '\(impressionUrlString)', {'nonInteraction':1});}catch(ignore){}"
-                        self.webView!.evaluateJavaScript(jsCode) { (result, error) in
-                        }
-                        print("sent impression to \(url.absoluteString)")
-                    }
-                }
-            }
-        }
-    }
+
     
     /*
      func webView(webView: UIWebView, shouldStartLoadWithRequest r: NSURLRequest, navigationType nt: UIWebViewNavigationType) -> Bool {

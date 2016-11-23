@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 import WebKit
 
+
+
 class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler, UIScrollViewDelegate{
     
     @IBOutlet weak var containerView: UIWebView!
@@ -23,7 +25,6 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         self.webView?.removeObserver(self, forKeyPath: "canGoBack")
         self.webView?.removeObserver(self, forKeyPath: "canGoForward")
     }
-    
     
     override func loadView() {
         super.loadView()
@@ -62,9 +63,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     //there's a bug on iOS 9 so that you can't set decelerationRate directly on webView
     //http://stackoverflow.com/questions/31369538/cannot-change-wkwebviews-scroll-rate-on-ios-9-beta
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        
         scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
-        
     }
     
     
@@ -203,7 +202,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         
     }
     
-    override var supportedInterfaceOrientations : UIInterfaceOrientationMask {
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         if webPageUrl.range(of: "d=landscape") != nil {
             return UIInterfaceOrientationMask.landscape
         } else if webPageUrl.range(of: "d=portrait") != nil {
@@ -219,11 +218,11 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         }
     }
     
-    override var shouldAutorotate : Bool {
-        return true
-    }
+//    override var shouldAutorotate: Bool {
+//        return true
+//    }
     
-    override var prefersStatusBarHidden : Bool {
+    override var prefersStatusBarHidden: Bool {
         return true
     }
     
