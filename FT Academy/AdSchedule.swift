@@ -19,6 +19,7 @@ class AdSchedule {
     var videoFilePath = ""
     lazy var backupImage: UIImage? = nil
     lazy var backgroundColor: UIColor? = nil
+    lazy var durationInSeconds: Double? = nil
     var showSoundButton = true
     lazy var impression: [String] = []
     
@@ -124,7 +125,11 @@ class AdSchedule {
                                     self.impression.append(impression_3)
                                 }
                             }
-                            
+                            if let durationInString = currentCreative["durationInSeconds"] as? String {
+                                if let durationInDouble = Double(durationInString) {
+                                    self.durationInSeconds = durationInDouble
+                                }
+                            }
                             
                             // specific properties like image file, video file, backup image file
                             if imageTypes.contains(pathExtention!.lowercased()) {

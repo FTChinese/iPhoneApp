@@ -183,6 +183,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             return
         }
         adSchedule.parseSchedule()
+        if adSchedule.durationInSeconds != nil {
+            maxAdTimeAfterLaunch = adSchedule.durationInSeconds!
+            maxAdTimeAfterWebRequest = adSchedule.durationInSeconds! - 2.0
+        }
+        print (maxAdTimeAfterLaunch)
         if adSchedule.adType == "page" {
             addOverlayView()
             showHTMLAd()
@@ -274,6 +279,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         let adPageView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: screenWidth, height: screenHeight))
         let base = URL(string: adSchedule.htmlBase)
         let s = adSchedule.htmlFile
+        if #available(iOS 10.0, *) {
+            adPageView.configuration.mediaTypesRequiringUserActionForPlayback = .init(rawValue: 0)
+        } else {
+            adPageView.configuration.mediaPlaybackRequiresUserAction = false
+        }
         adPageView.loadHTMLString(s as String, baseURL:base)
         overlayView!.addSubview(adPageView)
         if adSchedule.adLink != "" {
