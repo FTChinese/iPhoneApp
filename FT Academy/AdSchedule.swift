@@ -139,8 +139,12 @@ class AdSchedule {
                                 break
                             } else if htmlTypes.contains(pathExtention!.lowercased()) {
                                 self.adType = "page"
-                                self.htmlFile = try! NSString(contentsOfFile:templatePath!, encoding:String.Encoding.utf8.rawValue)
-                                break
+                                do {
+                                    self.htmlFile = try NSString(contentsOfFile:templatePath!, encoding:String.Encoding.utf8.rawValue)
+                                    break
+                                } catch {
+                                    self.htmlFile = ""
+                                }
                             } else if videoTypes.contains(pathExtention!.lowercased()) {
                                 self.adType = "video"
                                 self.videoFilePath = templatePath!
@@ -350,26 +354,34 @@ class AdSchedule {
     private func checkFilePath(fileUrl: String) -> String? {
         let url = NSURL(string:fileUrl)
         if let lastComponent = url?.lastPathComponent {
-        let templatepathInBuddle = Bundle.main.bundlePath + "/" + lastComponent
-        let DocumentDirURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        let templatepathInDocument = DocumentDirURL.appendingPathComponent(lastComponent)
-        var templatePath: String? = nil
-        if FileManager.default.fileExists(atPath: templatepathInBuddle)
-        {
-            templatePath = templatepathInBuddle
-        } else if FileManager().fileExists(atPath: templatepathInDocument.path) {
-            templatePath = templatepathInDocument.path
-        }
-        return templatePath
+            let templatepathInBuddle = Bundle.main.bundlePath + "/" + lastComponent
+            do {
+                let DocumentDirURL = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+                let templatepathInDocument = DocumentDirURL.appendingPathComponent(lastComponent)
+                var templatePath: String? = nil
+                if FileManager.default.fileExists(atPath: templatepathInBuddle)
+                {
+                    templatePath = templatepathInBuddle
+                } else if FileManager().fileExists(atPath: templatepathInDocument.path) {
+                    templatePath = templatepathInDocument.path
+                }
+                return templatePath
+            } catch {
+                return nil
+            }
         }
         return nil
     }
     
     private func readFile(_ fileName: String, fileLocation: String) -> Data? {
         if fileLocation == "download" {
-            let DocumentDirURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-            let fileURL = DocumentDirURL.appendingPathComponent(fileName)
-            return (try? Data(contentsOf: fileURL))
+            do {
+                let DocumentDirURL = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+                let fileURL = DocumentDirURL.appendingPathComponent(fileName)
+                return (try? Data(contentsOf: fileURL))
+            } catch {
+                return nil
+            }
         } else {
             let filename: NSString = fileName as NSString
             let pathExtention = filename.pathExtension

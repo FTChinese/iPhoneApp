@@ -41,7 +41,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
-
+    
     deinit {
         //print("main view is being deinitialized")
     }
@@ -212,7 +212,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         setAdBackground()
     }
     
-
+    
     
     private func addOverlayView() {
         overlayView!.backgroundColor = UIColor(netHex:0x000000)
@@ -357,7 +357,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             if let theLabel = self?.view.viewWithTag(112) as? UILabel {
                 theLabel.text = String(format:"%.0f", timeLeft)
             }
-            })
+        })
         
         // button for switching off mute mode
         if adSchedule.showSoundButton == true {
@@ -445,19 +445,17 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         if adSchedule.adType != "none" {
             startUrl = "\(startUrl)&\(useNativeLaunchAd)"
         }
-        //        let url = NSURL(string:startUrl)
-        //        let req = NSURLRequest(URL:url!)
         let templatepath = Bundle.main.path(forResource: "index", ofType: "html")!
         //let base = NSURL.fileURLWithPath(templatepath)!
         let base = URL(string: startUrl)
-        let s = try! NSString(contentsOfFile:templatepath, encoding:String.Encoding.utf8.rawValue)
-        //let ss = "<content>"
-        
-        
-        //            let webView = self.view as! WKWebView
-        //            webView.loadRequest(req)
-        self.webView!.loadHTMLString(s as String, baseURL:base)
-        
+        do {
+            let s = try NSString(contentsOfFile:templatepath, encoding:String.Encoding.utf8.rawValue)
+            self.webView!.loadHTMLString(s as String, baseURL:base)
+        } catch {
+            let url = URL(string: startUrl)
+            let req = URLRequest(url: url!)
+            self.webView!.load(req)
+        }
         checkConnectionType()
     }
     
@@ -599,7 +597,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             WXApi.send(req)
             decisionHandler(.cancel)
             
-        // all new url schemes should be above here, otherwise the app will crash after clicking
+            // all new url schemes should be above here, otherwise the app will crash after clicking
         } else if navigationAction.navigationType == .linkActivated{
             if urlString.range(of: "mailto:") != nil{
                 UIApplication.shared.openURL(navigationAction.request.url!)
@@ -797,7 +795,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
-
+    
     
     /*
      func webView(webView: UIWebView, shouldStartLoadWithRequest r: NSURLRequest, navigationType nt: UIWebViewNavigationType) -> Bool {
