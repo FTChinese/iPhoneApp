@@ -78,7 +78,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         pageStatus = .viewLoaded
         loadFromLocal()
         pageStatus = .webViewLoading
-        resetTimer(maxAdTimeAfterLaunch)
+        displayWebviewAfterSeconds(maxAdTimeAfterLaunch)
         // download the latest ad schedule from the internet
         if (adType != "none") {
             adSchedule.updateAdSchedule()
@@ -540,17 +540,19 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     
-    private func resetTimer(_ seconds: TimeInterval) {
+    private func displayWebviewAfterSeconds(_ seconds: TimeInterval) {
         timer?.invalidate()
-        let nextTimer = Timer.scheduledTimer(timeInterval: seconds, target: self, selector: #selector(ViewController.handleIdleEvent(_:)), userInfo: nil, repeats: false)
+        let nextTimer = Timer.scheduledTimer(
+            timeInterval: seconds,
+            target: self,
+            selector: #selector(ViewController.displayWebView),
+            userInfo: nil,
+            repeats: false
+        )
         timer = nextTimer
     }
     
-    // this should be public
-    func handleIdleEvent(_ timer: Timer) {
-        // do whatever you want when idle after certain period of time
-        displayWebView()
-    }
+
     
     // this should be public
     func displayWebView() {
@@ -580,7 +582,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: (@escaping (WKNavigationActionPolicy) -> Void)) {
         let urlString = navigationAction.request.url!.absoluteString
         if (urlString != startUrl && urlString != "about:blank") {
-            resetTimer(maxAdTimeAfterWebRequest)
+            displayWebviewAfterSeconds(maxAdTimeAfterLaunch)
         }
         if navigationAction.request.url!.scheme == "ftcweixin" {
             shareToWeChat(urlString)
