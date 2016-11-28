@@ -549,6 +549,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             userInfo: nil,
             repeats: false
         )
+        nextTimer.tolerance = 10
         timer = nextTimer
     }
     
