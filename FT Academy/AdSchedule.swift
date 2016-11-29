@@ -100,6 +100,7 @@ class AdSchedule {
                         // if the file exits
                         if templatePath != nil && pathExtention != nil{
                             // common properties like htmlBase, impressions and links
+                            print("found the file in \(templatePath) \(pathExtention)")
                             self.htmlBase = currentFileName
                             self.adLink = currentCreative["click"] as? String ?? ""
                             // background color
