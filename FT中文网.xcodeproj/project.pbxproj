@@ -62,6 +62,7 @@
 		507C7E6F1DB0BCE800A8EF50 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50256CA51A4B9D0B005950B9 /* Images.xcassets */; };
 		507C7E701DB0BCE800A8EF50 /* schedule.json in Resources */ = {isa = PBXBuildFile; fileRef = 5005FB811D9D090800E2B3DC /* schedule.json */; };
 		507C7E761DB0BCF100A8EF50 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50C34C371BC664B300C8A8CB /* LaunchScreen.xib */; };
+		508DE41A1DEE7D8600C61ED5 /* bnp20161129.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 508DE4191DEE7D8600C61ED5 /* bnp20161129.mp4 */; };
 		50982C7F1BC7A7C800907575 /* IJReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50982C7D1BC7A7C800907575 /* IJReachability.swift */; };
 		50982C801BC7A7C800907575 /* IJReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50982C7D1BC7A7C800907575 /* IJReachability.swift */; };
 		50A677271A4EBFBC002B347F /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 50A677261A4EBFBC002B347F /* index.html */; };
@@ -123,6 +124,7 @@
 		507C7E741DB0BCE800A8EF50 /* FT中文网-iPad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FT中文网-iPad.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		507C7E751DB0BCE800A8EF50 /* FT中文网 copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "FT中文网 copy-Info.plist"; path = "/Users/zhangoliver/sandbox/FTCiPhone/FT中文网 copy-Info.plist"; sourceTree = "<absolute>"; };
 		50873CC91A503A870027955A /* FT Academy-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FT Academy-Bridging-Header.h"; sourceTree = "<group>"; };
+		508DE4191DEE7D8600C61ED5 /* bnp20161129.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = bnp20161129.mp4; sourceTree = "<group>"; };
 		50982C7D1BC7A7C800907575 /* IJReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IJReachability.swift; sourceTree = "<group>"; };
 		50A677261A4EBFBC002B347F /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = index.html; path = supporting/index.html; sourceTree = "<group>"; };
 		50B5D05D1DAF1E450052C954 /* FT中文网.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "FT中文网.entitlements"; sourceTree = SOURCE_ROOT; };
@@ -262,6 +264,7 @@
 				50A677261A4EBFBC002B347F /* index.html */,
 				50604A621A5552F1003803E6 /* webview.html */,
 				50D450591DED6A130095ECC4 /* bnp20161129H.mp4 */,
+				508DE4191DEE7D8600C61ED5 /* bnp20161129.mp4 */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -469,6 +472,7 @@
 				503435281DB9FDC200B2F686 /* mute.png in Resources */,
 				507C7E761DB0BCF100A8EF50 /* LaunchScreen.xib in Resources */,
 				507C7E701DB0BCE800A8EF50 /* schedule.json in Resources */,
+				508DE41A1DEE7D8600C61ED5 /* bnp20161129.mp4 in Resources */,
 				50E577D81DB754880016A73F /* close.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

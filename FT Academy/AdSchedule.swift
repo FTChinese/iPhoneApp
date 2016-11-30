@@ -84,9 +84,24 @@ class AdSchedule {
                     // if this creaive is scheduled for today
                     // and for this type of device(platform)
                     if dates.contains(dateInInt) && platforms.contains(self.currentPlatform){
-                        guard let currentFileName = currentCreative["fileName"] as? String else {
+                        guard var currentFileName = currentCreative["fileName"] as? String else {
                             print("cannot find file name of creative")
                             continue
+                        }
+                        
+                        // on iPad landscape mode, use the landscapeFileName
+                        if currentPlatform == "ipad" && UIScreen.main.bounds.width > UIScreen.main.bounds.height {
+                            if let landscapeFileName = currentCreative["landscapeFileName"] as? String {
+                                if landscapeFileName != "" {
+                                    // check if the landscape file is valid and exists locally
+                                    let url = NSURL(string:currentFileName)
+                                    let pathExtention = url?.pathExtension
+                                    let templatePath = checkFilePath(fileUrl: currentFileName)
+                                    if templatePath != nil && pathExtention != nil{
+                                        currentFileName = landscapeFileName
+                                    }
+                                }
+                            }
                         }
                         
                         // extract the file name to figure out the adType
@@ -217,7 +232,7 @@ class AdSchedule {
                 // other creatives should be deleted
                 // the schedule.json file is always needed
                 var creativesNeededInFuture = [self.adScheduleFileName]
-                // check each crative in the schedule
+                // check each creative in the schedule
                 
                 
                 for (creative) in creatives {
@@ -257,28 +272,21 @@ class AdSchedule {
                     
                     // and for this type of device(platform)
                     if creativeIsNeededForFuture == true && platforms.contains(self.currentPlatform){
-                        guard let currentFileName = currentCreative["fileName"] as? String else {
-                            print("cannot find file name of creative")
-                            continue
-                        }
-                        // extract the file name to figure out the adType
-                        let url = NSURL(string:currentFileName)
-                        let pathExtention = url?.pathExtension
-                        
-                        // if the file exists locally, return its path. otherwise return nil
-                        let templatePath = checkFilePath(fileUrl: currentFileName)
-                        // if the file does not exit, download it
-                        
-                        if let lastComponent = url?.lastPathComponent {
-                            if templatePath == nil && pathExtention != nil{
-                                // download only when user is using wifi
-                                let statusType = IJReachability().connectedToNetworkOfType()
-                                if statusType == .wiFi || !videoTypes.contains(pathExtention!.lowercased()){
-                                    print("\(currentFileName) about to be downloaded")
-                                    grabFileFromWeb(url: url as! URL, fileName: lastComponent, parseScheduleForDownload: false)
-                                }
+                        // check to download three types of files
+                        if let currentFileName = currentCreative["fileName"] as? String {
+                            if let lastComponent = checkCreativeForFuture(currentFileName: currentFileName) {
+                                creativesNeededInFuture.append(lastComponent)
                             }
-                            creativesNeededInFuture.append(lastComponent)
+                        }
+                        if let currentFileName = currentCreative["landscapeFileName"] as? String {
+                            if let lastComponent = checkCreativeForFuture(currentFileName: currentFileName) {
+                                creativesNeededInFuture.append(lastComponent)
+                            }
+                        }
+                        if let currentFileName = currentCreative["backupImage"] as? String {
+                            if let lastComponent = checkCreativeForFuture(currentFileName: currentFileName) {
+                                creativesNeededInFuture.append(lastComponent)
+                            }
                         }
                     }
                 }
@@ -318,6 +326,32 @@ class AdSchedule {
                 print("\(JSONError)")
             }
         }
+    }
+    
+    // check if the creative is needed in the future
+    // if it is return true
+    // if it is needed but not downloaded yet, download it
+    private func checkCreativeForFuture(currentFileName: String) -> String? {
+        // extract the file name to figure out the adType
+        let url = NSURL(string:currentFileName)
+        let pathExtention = url?.pathExtension
+        
+        // if the file exists locally, return its path. otherwise return nil
+        let templatePath = checkFilePath(fileUrl: currentFileName)
+        
+        // if the file does not exit, download it
+        if let lastComponent = url?.lastPathComponent {
+            if templatePath == nil && pathExtention != nil{
+                // download only when user is using wifi
+                let statusType = IJReachability().connectedToNetworkOfType()
+                if statusType == .wiFi || !videoTypes.contains(pathExtention!.lowercased()){
+                    print("\(currentFileName) about to be downloaded")
+                    grabFileFromWeb(url: url as! URL, fileName: lastComponent, parseScheduleForDownload: false)
+                }
+            }
+            return lastComponent
+        }
+        return nil
     }
     
     private func getLatestScheduleData() -> Data? {
@@ -434,8 +468,6 @@ class AdSchedule {
     }
     
     private func grabFileFromWeb(url: URL, fileName: String, parseScheduleForDownload: Bool) {
-        //print("lastPathComponent: " + (url.lastPathComponent ?? ""))
-        //weChatShareIcon = UIImage(named: "ftcicon.jpg")
         getDataFromUrl(url) { (data, response, error)  in
             DispatchQueue.main.async { () -> Void in
                 guard let data = data , error == nil else { return }
