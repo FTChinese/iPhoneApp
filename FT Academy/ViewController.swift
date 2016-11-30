@@ -302,9 +302,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     private func playVideo() throws {
         let path = adSchedule.videoFilePath
+        let pathUrl = URL(fileURLWithPath: path)
         maxAdTimeAfterLaunch = 525.0
         maxAdTimeAfterWebRequest = 523.0
-        player = AVPlayer(url: URL(fileURLWithPath: path))
+        player = AVPlayer(url: pathUrl)
         let playerController = AVPlayerViewController()
         
         let asset = AVURLAsset(url: URL(fileURLWithPath: path))
@@ -356,10 +357,28 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             adPageLinkOverlay.addGestureRecognizer(tapRecognizer)
         }
         
+        var timeRecorded = [0]
+        var deviceType = "iPhone"
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            deviceType = "iPad"
+        }
+        
+        let lastcomponent = pathUrl.lastPathComponent
         token = player?.addPeriodicTimeObserver(forInterval: CMTimeMake(1,10), queue: DispatchQueue.main, using: { [weak self] timeInterval in
             let timeLeft = CMTimeGetSeconds(videoDuration-timeInterval)
             if let theLabel = self?.view.viewWithTag(112) as? UILabel {
                 theLabel.text = String(format:"%.0f", timeLeft)
+            }
+            // record play time as events
+            let timeSpent = Int(CMTimeGetSeconds(timeInterval))
+            let timeRecordStep = 5
+            if !timeRecorded.contains(timeSpent) && timeSpent % timeRecordStep == 0 {
+                print(timeSpent)
+                let jsCode = "try{ga('send','event', '\(deviceType) Launch Video Play', '\(lastcomponent)', '\(timeSpent)', {'nonInteraction':1});}catch(ignore){}"
+                //let webView = self.view as! WKWebView
+                self?.webView.evaluateJavaScript(jsCode) { (result, error) in
+                }
+                timeRecorded.append(timeSpent)
             }
         })
         
