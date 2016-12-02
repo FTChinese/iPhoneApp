@@ -6,19 +6,14 @@
 //  Copyright (c) 2014年 Zhang Oliver. All rights reserved.
 //
 
-
-
-
 import UIKit
 import WebKit
 import SafariServices
 import AVKit
 import AVFoundation
 
-
-
 class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, SFSafariViewControllerDelegate {
-    
+    // after ios 8, WKWebView is always needed
     var webView = WKWebView()
     //lazy var webView: WKWebView? = { return nil }()
     private weak var timer: Timer?
@@ -139,6 +134,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     // if there's no ad to load
     func normalOverlayView() {
         if let overlayViewNormal = overlayView {
+            maxAdTimeAfterLaunch = 3.0
+            maxAdTimeAfterWebRequest = 2.0
             overlayViewNormal.backgroundColor = UIColor(netHex:0x002F5F)
             overlayViewNormal.frame = self.view.bounds
             self.view.addSubview(overlayViewNormal)
@@ -181,7 +178,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     // if there's a full screen screen ad to show
     private func adOverlayView() {
         if self.adType == "none" {
-            maxAdTimeAfterLaunch = 3.0
+            maxAdTimeAfterLaunch = 1.0
             maxAdTimeAfterWebRequest = 1.0
             normalOverlayView()
             return
@@ -303,8 +300,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     private func playVideo() throws {
         let path = adSchedule.videoFilePath
         let pathUrl = URL(fileURLWithPath: path)
-        maxAdTimeAfterLaunch = 525.0
-        maxAdTimeAfterWebRequest = 523.0
+        maxAdTimeAfterLaunch = 60.0
+        maxAdTimeAfterWebRequest = 57.0
         player = AVPlayer(url: pathUrl)
         let playerController = AVPlayerViewController()
         
@@ -470,8 +467,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         if adSchedule.adType != "none" {
             startUrl = "\(startUrl)&\(useNativeLaunchAd)"
         }
+        print (startUrl)
         if let templatepath = Bundle.main.path(forResource: "index", ofType: "html") {
-            //let base = NSURL.fileURLWithPath(templatepath)!
             let base = URL(string: startUrl)
             do {
                 let s = try NSString(contentsOfFile:templatepath, encoding:String.Encoding.utf8.rawValue)
@@ -496,7 +493,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     // this is public because AppDelegate is going to use it
     func checkBlankPage() {
-        //let webView = self.view as! WKWebView
         self.webView.evaluateJavaScript("document.querySelector('body').innerHTML") { (result, error) in
             if error != nil {
                 self.loadFromLocal()
@@ -504,43 +500,43 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 self.checkConnectionType()
             }
         }
-        
     }
     
     // when user tap on a remote notification
     // this should be public
-    func openNotification(_ action: String, id: String, title: String) {
-        var jsCode: String
-        switch(action) {
-        case "story":
-            jsCode = "readstory('\(id)')"
-        case "tag":
-            jsCode = "showchannel('/index.php/ft/tag/\(id)?i=2', '\(id)')"
-        case "channel":
-            jsCode = "showchannel('/index.php/ft/channel/phonetemplate.html?channel=\(id)', '\(id)')"
-        case "video":
-            jsCode = "watchVideo('\(id)','视频')"
-        case "photo":
-            jsCode = ""
-            openInView ("http://www.ftchinese.com/photonews/\(id)?i=3&d=landscape")
-        case "gym":
-            jsCode = "showSlide('/index.php/ft/interactive/\(id)?i=2', 'FT商学院', 0)"
-        case "special":
-            jsCode = ""
-            openInView ("http://www.ftchinese.com/interactive/\(id)")
-        case "page":
-            jsCode = ""
-            openInView ("\(id)")
-        default:
-            jsCode = ""
-            break
-        }
-        if jsCode != "" {
-            jsCode = "try{ga('set', 'campaignName', '\(action)');ga('set', 'campaignSource', 'Apple Push Service');ga('set', 'campaignMedium', 'Push Notification');}catch(ignore){}\(jsCode);ga('send','event', 'Tap Notification', '\(action)', '\(id)');fa('send','event', 'Tap Notification', '\(action)', '\(id)');"
-            //let webView = self.view as! WKWebView
-            self.webView.evaluateJavaScript(jsCode) { (result, error) in
+    func openNotification(_ action: String?, id: String?, title: String?) {
+        if let action = action, let id = id {
+            var jsCode: String
+            switch(action) {
+            case "story":
+                jsCode = "readstory('\(id)')"
+            case "tag":
+                jsCode = "showchannel('/index.php/ft/tag/\(id)?i=2', '\(id)')"
+            case "channel":
+                jsCode = "showchannel('/index.php/ft/channel/phonetemplate.html?channel=\(id)', '\(id)')"
+            case "video":
+                jsCode = "watchVideo('\(id)','视频')"
+            case "photo":
+                jsCode = ""
+                openInView ("http://www.ftchinese.com/photonews/\(id)?i=3&d=landscape")
+            case "gym":
+                jsCode = "showSlide('/index.php/ft/interactive/\(id)?i=2', 'FT商学院', 0)"
+            case "special":
+                jsCode = ""
+                openInView ("http://www.ftchinese.com/interactive/\(id)")
+            case "page":
+                jsCode = ""
+                openInView ("\(id)")
+            default:
+                jsCode = ""
+                break
             }
-            
+            if jsCode != "" {
+                jsCode = "try{ga('set', 'campaignName', '\(action)');ga('set', 'campaignSource', 'Apple Push Service');ga('set', 'campaignMedium', 'Push Notification');}catch(ignore){}\(jsCode);ga('send','event', 'Tap Notification', '\(action)', '\(id)');fa('send','event', 'Tap Notification', '\(action)', '\(id)');"
+                self.webView.evaluateJavaScript(jsCode) { (result, error) in
+                }
+                
+            }
         }
     }
     
@@ -563,7 +559,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     private func updateConnectionToWeb(_ connectionType: String) {
         let jsCode = "window.gConnectionType = '\(connectionType)';"
-        //let webView = self.view as! WKWebView
         self.webView.evaluateJavaScript(jsCode) { (result, error) in
         }
         
@@ -579,7 +574,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             userInfo: nil,
             repeats: false
         )
-        nextTimer.tolerance = 10
+        nextTimer.tolerance = 1
         timer = nextTimer
     }
     
@@ -588,11 +583,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     // this should be public
     func displayWebView() {
         if pageStatus != .webViewDisplayed {
-            if overlayView != nil {
-                for subUIView in overlayView!.subviews {
+            if let overlay = overlayView {
+                for subUIView in overlay.subviews {
                     subUIView.removeFromSuperview()
                 }
-                overlayView!.removeFromSuperview()
+                overlay.removeFromSuperview()
                 overlayView = nil
             }
             self.view.viewWithTag(111)?.removeFromSuperview()
@@ -657,8 +652,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 queryStringDictionary[pairKey] = pairValue.removingPercentEncoding
             }
         }
-        //weChatShareIcon = UIImage(named: "ftcicon.jpg")!
-        //print(queryStringDictionary)
         webPageUrl = queryStringDictionary["url"]?.removingPercentEncoding ?? webPageUrl
         webPageTitle = queryStringDictionary["title"] ?? webPageTitle
         webPageDescription = queryStringDictionary["description"] ?? webPageDescription0
@@ -728,7 +721,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     @available(iOS 9.0, *)
     func safariViewController(_ controller: SFSafariViewController, didCompleteInitialLoad didLoadSuccessfully: Bool) {
         if didLoadSuccessfully == false {
-            //print("Page did not load!")
             //controller.dismissViewControllerAnimated(true, completion: nil)
         } else {
             //print("Page Load Successful!")
@@ -790,8 +782,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             } else {
                 //get the user id
                 let resultString = result as? String
-                if resultString != nil {
-                    userId = resultString!
+                if let r = resultString {
+                    userId = r
                     //print ("the cookie value is \(resultString!)")
                     //self.updateUserId(resultString!)
                 } else {

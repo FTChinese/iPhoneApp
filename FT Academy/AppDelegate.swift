@@ -96,10 +96,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
                 guard let title = aps["alert"] else {
                     return false
                 }
-                let rootViewController = self.window!.rootViewController as! ViewController
-                let _ = setTimeout(5.0, block: { () -> Void in
-                    rootViewController.openNotification(action as! String, id: id as! String, title: title as! String)
-                })
+                if let rootViewController = self.window?.rootViewController as? ViewController {
+                    let _ = setTimeout(5.0, block: { () -> Void in
+                        rootViewController.openNotification(action as? String, id: id as? String, title: title as? String)
+                    })
+                }
             }
         }
         
@@ -134,12 +135,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
     }
     
     func saveDeviceInfo() {
-        let bundleID: String
-        if let _ = Bundle.main.bundleIdentifier {
-            bundleID = Bundle.main.bundleIdentifier!
-        } else {
-            bundleID = ""
-        }
+        let bundleID = Bundle.main.bundleIdentifier
+        //        if let _ = Bundle.main.bundleIdentifier {
+        //            bundleID = Bundle.main.bundleIdentifier!
+        //        } else {
+        //            bundleID = ""
+        //        }
         let appNumber: String
         if bundleID == "com.ft.ftchinese.ipad" {
             appNumber = "1"
@@ -192,34 +193,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
         UIApplication.shared.applicationIconBadgeNumber = 0
-        var title = "为您推荐"
-        guard let aps = userInfo["aps"] as? NSDictionary else {
-            return
-        }
-        guard let theTitle = aps["alert"] as? String else {
-            return
-        }
-        title = theTitle
-        
-        var lead = ""
-        if let _ = userInfo["lead"] {
-            lead = userInfo["lead"] as! String
-        }
-        
-        if let notiAction = userInfo["action"], let id = userInfo["id"] {
-            let rootViewController = self.window!.rootViewController as! ViewController
-            if ( application.applicationState == .inactive || application.applicationState == .background  )
-            {
-                rootViewController.openNotification(notiAction as! String, id: id as! String, title: title)
-            } else {
-                let alert = UIAlertController(title: title, message: lead, preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: "去看看", style: .default, handler: { (action: UIAlertAction!) in
-                    //let rootViewController = self.window!.rootViewController as! ViewController
-                    rootViewController.openNotification(notiAction as! String, id: id as! String, title: title)
-                }))
-                alert.addAction(UIAlertAction(title: "不感兴趣", style: UIAlertActionStyle.default, handler: nil))
-                rootViewController.present(alert, animated: true, completion: nil)
-                
+        if let aps = userInfo["aps"] as? NSDictionary {
+            let title: String = aps["alert"] as? String ?? "为您推荐"
+            let lead: String = userInfo["lead"] as? String ?? ""
+            if let notiAction = userInfo["action"], let id = userInfo["id"] {
+                if let rootViewController = self.window?.rootViewController as? ViewController {
+                    if application.applicationState == .inactive || application.applicationState == .background{
+                        rootViewController.openNotification(notiAction as? String, id: id as? String, title: title)
+                    } else {
+                        let alert = UIAlertController(title: title, message: lead, preferredStyle: UIAlertControllerStyle.alert)
+                        alert.addAction(UIAlertAction(title: "去看看", style: .default, handler: { (action: UIAlertAction) in
+                            rootViewController.openNotification(notiAction as? String, id: id as? String, title: title)
+                        }))
+                        alert.addAction(UIAlertAction(title: "不感兴趣", style: UIAlertActionStyle.default, handler: nil))
+                        rootViewController.present(alert, animated: true, completion: nil)
+                    }
+                }
             }
         }
     }
@@ -257,8 +246,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-        let rootViewController = self.window!.rootViewController as! ViewController
-        rootViewController.getUserId()
+        if let rootViewController = self.window?.rootViewController as? ViewController {
+            rootViewController.getUserId()
+        }
     }
     
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -269,17 +259,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         //print ("application did become active")
         UIApplication.shared.applicationIconBadgeNumber = 0
-        let rootViewController = self.window!.rootViewController as! ViewController
-        rootViewController.checkBlankPage()
+        if let rootViewController = self.window?.rootViewController as? ViewController {
+            rootViewController.checkBlankPage()
+        }
         // send deviceToken only once
         sendDeviceToken()
-        
-        
-        // check for new launch ad to download
-        //        let statusType = IJReachability().connectedToNetworkOfType()
-        //        if statusType == .wiFi || 1>0{
-        //            rootViewController.adSchedule.updateAdSchedule()
-        //        }
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
@@ -288,7 +272,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
     
     
     
-    
+    // tap on status bar to scroll back to top
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        if let events = event?.allTouches {
+            let touch = events.first
+            if let location = touch?.location(in: self.window) {
+                let statusBarFrame = UIApplication.shared.statusBarFrame
+                if statusBarFrame.contains(location) {
+                    NotificationCenter.default.post(name: Notification.Name(rawValue: "statusBarSelected"), object: nil)
+                }
+            }
+        }
+    }
     
     
     
@@ -376,8 +372,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
                                                 let lead = "用户\(nickname)，开放Id是\(openid), 照片链接为“\(headimgurl)”，性别给了个编号为\(sex)，也许是指男性，接下来我们可以利用这些信息来帮助用户登录我们的应用。" + info
                                                 let alert = UIAlertController(title: title, message: lead, preferredStyle: UIAlertControllerStyle.alert)
                                                 alert.addAction(UIAlertAction(title: "知道了", style: UIAlertActionStyle.default, handler: nil))
-                                                let rootViewController = self.window!.rootViewController as! ViewController
-                                                rootViewController.present(alert, animated: true, completion: nil)
+                                                if let rootViewController = self.window?.rootViewController as? ViewController {
+                                                    rootViewController.present(alert, animated: true, completion: nil)
+                                                }
                                                 
                                             } catch let JSONError as NSError {
                                                 print("\(JSONError)")
@@ -405,22 +402,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
         }
     }
     
-    
-    
-    
     // code related to wechat authorization end
     
     
-    // tap on status bar to scroll back to top
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        let events = event!.allTouches
-        let touch = events!.first
-        let location = touch!.location(in: self.window)
-        let statusBarFrame = UIApplication.shared.statusBarFrame
-        if statusBarFrame.contains(location) {
-            NotificationCenter.default.post(name: Notification.Name(rawValue: "statusBarSelected"), object: nil)
-        }
-    }
+    
 }
-
