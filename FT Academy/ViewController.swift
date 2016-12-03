@@ -24,12 +24,14 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     private let useNativeLaunchAd = "useNativeLaunchAd"
     private var maxAdTimeAfterLaunch = 6.0
     private var maxAdTimeAfterWebRequest = 3.0
-    
+    private let fadeOutDuration = 0.5
     private let adSchedule = AdSchedule()
     
     private lazy var player: AVPlayer? = {return nil} ()
     private lazy var token: Any? = {return nil} ()
     private lazy var overlayView: UIView? = UIView()
+    
+
     
     // set to none before releasing this publicly
     private var adType = ""
@@ -587,10 +589,33 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 for subUIView in overlay.subviews {
                     subUIView.removeFromSuperview()
                 }
-                overlay.removeFromSuperview()
-                overlayView = nil
+                
+                
+                UIView.animate(
+                    withDuration: fadeOutDuration,
+                    animations: {
+                        overlay.alpha = 0.0
+                },
+                    completion: {(value: Bool) in
+                        overlay.removeFromSuperview()
+                        self.overlayView = nil
+                }
+                )
+                
+                //                overlay.removeFromSuperview()
+                //                overlayView = nil
             }
-            self.view.viewWithTag(111)?.removeFromSuperview()
+            if let videoView = self.view.viewWithTag(111) {
+                UIView.animate(
+                    withDuration: fadeOutDuration,
+                    animations: {
+                        videoView.alpha = 0.0
+                }, completion: { (value: Bool) in
+                    videoView.removeFromSuperview()
+                })
+            }
+            //self.view.viewWithTag(111)?.removeFromSuperview()
+            
             pageStatus = .webViewDisplayed
             //trigger prefersStatusBarHidden
             setNeedsStatusBarAppearanceUpdate()
