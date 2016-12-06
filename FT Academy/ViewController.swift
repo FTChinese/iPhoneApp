@@ -627,10 +627,21 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             }
             //send impression ping
             reportImpressionToWeb(impressions: adSchedule.impression)
+            //show social login buttons
+            showSocialLoginButtons()
             player = nil
         }
     }
     
+    private func showSocialLoginButtons() {
+        for socialPlatform in supportedSocialPlatforms {
+            if socialPlatform != "" {
+                let jsCode = "try{document.getElementById('social-login-\(socialPlatform)').style.display='block';}catch(ignore){}"
+                webView.evaluateJavaScript(jsCode) { (result, error) in
+                }
+            }
+        }
+    }
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: (@escaping (WKNavigationActionPolicy) -> Void)) {
         if let url = navigationAction.request.url {

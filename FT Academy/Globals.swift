@@ -33,6 +33,7 @@ var deviceTokenSent = false
 var deviceTokenString = ""
 var deviceUserId = "no"
 let deviceTokenUrl = "http://noti.ftacademy.cn/iphone-collect.php"
+var supportedSocialPlatforms = [String]()
 
 enum WebViewStatus {
     case viewToLoad

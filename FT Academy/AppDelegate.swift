@@ -40,6 +40,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
         
         WXApi.registerApp(wechatAppId, withDescription: "FT中文网")
         
+        if WXApi.isWXAppSupport() == true {
+            supportedSocialPlatforms.append("wechat")
+        }
+        
+        
         UIApplication.shared.applicationIconBadgeNumber = 0
         
         
@@ -341,7 +346,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
                                     getDataFromUrl(userInfoUrl) { (data, response, error)  in
                                         DispatchQueue.main.async { () -> Void in
                                             guard let data = data , error == nil else { return }
-                                            if let JSONString = NSString(data: data, encoding: String.Encoding.utf8.rawValue) {
+                                            if let JSONString = String(data: data, encoding: .utf8) {
                                                 if let rootViewController = self.window?.rootViewController as? ViewController {
                                                     let jsCode = "try{socialLogin('wechat', '\(JSONString)');}catch(ignore){}"
                                                     print(jsCode)
