@@ -634,12 +634,17 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     private func showSocialLoginButtons() {
+        var jsCode = ""
         for socialPlatform in supportedSocialPlatforms {
             if socialPlatform != "" {
-                let jsCode = "try{document.getElementById('social-login-\(socialPlatform)').style.display='block';}catch(ignore){}"
-                webView.evaluateJavaScript(jsCode) { (result, error) in
-                }
+                jsCode += "document.getElementById('social-login-\(socialPlatform)').style.display='block';"
+
             }
+        }
+        if jsCode != "" {
+            jsCode = "try{\(jsCode)}catch(ignore){}"
+        }
+        webView.evaluateJavaScript(jsCode) { (result, error) in
         }
     }
     

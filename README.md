@@ -4,17 +4,18 @@ This is SWIFT source code of the new FTChinese iPhone and iPad app.
 
 It does these things: 
 
-1. Support iOS 7 and above. 
+1. Support iOS 8 and above using SWIFT 3.  
 2. Seamless launch experience, dealing with the white screen when loading a web view. 
 3. After launching, the app opens a single-page app. 
 4. On iOS 8 and above, it uses the new WKWebView, which offers vast performance improvements. 
-5. On iOS 7, it falls back to UIWebView. 
+5. It no longer uses UIWebView. 
 6. Since WKWebView doesn't support manifest, it starts the page from an HTML file in the app bundle. This way, the user will see something even when launching for the first time with no internet. 
-7. Clicking advertisement or outside link, which the FTChinese team have no control over, will launch the new Safari view in iOS 9 and above. This falls back to WKWebView on iOS 8 and UIWebView on iOS 7.  
+7. Clicking advertisement or outside link, which the FTChinese team have no control over, will launch the new Safari view in iOS 9 and above. This falls back to WKWebView on iOS 8.  
 8. When going back from the new scene or other app, the main view will check whether the web app has been cleared. If it has, an error will be caught and HTML will be reloaded. 
 9. If user tap on the status bar, the web app will scroll to top. 
 10. It supports the latest social sharing provided by iOS, including both build-in activities and WeChat. 
 11. It can react to a number of types of remote notifications, including story, tag, channel, video, data journalism, quiz, photo slide, and page ect...
+12. When the app launches, it will also check for advertisement creatives locally. If a scheduled creative is available locally, it will display immediately. It supports image, video and HTML 5 for launch screen advertisement. 
 
 Notes: 
 
