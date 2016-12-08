@@ -346,7 +346,7 @@ class AdSchedule {
                 let statusType = IJReachability().connectedToNetworkOfType()
                 if statusType == .wiFi || !videoTypes.contains(pathExtention!.lowercased()){
                     print("\(currentFileName) about to be downloaded")
-                    grabFileFromWeb(url: url as! URL, fileName: lastComponent, parseScheduleForDownload: false)
+                    grabFileFromWeb(url: url as? URL, fileName: lastComponent, parseScheduleForDownload: false)
                 }
             }
             return lastComponent
@@ -394,8 +394,7 @@ class AdSchedule {
                 let DocumentDirURL = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
                 let templatepathInDocument = DocumentDirURL.appendingPathComponent(lastComponent)
                 var templatePath: String? = nil
-                if FileManager.default.fileExists(atPath: templatepathInBuddle)
-                {
+                if FileManager.default.fileExists(atPath: templatepathInBuddle) {
                     templatePath = templatepathInBuddle
                 } else if FileManager().fileExists(atPath: templatepathInDocument.path) {
                     templatePath = templatepathInDocument.path
@@ -456,7 +455,7 @@ class AdSchedule {
         let dateInString = getCurrentDateString(dateFormat: "yyyyMMddHHmm")
         let urlString = lauchAdSchedule + "?" + dateInString
         let urlLauchAdSchedule = URL(string: urlString)
-        grabFileFromWeb(url: urlLauchAdSchedule!, fileName: self.adScheduleFileName, parseScheduleForDownload: true)
+        grabFileFromWeb(url: urlLauchAdSchedule, fileName: self.adScheduleFileName, parseScheduleForDownload: true)
     }
     
     private func getCurrentDateString(dateFormat: String) -> String {
@@ -467,15 +466,17 @@ class AdSchedule {
         return dateInString
     }
     
-    private func grabFileFromWeb(url: URL, fileName: String, parseScheduleForDownload: Bool) {
-        getDataFromUrl(url) { (data, response, error)  in
-            DispatchQueue.main.async { () -> Void in
-                guard let data = data , error == nil else { return }
-                self.saveFile(data, filename: fileName)
-                print ("file saved as \(fileName)")
-                if parseScheduleForDownload == true {
-                    //print("\(fileName) should be parsed for downloading creatives")
-                    self.parseScheduleForDownloading()
+    private func grabFileFromWeb(url: URL?, fileName: String, parseScheduleForDownload: Bool) {
+        if let urlValue = url {
+            getDataFromUrl(urlValue) { (data, response, error)  in
+                DispatchQueue.main.async { () -> Void in
+                    guard let data = data , error == nil else { return }
+                    self.saveFile(data, filename: fileName)
+                    print ("file saved as \(fileName)")
+                    if parseScheduleForDownload == true {
+                        //print("\(fileName) should be parsed for downloading creatives")
+                        self.parseScheduleForDownloading()
+                    }
                 }
             }
         }
