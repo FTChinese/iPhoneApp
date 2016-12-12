@@ -628,7 +628,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             //send impression ping
             reportImpressionToWeb(impressions: adSchedule.impression)
             //show social login buttons
-            showSocialLoginButtons()
+            //showSocialLoginButtons()
             player = nil
         }
     }
