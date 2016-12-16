@@ -44,7 +44,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
             supportedSocialPlatforms.append("wechat")
         }
         
-        
         UIApplication.shared.applicationIconBadgeNumber = 0
         
         

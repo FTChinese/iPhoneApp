@@ -638,7 +638,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         for socialPlatform in supportedSocialPlatforms {
             if socialPlatform != "" {
                 jsCode += "document.getElementById('social-login-\(socialPlatform)').style.display='block';"
-
             }
         }
         if jsCode != "" {
