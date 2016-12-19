@@ -407,7 +407,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             sender.isSelected = true
             do {
                 try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
-            } catch let error as NSError {
+            } catch let error {
                 print("Couldn't turn on sound: \(error.localizedDescription)")
             }
         }
