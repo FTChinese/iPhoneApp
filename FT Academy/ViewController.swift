@@ -198,13 +198,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             addOverlayView()
             showImage()
         } else if adSchedule.adType == "video" {
-            do {
-                try playVideo()
-            } catch AppError.invalidResource(let name, let type) {
-                debugPrint("Could not find resource \(name).\(type)")
-            } catch {
-                debugPrint("Generic error")
-            }
+            playVideo()
         } else {
             normalOverlayView()
             return
@@ -299,7 +293,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     
-    private func playVideo() throws {
+    private func playVideo() {
         let path = adSchedule.videoFilePath
         let pathUrl = URL(fileURLWithPath: path)
         maxAdTimeAfterLaunch = 60.0
