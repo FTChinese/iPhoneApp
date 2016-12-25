@@ -35,7 +35,11 @@ class AdSchedule {
         if let scheduleDataFinal = getLatestScheduleData() {
             //Get Current Date in String format of YYYYMMDD
             let dateInString = getCurrentDateString(dateFormat: "yyyyMMdd")
-            let dateInInt = Int(dateInString)!
+            
+            guard let dateInInt = Int(dateInString) else {
+                print("date can not be converted to int")
+                return
+            }
             
             if UIDevice.current.userInterfaceIdiom == .pad {
                 self.currentPlatform = "ipad"

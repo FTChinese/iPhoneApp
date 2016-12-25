@@ -31,7 +31,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     private lazy var token: Any? = {return nil} ()
     private lazy var overlayView: UIView? = UIView()
     
-
+    
     
     // set to none before releasing this publicly
     private var adType = ""
@@ -731,9 +731,17 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             if urlString.range(of: "http://www.ftchinese.com") == nil {
                 //when opening an outside url which we have no control over
                 if let url = URL(string:urlString) {
-                    let webVC = SFSafariViewController(url: url)
-                    webVC.delegate = self
-                    self.present(webVC, animated: true, completion: nil)
+                    if let urlScheme = url.scheme?.lowercased() {
+                        if ["http", "https"].contains(urlScheme) {
+                            // Can open with SFSafariViewController
+                            let webVC = SFSafariViewController(url: url)
+                            webVC.delegate = self
+                            self.present(webVC, animated: true, completion: nil)
+                        } else {
+                            // Scheme is not supported or no scheme is given, use openURL
+                            UIApplication.shared.openURL(url)
+                        }
+                    }
                 }
             } else {
                 //when opening a url on a page that I can control
