@@ -159,7 +159,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     
     @IBAction func share(_ sender: AnyObject) {
         let wcActivity = WeChatShare(to: "chat")
-        let wcMoment = WeChatShare(to: "moment")
+        let wcCircle = WeChatShare(to: "moment")
         let openInSafari = OpenInSafari()
         if let myWebsite = self.webView?.url {
             let shareData = DataForShare()
@@ -167,7 +167,12 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
             let image = ShareImageActivityProvider(placeholderItem: UIImage(named: "ftcicon.jpg")!)
             let objectsToShare = [shareData, myWebsite, image] as [Any]
             //let objectsToShare = [shareData, myWebsite]
-            let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcMoment, openInSafari])
+            let activityVC: UIActivityViewController
+            if WXApi.isWXAppSupport() == true {
+                activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcCircle, openInSafari])
+            } else {
+                activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [openInSafari])
+            }
             activityVC.excludedActivityTypes = [UIActivityType.airDrop, UIActivityType.addToReadingList]
             if UIDevice.current.userInterfaceIdiom == .pad {
                 //self.presentViewController(controller, animated: true, completion: nil)

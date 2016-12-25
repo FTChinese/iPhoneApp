@@ -704,7 +704,12 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             if let placeHolderImage = UIImage(named: "ftcicon.jpg") {
                 let image = ShareImageActivityProvider(placeholderItem: placeHolderImage)
                 let objectsToShare = [shareData, myWebsite, image] as [Any]
-                let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcCircle, wcFav, openInSafari])
+                let activityVC: UIActivityViewController
+                if WXApi.isWXAppSupport() == true {
+                    activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcCircle, wcFav, openInSafari])
+                } else {
+                    activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [openInSafari])
+                }
                 activityVC.excludedActivityTypes = [UIActivityType.airDrop, UIActivityType.addToReadingList]
                 if UIDevice.current.userInterfaceIdiom == .pad {
                     let popup: UIPopoverController = UIPopoverController(contentViewController: activityVC)

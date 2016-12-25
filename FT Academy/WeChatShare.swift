@@ -8,15 +8,12 @@
 
 import UIKit
 class WeChatShare : UIActivity{
-    
-    
-    var to = "chat"
+    var to: String
+    var text:String?
     
     init(to: String) {
         self.to = to
     }
-    
-    var text:String?
     
     override var activityType: UIActivityType {
         switch to {
@@ -29,9 +26,9 @@ class WeChatShare : UIActivity{
     
     override var activityImage: UIImage? {
         switch to {
-        case "moment": return UIImage(named: "Moment")!
-        case "fav": return UIImage(named: "WeChatFav")!
-        default: return UIImage(named: "WeChat")!
+        case "moment": return UIImage(named: "Moment")
+        case "fav": return UIImage(named: "WeChatFav")
+        default: return UIImage(named: "WeChat")
         }
         
     }
@@ -46,22 +43,21 @@ class WeChatShare : UIActivity{
     
     
     override class var activityCategory : UIActivityCategory {
-        // how to get the "to" value here to return different value for fav?
+        // use a subclass to return different value for fav
         return UIActivityCategory.share
     }
-
     
     
-    func getURLFromMessage(_ message:String)-> URL {
-        var url = "whatsapp://"
-        
-        if (message != "")
-        {
-            url = "\(url)send?text=\(message)"
-        }
-        
-        return URL(string: url)!
-    }
+    
+    //    private func getURLFromMessage(_ message:String)-> URL? {
+    //        var url = "whatsapp://"
+    //
+    //        if (message != "")
+    //        {
+    //            url = "\(url)send?text=\(message)"
+    //        }
+    //        return URL(string: url)
+    //    }
     
     
     override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
@@ -81,9 +77,9 @@ class WeChatShare : UIActivity{
     
 }
 
+// use a subclass to return different value for fav
 class WeChatShareFav: WeChatShare {
     override class var activityCategory : UIActivityCategory {
-        // how to get the "to" value here to return different value for fav?
         return UIActivityCategory.action
     }
 }
