@@ -318,8 +318,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
     func onResp(_ resp: BaseResp!) {
         if let authResp = resp as? SendAuthResp {
             if let wechatAuthCode = authResp.code {
-                //let dict = ["response": authResp.code]
-                
                 let wechatAccessTokenLink = accessTokenPrefix + "appid=" + wechatAppId + "&secret=" + wechatAppSecret + "&code=" + wechatAuthCode + "&grant_type=authorization_code"
                 if let url = URL(string: wechatAccessTokenLink) {
                     
@@ -359,51 +357,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
                                                     }
                                                 }
                                             }
-                                            
-                                            //                                            do {
-                                            
-                                            
-                                            //                                                let JSON = try JSONSerialization.jsonObject(with: data, options:JSONSerialization.ReadingOptions(rawValue: 0))
-                                            
-                                            
-                                            //                                                guard let JSONDictionary = JSON as? NSDictionary else  {
-                                            //                                                    print ("WeChat Return Value is Wrong")
-                                            //                                                    return
-                                            //                                                }
-                                            //print (JSONDictionary)
-                                            //                                                guard let nickname = JSONDictionary["nickname"] as? String else {
-                                            //                                                    print ("WeChat nickname is not a string")
-                                            //                                                    return
-                                            //                                                }
-                                            //                                                guard let openid = JSONDictionary["openid"] as? String else {
-                                            //                                                    print ("WeChat Open Id is not a string")
-                                            //                                                    return
-                                            //                                                }
-                                            //                                                guard let headimgurl = JSONDictionary["headimgurl"] as? String else {
-                                            //                                                    print ("WeChat headimgurl is not a string")
-                                            //                                                    return
-                                            //                                                }
-                                            //                                                let sex = JSONDictionary["sex"] as? Int ?? 999
-                                            //                                                print(JSONDictionary)
-                                            //                                                var info = ""
-                                            //                                                for (key, value) in JSONDictionary {
-                                            //                                                    if let k = key as? String, let v = value as? String {
-                                            //                                                        info += "\r\n" + k + ": " + v
-                                            //                                                    }
-                                            //                                                }
-                                            
-                                            //                                                let title = "已经获得用户的微信信息"
-                                            //                                                let lead = "用户\(nickname)，开放Id是\(openid), 照片链接为“\(headimgurl)”，性别给了个编号为\(sex)，也许是指男性，接下来我们可以利用这些信息来帮助用户登录我们的应用。" + info
-                                            
-                                            //                                                let alert = UIAlertController(title: title, message: lead, preferredStyle: UIAlertControllerStyle.alert)
-                                            //                                                alert.addAction(UIAlertAction(title: "知道了", style: UIAlertActionStyle.default, handler: nil))
-                                            //                                                if let rootViewController = self.window?.rootViewController as? ViewController {
-                                            //                                                    rootViewController.present(alert, animated: true, completion: nil)
-                                            //                                                }
-                                            
-                                            //                                            } catch let JSONError as NSError {
-                                            //                                                print("\(JSONError)")
-                                            //                                            }
                                         }
                                     }
                                 }
@@ -414,21 +367,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
                     }
                 }
                 
-                //NotificationCenter.default.post(name: NSNotification.Name(rawValue: "WeChatAuthCodeResp"), object: nil, userInfo: dict)
             } else {
-                //let dict = ["response": "Fail"]
-                //print("failed wechat auth")
-                //NotificationCenter.default.post(name: NSNotification.Name(rawValue: "WeChatAuthCodeResp"), object: nil, userInfo: dict)
+                
             }
         } else {
-            //let dict = ["response": "Fail"]
-            //print("failed wechat auth")
-            //NotificationCenter.default.post(name: NSNotification.Name(rawValue: "WeChatAuthCodeResp"), object: nil, userInfo: dict)
+            
         }
     }
-    
     // code related to wechat authorization end
-    
     
     
 }

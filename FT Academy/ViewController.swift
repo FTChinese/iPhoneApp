@@ -463,7 +463,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         if adSchedule.adType != "none" {
             startUrl = "\(startUrl)&\(useNativeLaunchAd)"
         }
-        print (startUrl)
+        print ("start url is \(startUrl)")
         if let templatepath = Bundle.main.path(forResource: "index", ofType: "html") {
             let base = URL(string: startUrl)
             do {
@@ -484,7 +484,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             self.webView.load(req)
         }
     }
-    
     
     
     // this is public because AppDelegate is going to use it
@@ -622,7 +621,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             //send impression ping
             reportImpressionToWeb(impressions: adSchedule.impression)
             //show social login buttons
-            //showSocialLoginButtons()
+            showSocialLoginButtons()
             player = nil
         }
     }
@@ -636,8 +635,14 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
         if jsCode != "" {
             jsCode = "try{\(jsCode)}catch(ignore){}"
-        }
-        webView.evaluateJavaScript(jsCode) { (result, error) in
+            print (jsCode)
+            webView.evaluateJavaScript(jsCode) { (result, error) in
+                if error != nil {
+                    print (error ?? "error is nil")
+                } else {
+                    print ("no error")
+                }
+            }
         }
     }
     
