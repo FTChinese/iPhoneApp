@@ -14,7 +14,7 @@ import UIKit
 
 // campaign codes that changes every year
 let ccode = [
-    "wechat": "2G168002",
+    "wechat": "2G178002",
     "actionsheet": "iosaction"
 ]
 let p=0

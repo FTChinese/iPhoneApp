@@ -783,7 +783,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     @available(iOS 9.0, *)
     func safariViewController(_ controler: SFSafariViewController, activityItemsFor activityItemsForURL: URL, title: String?) -> [UIActivity] {
         webPageUrl = activityItemsForURL.absoluteString
-        //http://www.chaumet.cn/?utm_source=FTCMobile-HPFullscreen
         //the title for the above page, which is not utf-8, cannot be captured
         webPageTitle = title ?? webPageTitle0
         let wcActivity = WeChatShare(to: "chat")
