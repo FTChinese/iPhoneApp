@@ -731,7 +731,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         if let imgUrl = URL(string: webPageImageIcon) {
             updateWeChatShareIcon(imgUrl)
         }
-        
     }
     
     func openInView(_ urlString : String) {

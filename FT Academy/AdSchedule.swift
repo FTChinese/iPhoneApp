@@ -24,7 +24,9 @@ class AdSchedule {
     lazy var impression: [String] = []
     
     private let adScheduleFileName = "schedule.json"
-    private let lauchAdSchedule = "http://m.ftchinese.com/index.php/jsapi/applaunchschedule"
+    //private let lauchAdSchedule = "http://m.ftchinese.com/index.php/jsapi/applaunchschedule"
+    //https://m.ftimg.net
+    private let lauchAdSchedule = "https://m.ftimg.net/index.php/jsapi/applaunchschedule"
     private let imageTypes = ["png","jpg","gif"]
     private let videoTypes = ["mov","mp4"]
     private let htmlTypes = ["html"]

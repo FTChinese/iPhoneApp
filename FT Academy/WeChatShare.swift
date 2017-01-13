@@ -21,7 +21,6 @@ class WeChatShare : UIActivity{
         case "fav": return UIActivityType(rawValue: "WeChatFav")
         default: return UIActivityType(rawValue: "WeChat")
         }
-        
     }
     
     override var activityImage: UIImage? {
@@ -30,7 +29,6 @@ class WeChatShare : UIActivity{
         case "fav": return UIImage(named: "WeChatFav")
         default: return UIImage(named: "WeChat")
         }
-        
     }
     
     override var activityTitle : String {
