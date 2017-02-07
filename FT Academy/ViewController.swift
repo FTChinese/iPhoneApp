@@ -54,6 +54,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
         //self.webView = WKWebView()
         self.view = self.webView
+        webView.scrollView.bounces = false
         self.webView.navigationDelegate = self
         NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "statusBarSelected"), object: nil, queue: nil) { event in
             self.webView.evaluateJavaScript("scrollToTop()") { (result, error) in
