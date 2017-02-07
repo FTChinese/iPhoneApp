@@ -17,21 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        
-        //GoogleConversionPing.pingWithConversionId ("993907328", label: "35JGCOi9xAQQgKX32QM", value: "0", isRepeatable: false)
-        
-        
-        // ftchinese iOS激活
-        // Google iOS first open tracking snippet
-        // Add this code to your application delegate's
-        // application:didFinishLaunchingWithOptions: method.
-        
-        //[ACTConversionReporter reportWithConversionID:@"937693643" label:@"TvNTCJmOiGMQy6OQvwM" value:@"0.00" isRepeatable:NO];
-        
-        
-        //print("launched with options! ")
-        
-        
+        // admob tracking for activision
         if UIDevice.current.userInterfaceIdiom == .pad {
             ACTConversionReporter.report(withConversionID: "937693643", label: "Qe7aCL-Kx2MQy6OQvwM", value: "1.00", isRepeatable: false)
         } else {
@@ -80,14 +66,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
         // if launched from a tap on a notification
         if let launchOptions = launchOptions {
             if let userInfo = launchOptions[UIApplicationLaunchOptionsKey.remoteNotification] as? NSDictionary {
-                //                if let action = userInfo["action"], let id = userInfo["id"], let title = userInfo["aps"]!!["alert"] {
-                //                    let rootViewController = self.window!.rootViewController as! ViewController
-                //                    let _ = setTimeout(5.0, block: { () -> Void in
-                //                        rootViewController.openNotification(action as! String, id: id as! String, title: title as! String)
-                //                    })
-                //                }
-                //guard let listOfFriends = tResult["data"] else { return; }
-                
                 guard let action = userInfo["action"] else {
                     return false
                 }
@@ -108,16 +86,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
             }
         }
         
-        
-        /*
-         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-         [GoogleConversionPing pingWithConversionId:@"993907328"
-         label:@"35JGCOi9xAQQgKX32QM"
-         value:@"0" isRepeatable:NO];
-         
-         [WXApi registerApp:@"wxc1bc20ee7478536a" withDescription:@"FT中文网"];
-         });
-         */
         
         
         //NSNotificationCenter.defaultCenter().addObserver(self, selector:"checkForReachability:", name: kReachabilityChangedNotification, object: nil);
@@ -140,11 +108,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
     
     func saveDeviceInfo() {
         let bundleID = Bundle.main.bundleIdentifier
-        //        if let _ = Bundle.main.bundleIdentifier {
-        //            bundleID = Bundle.main.bundleIdentifier!
-        //        } else {
-        //            bundleID = ""
-        //        }
         let appNumber: String
         if bundleID == "com.ft.ftchinese.ipad" {
             appNumber = "1"
@@ -220,30 +183,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-        
-        /*
-         let notification = UILocalNotification()
-         if #available(iOS 8.2, *) {
-         notification.alertTitle = "再次打开FT中文网"
-         notification.alertBody = "享受尊贵会员特权，限时专送"
-         notification.fireDate = NSDate(timeIntervalSinceNow: 10)
-         notification.applicationIconBadgeNumber = 5
-         notification.userInfo = ["action": "schedule"]
-         notification.category = "CATEGORY_1"
-         UIApplication.sharedApplication().scheduleLocalNotification(notification)
-         } else {
-         // Fallback on earlier versions
-         }
-         */
         UIApplication.shared.applicationIconBadgeNumber = 0
-        
-        // check for new launch ad to download
-        // please be very careful when you write this code
-        // because it might break the app forever!
-        //        let statusType = IJReachability().connectedToNetworkOfType()
-        //        if statusType == .wiFi || 1>0{
-        //            // if the app is not downloading anything, download the creatives needed
-        //        }
         
     }
     

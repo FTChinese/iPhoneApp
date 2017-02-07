@@ -46,18 +46,6 @@ class WeChatShare : UIActivity{
     }
     
     
-    
-    //    private func getURLFromMessage(_ message:String)-> URL? {
-    //        var url = "whatsapp://"
-    //
-    //        if (message != "")
-    //        {
-    //            url = "\(url)send?text=\(message)"
-    //        }
-    //        return URL(string: url)
-    //    }
-    
-    
     override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
         return true
     }

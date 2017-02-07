@@ -163,10 +163,8 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         let openInSafari = OpenInSafari()
         if let myWebsite = self.webView?.url {
             let shareData = DataForShare()
-            //let image = UIImage(named: "ftcicon.jpg")!
             let image = ShareImageActivityProvider(placeholderItem: UIImage(named: "ftcicon.jpg")!)
             let objectsToShare = [shareData, myWebsite, image] as [Any]
-            //let objectsToShare = [shareData, myWebsite]
             let activityVC: UIActivityViewController
             if WXApi.isWXAppSupport() == true {
                 activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcCircle, openInSafari])
@@ -222,10 +220,6 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
             return UIInterfaceOrientationMask.all
         }
     }
-    
-//    override var shouldAutorotate: Bool {
-//        return true
-//    }
     
     override var prefersStatusBarHidden: Bool {
         return true

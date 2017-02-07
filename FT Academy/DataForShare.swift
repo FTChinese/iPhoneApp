@@ -34,8 +34,6 @@ class DataForShare: NSObject, UIActivityItemSource {
                 textForShare = textForShare.substring(to: index) + "..."
             }
             textForShare = textForShare + "（分享自 @FT中文网）"
-//        } else if activityType == "com.tencent.xin.sharetimeline" {
-//            textForShare = webPageTitle
         } else {
             textForShare = webPageTitle
         }
@@ -55,22 +53,6 @@ class DataForShare: NSObject, UIActivityItemSource {
         thumbnailImageForActivityType activityType: UIActivityType?,
         suggestedSize size: CGSize) -> UIImage? {
             var image : UIImage
-            //            if queryStringDictionary["img"] != nil {
-            //                var imgUrl = queryStringDictionary["img"]
-            //                if imgUrl!.rangeOfString("https://image.webservices.ft.com") == nil{
-            //                    imgUrl = "https://image.webservices.ft.com/v1/images/raw/\(imgUrl!)?source=ftchinese&width=72&height=72"
-            //                }
-            //                let url = NSURL(string: imgUrl!)
-            //                let data = NSData(contentsOfURL: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check
-            //                if (data == nil) {
-            //                    image = UIImage(named: "ftcicon.jpg")!
-            //                } else {
-            //                    image = UIImage(data: data!)!
-            //                }
-            //            } else {
-            //                image = UIImage(named: "ftcicon.jpg")!
-            //            }
-            //print("width: \(size.width); height: \(size.height)")
             image = UIImage(named: "ftcicon.jpg")!
             image = image.resizableImage(withCapInsets: UIEdgeInsets.zero)
             return image
