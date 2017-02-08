@@ -126,14 +126,18 @@ extension ProductMasterViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! ProductCell
-        
-        let product = products[(indexPath as NSIndexPath).row]
-        
-        cell.product = product
-        cell.buyButtonHandler = { product in
-            FTCProducts.store.buyProduct(product)
+        // need to hook up the cell to ProductCell class in storyboard
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? ProductCell {
+            let product = products[(indexPath as NSIndexPath).row]
+            
+            cell.product = product
+            cell.buyButtonHandler = { product in
+                FTCProducts.store.buyProduct(product)
+            }
+            return cell
         }
+        print("cannot hoot the cell to ProductCell")
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         return cell
     }
 }

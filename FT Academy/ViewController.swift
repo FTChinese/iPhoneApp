@@ -656,6 +656,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             if url.scheme == "ftcweixin" {
                 shareToWeChat(urlString)
                 decisionHandler(.cancel)
+            } else if url.scheme == "iap" {
+                self.performSegue(withIdentifier: "iap", sender: nil)
+                decisionHandler(.cancel)
             } else if url.scheme == "iosaction" {
                 turnOnActionSheet(urlString)
                 decisionHandler(.cancel)
