@@ -26,10 +26,8 @@ import StoreKit
 class ProductCell: UITableViewCell {
     static let priceFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
-        
         formatter.formatterBehavior = .behavior10_4
         formatter.numberStyle = .currency
-        
         return formatter
     }()
     
@@ -45,12 +43,13 @@ class ProductCell: UITableViewCell {
                 accessoryType = .checkmark
                 accessoryView = nil
                 detailTextLabel?.text = ""
-            } else {
+            } else if IAPHelper.canMakePayments() {
                 ProductCell.priceFormatter.locale = product.priceLocale
                 detailTextLabel?.text = ProductCell.priceFormatter.string(from: product.price)
-                
                 accessoryType = .none
-                accessoryView = newBuyButton()
+                accessoryView = self.newBuyButton()
+            } else {
+                detailTextLabel?.text = "Not available"
             }
         }
     }
