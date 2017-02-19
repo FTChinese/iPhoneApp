@@ -32,6 +32,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     private lazy var overlayView: UIView? = UIView()
     
     
+
     
     // set to none before releasing this publicly
     private var adType = ""
