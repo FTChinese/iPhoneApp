@@ -24,21 +24,27 @@ import UIKit
 
 class ProductDetailViewController: UIViewController {
     
-    @IBOutlet weak var imageView: UIImageView?
     
-    var image: UIImage? {
+    @IBOutlet weak var productTitle: UILabel?
+    var productTitleString: String? {
         didSet {
             configureView()
         }
     }
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         configureView()
     }
     
     func configureView() {
-        imageView?.image = image
+        //productTitle.text = productTitleString
+        print("configure view for \(productTitleString)")
+        if let productTitleString = productTitleString,
+            let productTitle = productTitle {
+            //productTitle.text = productTitleString
+            productTitle.text = productTitleString
+        }
     }
 }

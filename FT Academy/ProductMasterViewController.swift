@@ -25,34 +25,32 @@ import StoreKit
 
 class ProductMasterViewController: UITableViewController {
     
-    let showDetailSegueIdentifier = "showDetail"
+    let showDetailSegueIdentifier = "showProductDetail"
     
     var products = [SKProduct]()
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-        if identifier == showDetailSegueIdentifier {
-            guard let indexPath = tableView.indexPathForSelectedRow else {
-                return false
-            }
-            
-            let product = products[(indexPath as NSIndexPath).row]
-            
-            return FTCProducts.store.isProductPurchased(product.productIdentifier)
-        }
+        //        if identifier == showDetailSegueIdentifier {
+        //            guard let indexPath = tableView.indexPathForSelectedRow else {
+        //                return false
+        //            }
+        //            //let product = products[(indexPath as NSIndexPath).row]
+        //            return true
+        //            //return FTCProducts.store.isProductPurchased(product.productIdentifier)
+        //        }
         
         return true
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        print("prepare for segue")
         if segue.identifier == showDetailSegueIdentifier {
+            print("segue found")
             guard let indexPath = tableView.indexPathForSelectedRow else { return }
-            
+            print("found product")
             let product = products[(indexPath as NSIndexPath).row]
-            
-            if let name = resourceNameForProductIdentifier(product.productIdentifier),
-                let detailViewController = segue.destination as? ProductDetailViewController {
-                let image = UIImage(named: name)
-                detailViewController.image = image
+            if let detailViewController = segue.destination as? ProductDetailViewController {
+                detailViewController.productTitleString = product.localizedTitle
             }
         }
     }
@@ -60,7 +58,7 @@ class ProductMasterViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "Rage"
+        title = "FT中文网电子书"
         
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(ProductMasterViewController.reload), for: .valueChanged)
@@ -74,6 +72,14 @@ class ProductMasterViewController: UITableViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(ProductMasterViewController.handlePurchaseNotification(_:)),
                                                name: NSNotification.Name(rawValue: IAPHelper.IAPHelperPurchaseNotification),
                                                object: nil)
+        
+        let backButton = UIBarButtonItem(title: "关闭",
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(ProductMasterViewController.closeTapped(_:)))
+        
+        navigationItem.leftBarButtonItem = backButton
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -100,6 +106,10 @@ class ProductMasterViewController: UITableViewController {
     
     func restoreTapped(_ sender: AnyObject) {
         FTCProducts.store.restorePurchases()
+    }
+    
+    func closeTapped(_ sender: AnyObject) {
+        self.dismiss(animated: true, completion: nil)
     }
     
     func handlePurchaseNotification(_ notification: Notification) {
@@ -136,7 +146,7 @@ extension ProductMasterViewController {
             }
             return cell
         }
-        print("cannot hoot the cell to ProductCell")
+        print("cannot hook the cell to ProductCell")
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         return cell
     }
