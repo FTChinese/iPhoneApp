@@ -25,14 +25,32 @@ import Foundation
 
 
 public struct FTCProducts {
+    public static let eBooks = [
+        [
+            "id":"com.ft.ftchinese.mobile.book.ChinaEconomyAfterFXReform",
+            "title":"汇改后的中国经济",
+            "teaser":"人民币会继续贬值吗？",
+            "image":"http://i.ftimg.net//picture/1/000065581_piclink.jpg"
+        ]
+    ]
+    fileprivate static let productIdentifiers: Set<ProductIdentifier> = getProductIds(products: eBooks)
+    public static let store = IAPHelper(productIds: productIdentifiers)
     
-    public static let eBookEconomy = "com.ft.ftchinese.mobile.book.ChinaEconomyAfterFXReform"
-    
-    fileprivate static let productIdentifiers: Set<ProductIdentifier> = [FTCProducts.eBookEconomy]
-    
-    public static let store = IAPHelper(productIds: FTCProducts.productIdentifiers)
+    fileprivate static func getProductIds(products: [Dictionary<String, String>]) -> Set<ProductIdentifier> {
+        var productIds: Set<ProductIdentifier> = []
+        for product in products {
+            if let productId = product["id"] {
+                productIds.insert(productId)
+            }
+        }
+        return productIds
+    }
 }
 
+/*
 func resourceNameForProductIdentifier(_ productIdentifier: String) -> String? {
     return productIdentifier.components(separatedBy: ".").last
 }
+*/
+
+

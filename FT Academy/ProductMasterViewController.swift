@@ -45,12 +45,11 @@ class ProductMasterViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         print("prepare for segue")
         if segue.identifier == showDetailSegueIdentifier {
-            print("segue found")
             guard let indexPath = tableView.indexPathForSelectedRow else { return }
-            print("found product")
             let product = products[(indexPath as NSIndexPath).row]
             if let detailViewController = segue.destination as? ProductDetailViewController {
                 detailViewController.productTitleString = product.localizedTitle
+                detailViewController.productIntroString = product.localizedDescription
             }
         }
     }

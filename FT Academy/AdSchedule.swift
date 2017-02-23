@@ -300,6 +300,7 @@ class AdSchedule {
                 print("these creative files are needed for a future date: ")
                 print(creativesNeededInFuture)
                 
+                
                 // Get the document directory url
                 let documentsUrl =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
                 
@@ -323,11 +324,9 @@ class AdSchedule {
                     // print("creatives:",creativeFiles)
                     //                let mp3FileNames = mp3Files.map{ $0.deletingPathExtension().lastPathComponent }
                     //                print("mp3 list:", mp3FileNames)
-                    
                 } catch let error as NSError {
                     print(error.localizedDescription)
                 }
-                
             } catch let JSONError as NSError {
                 print("\(JSONError)")
             }

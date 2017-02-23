@@ -24,13 +24,19 @@ import UIKit
 
 class ProductDetailViewController: UIViewController {
     
-    
+
+
+
     @IBOutlet weak var productTitle: UILabel?
+    
+    @IBOutlet weak var productIntro: UILabel?
+    
     var productTitleString: String? {
         didSet {
             configureView()
         }
     }
+    lazy var productIntroString: String? = nil
     
     
     override func viewDidLoad() {
@@ -46,5 +52,12 @@ class ProductDetailViewController: UIViewController {
             //productTitle.text = productTitleString
             productTitle.text = productTitleString
         }
+        if let productIntroString = productIntroString,
+            let productIntro = productIntro {
+            //productTitle.text = productTitleString
+            print(productIntroString)
+            productIntro.text = productIntroString
+        }
+        
     }
 }

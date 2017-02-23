@@ -11,6 +11,7 @@ import WebKit
 import SafariServices
 import AVKit
 import AVFoundation
+import StoreKit
 
 class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, SFSafariViewControllerDelegate {
     // after ios 8, WKWebView is always needed
@@ -32,7 +33,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     private lazy var overlayView: UIView? = UIView()
     
     
-
+    
     
     // set to none before releasing this publicly
     private var adType = ""
@@ -41,12 +42,17 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     private let screenHeight = UIScreen.main.bounds.height
     
     
+    
+    
+    
     deinit {
         //print("main view is being deinitialized")
     }
     
     // start to load the webview as soon as possible
     // and cover the whole view with an overlayview of either advertisement or launchscreen
+    
+    
     override func loadView() {
         super.loadView()
         pageStatus = .viewToLoad
@@ -83,6 +89,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         if (adType != "none") {
             adSchedule.updateAdSchedule()
         }
+        
+        loadProducts()
     }
     
     // this happens when starting the app and going back from a popover segue
@@ -657,6 +665,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             if url.scheme == "ftcweixin" {
                 shareToWeChat(urlString)
                 decisionHandler(.cancel)
+            } else if url.scheme == "buy" {
+                buyProduct(urlString: urlString)
+                decisionHandler(.cancel)
             } else if url.scheme == "iap" {
                 self.performSegue(withIdentifier: "iap", sender: nil)
                 decisionHandler(.cancel)
@@ -884,6 +895,106 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
      return true
      }
      */
+    
+    
+    
+    
+    // in app purchase start
+    var products = [SKProduct]()
+    
+    func loadProducts() {
+        products = []
+        FTCProducts.store.requestProducts{success, products in
+            if success {
+                self.products = products!
+                //print (self.products[0].localizedDescription)
+                
+                //self.tableView.reloadData()
+                self.productToJSCode(self.products, jsVariableName: "displayProductsOnHome", jsVariableType: "function")
+                self.productToJSCode(self.products, jsVariableName: "iapProducts", jsVariableType: "object")
+            }
+            
+            //self.refreshControl?.endRefreshing()
+        }
+    }
+    
+    func buyProduct(urlString: String) {
+        print (urlString)
+        let productId = urlString.replacingOccurrences(of: "buy://", with: "")
+        var product: SKProduct?
+        for p in products {
+            if p.productIdentifier == productId {
+                product = p
+                print ("product id matched: \(p.productIdentifier)")
+                break
+            }
+        }
+        if let product = product {
+            FTCProducts.store.buyProduct(product)
+        }
+    }
+    
+    func productToJSCode (_ products: [SKProduct], jsVariableName: String, jsVariableType: String){
+        var productsString = ""
+        for product in products {
+            let priceFormatter: NumberFormatter = {
+                let formatter = NumberFormatter()
+                formatter.formatterBehavior = .behavior10_4
+                formatter.numberStyle = .currency
+                formatter.locale = product.priceLocale
+                return formatter
+            }()
+            let productPrice = priceFormatter.string(from: product.price) ?? ""
+            var productImage = ""
+            var productTeaser = ""
+            let isPurchased = FTCProducts.store.isProductPurchased(product.productIdentifier)
+            for book in FTCProducts.eBooks {
+                if let bookId = book["id"] {
+                    if bookId == product.productIdentifier {
+                        productImage = book["image"] ?? ""
+                        productTeaser = book["teaser"] ?? ""
+                        break
+                    }
+                }
+            }
+            let productString = "{title: '\(product.localizedTitle)',description: '\(product.localizedDescription)',price: '\(productPrice)',id: '\(product.productIdentifier)',image: '\(productImage)', teaser: '\(productTeaser)', isPurchased: '\(isPurchased)'}"
+            productsString += ",\(productString)"
+        }
+        switch jsVariableType{
+        case "function":
+            productsString = "\(jsVariableName)([\(productsString)]);"
+        case "object":
+            productsString = "window.\(jsVariableName) = [\(productsString)];"
+        default:
+            productsString = "window.\(jsVariableName) = [\(productsString)];"
+        }
+        productsString = productsString
+            .replacingOccurrences(of: "[,", with: "[")
+            .replacingOccurrences(of: "\n", with: "<br>", options: .regularExpression)
+        
+        
+        
+        self.webView.evaluateJavaScript(productsString) { (result, error) in
+            if error == nil {
+                //                print ("result: ")
+                //                print (result)
+            }
+        }
+    }
+    
+    
+    func handlePurchaseNotification(_ notification: Notification) {
+        guard let productID = notification.object as? String else { return }
+        
+        for (_, product) in products.enumerated() {
+            guard product.productIdentifier == productID else { continue }
+            print ("Product Buying Done: \(productID), you can continue to display the information to user")
+            //tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .fade)
+        }
+    }
+ 
+    
+    // in app purchase end
     
 }
 
