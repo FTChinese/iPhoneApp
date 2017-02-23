@@ -351,10 +351,10 @@
 		505A9F071E499B460079254F /* IAP */ = {
 			isa = PBXGroup;
 			children = (
+				501797F81E49699F00A2F2A9 /* FTCProducts.swift */,
 				501797F61E49673800A2F2A9 /* ProductCell.swift */,
 				501797FD1E498C3900A2F2A9 /* ProductMasterViewController.swift */,
 				501798001E498C5A00A2F2A9 /* ProductDetailViewController.swift */,
-				501797F81E49699F00A2F2A9 /* FTCProducts.swift */,
 				501797F41E49669400A2F2A9 /* IAPHelper.swift */,
 			);
 			name = IAP;

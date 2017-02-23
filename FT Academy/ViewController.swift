@@ -91,6 +91,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
         
         loadProducts()
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.handlePurchaseNotification(_:)),
+                                               name: NSNotification.Name(rawValue: IAPHelper.IAPHelperPurchaseNotification),
+                                               object: nil)
     }
     
     // this happens when starting the app and going back from a popover segue
@@ -668,7 +671,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             } else if url.scheme == "buy" {
                 buyProduct(urlString: urlString)
                 decisionHandler(.cancel)
-            } else if url.scheme == "iap" {
+            } else if url.scheme == "readbook" {
+                readBook(urlString: urlString)
+                decisionHandler(.cancel)
+            }  else if url.scheme == "iap" {
                 self.performSegue(withIdentifier: "iap", sender: nil)
                 decisionHandler(.cancel)
             } else if url.scheme == "iosaction" {
@@ -934,6 +940,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
+    func readBook(urlString: String) {
+        print ("read book: \(urlString)")
+    }
+    
     func productToJSCode (_ products: [SKProduct], jsVariableName: String, jsVariableType: String){
         var productsString = ""
         for product in products {
@@ -957,7 +967,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                     }
                 }
             }
-            let productString = "{title: '\(product.localizedTitle)',description: '\(product.localizedDescription)',price: '\(productPrice)',id: '\(product.productIdentifier)',image: '\(productImage)', teaser: '\(productTeaser)', isPurchased: '\(isPurchased)'}"
+            let productString = "{title: '\(product.localizedTitle)',description: '\(product.localizedDescription)',price: '\(productPrice)',id: '\(product.productIdentifier)',image: '\(productImage)', teaser: '\(productTeaser)', isPurchased: \(isPurchased)}"
             productsString += ",\(productString)"
         }
         switch jsVariableType{
@@ -972,7 +982,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             .replacingOccurrences(of: "[,", with: "[")
             .replacingOccurrences(of: "\n", with: "<br>", options: .regularExpression)
         
-        
+        print (productsString)
         
         self.webView.evaluateJavaScript(productsString) { (result, error) in
             if error == nil {
@@ -985,14 +995,26 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     func handlePurchaseNotification(_ notification: Notification) {
         guard let productID = notification.object as? String else { return }
-        
-        for (_, product) in products.enumerated() {
-            guard product.productIdentifier == productID else { continue }
-            print ("Product Buying Done: \(productID), you can continue to display the information to user")
-            //tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .fade)
+        var jsCode = ""
+        if productID == "" {
+            // buying can fail for various reasons
+            // when failed, the interface should be restored to normal status
+            print ("Product Buying Failed: Please retry")
+        } else {
+            // when user buys or restores a product
+            // we should display relevant information
+            for (_, product) in products.enumerated() {
+                guard product.productIdentifier == productID else { continue }
+                print ("Product Buying Done: \(productID), you can continue to display the information to user")
+                //tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .fade)
+                jsCode = "deliverIAPGoods('\(productID)')"
+            }
+        }
+        print(jsCode)
+        self.webView.evaluateJavaScript(jsCode) { (result, error) in
         }
     }
- 
+    
     
     // in app purchase end
     
