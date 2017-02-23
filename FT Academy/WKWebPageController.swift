@@ -71,13 +71,14 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     // message sent back to native app
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if(message.name == "callbackHandler") {
-            let infoForShare = message.body as! String
-            print(infoForShare)
-            let toArray = infoForShare.components(separatedBy: "|")
-            webPageDescription = toArray[2]
-            webPageImage = toArray[0]
-            webPageImageIcon = toArray[1]
-            print("get image icon from web page: \(webPageImageIcon)")
+            if let infoForShare = message.body as? String{
+                print(infoForShare)
+                let toArray = infoForShare.components(separatedBy: "|")
+                webPageDescription = toArray[2]
+                webPageImage = toArray[0]
+                webPageImageIcon = toArray[1]
+                print("get image icon from web page: \(webPageImageIcon)")
+            }
         }
     }
     
