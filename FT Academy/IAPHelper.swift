@@ -44,7 +44,6 @@ open class IAPHelper : NSObject  {
         }
         super.init()
         SKPaymentQueue.default().add(self)
-        print("payment queue added")
     }
 }
 

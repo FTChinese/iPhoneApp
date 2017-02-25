@@ -869,29 +869,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     
     
-    /*
-     func webView(webView: UIWebView, shouldStartLoadWithRequest r: NSURLRequest, navigationType nt: UIWebViewNavigationType) -> Bool {
-     if r.URL.scheme == "play" {
-     println("user would like to hear the podcast")
-     return false
-     }
-     if nt == .LinkClicked { // disable link-clicking
-     if self.canNavigate {
-     return true
-     }
-     println("user would like to navigation to \(r.URL)")
-     // this is how you would open in Mobile Safari
-     // UIApplication.sharedApplication().openURL(r.URL)
-     return false
-     }
-     return true
-     }
-     */
-    
-    
-    
     
     // MARK: - in-app purchase start
+    
     private var products = [SKProduct]()
     
     private func loadProducts() {
