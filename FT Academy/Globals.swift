@@ -91,17 +91,8 @@ func shareToWeChat(_ originalUrlString : String) {
         }
     }
     if WXApi.isWXAppInstalled() == false {
-        if #available(iOS 8.0, *) {
-            let alert = UIAlertController(title: "请先安装微信", message: "谢谢您的支持！请先去app store安装微信再分享", preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "了解", style: UIAlertActionStyle.default, handler: nil))
-        } else {
-            // Fallback on earlier versions
-            let alertView = UIAlertView();
-            alertView.addButton(withTitle: "了解");
-            alertView.title = "请安装微信";
-            alertView.message = "谢谢您的支持！请先去app store安装微信再分享";
-            alertView.show();
-        }
+        let alert = UIAlertController(title: "请先安装微信", message: "谢谢您的支持！请先去app store安装微信再分享", preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "了解", style: UIAlertActionStyle.default, handler: nil))
         return
     }
     let message = WXMediaMessage()

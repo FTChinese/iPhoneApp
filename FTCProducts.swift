@@ -22,30 +22,38 @@
 
 import Foundation
 
-
-
 public struct FTCProducts {
+    // MARK: Store all products locally to avoid networking problems
+    public static let subscriptions = [
+        [
+            "id":"com.ft.ftchinese.mobile.subscription.intelligence2",
+            "title":"FT研究院",
+            "teaser":"中国商业和消费数据",
+            "image":"http://i.ftimg.net/picture/3/000068413_piclink.jpg"
+        ]
+    ]
     public static let eBooks = [
         [
             "id":"com.ft.ftchinese.mobile.book.ChinaEconomyAfterFXReform",
             "title":"汇改后的中国经济",
             "teaser":"人民币会继续贬值吗？",
-            "image":"http://i.ftimg.net//picture/1/000065581_piclink.jpg"
+            "image":"http://i.ftimg.net/picture/1/000065581_piclink.jpg"
         ],
         [
             "id":"com.ft.ftchinese.mobile.book.lunch1",
             "title":"与FT共进午餐（一）",
             "teaser":"英国《金融时报》最受欢迎的栏目",
-            "image":"http://i.ftimg.net//picture/6/000061936_piclink.jpg"
+            "image":"http://i.ftimg.net/picture/6/000061936_piclink.jpg"
         ],
         [
             "id":"com.ft.ftchinese.mobile.book.lunch2",
             "title":"与FT共进午餐（二）",
             "teaser":"英国《金融时报》最受欢迎的栏目",
-            "image":"http://i.ftimg.net//picture/7/000061937_piclink.jpg"
+            "image":"http://i.ftimg.net/picture/7/000061937_piclink.jpg"
         ]
     ]
-    fileprivate static let productIdentifiers: Set<ProductIdentifier> = getProductIds(products: eBooks)
+    public static let allProducts = subscriptions + eBooks
+    fileprivate static let productIdentifiers: Set<ProductIdentifier> = getProductIds(products: allProducts)
     public static let store = IAPHelper(productIds: productIdentifiers)
     
     fileprivate static func getProductIds(products: [Dictionary<String, String>]) -> Set<ProductIdentifier> {
@@ -58,11 +66,3 @@ public struct FTCProducts {
         return productIds
     }
 }
-
-/*
-func resourceNameForProductIdentifier(_ productIdentifier: String) -> String? {
-    return productIdentifier.components(separatedBy: ".").last
-}
-*/
-
-

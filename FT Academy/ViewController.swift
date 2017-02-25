@@ -14,33 +14,24 @@ import AVFoundation
 import StoreKit
 
 class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, SFSafariViewControllerDelegate {
-    // after ios 8, WKWebView is always needed
+    // MARK: after ios 8, WKWebView is always needed
     var webView = WKWebView()
-    //lazy var webView: WKWebView? = { return nil }()
     private weak var timer: Timer?
     var pageStatus: WebViewStatus?
     private var startUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
     private let iPadStartUrl = "http://app005.ftmailbox.com/ipad-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
-    // if the app use a native launch ad, suppress the pop up one
+    // MARK: if the app use a native launch ad, suppress the pop up one
     private let useNativeLaunchAd = "useNativeLaunchAd"
     private var maxAdTimeAfterLaunch = 6.0
     private var maxAdTimeAfterWebRequest = 3.0
     private let fadeOutDuration = 0.5
     private let adSchedule = AdSchedule()
-    
     private lazy var player: AVPlayer? = {return nil} ()
     private lazy var token: Any? = {return nil} ()
     private lazy var overlayView: UIView? = UIView()
-    
-    
-    
-    
-    // set to none before releasing this publicly
     private var adType = ""
-    
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
-    
     
     
     
@@ -59,7 +50,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         if UIDevice.current.userInterfaceIdiom == .pad {
             startUrl = iPadStartUrl
         }
-        //self.webView = WKWebView()
         self.view = self.webView
         webView.scrollView.bounces = false
         self.webView.navigationDelegate = self
@@ -73,30 +63,36 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             }
         }
         adOverlayView()
-        //normalOverlayView()
     }
-    
-    // once view is loaded, load html into the webview
-    // wait for several seconds before removing the overlay to reveal the web view
-    // at the same time, check for new update of the ad schedule
+    /**
+     Once view is loaded:
+     - Load html into the webview.
+     - Wait for several seconds before removing the overlay to reveal the web view at the same time.
+     - Check for new update of the ad schedule.
+     **/
     override func viewDidLoad() {
         super.viewDidLoad()
         pageStatus = .viewLoaded
         loadFromLocal()
         pageStatus = .webViewLoading
         displayWebviewAfterSeconds(maxAdTimeAfterLaunch)
-        // download the latest ad schedule from the internet
+        // MARK: download the latest ad schedule from the internet
         if (adType != "none") {
             adSchedule.updateAdSchedule()
         }
-        
+        // MARK: load in-app purchase products information
         loadProducts()
+        // MARK: listen to in-app purchase transaction notification
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.handlePurchaseNotification(_:)),
                                                name: NSNotification.Name(rawValue: IAPHelper.IAPHelperPurchaseNotification),
                                                object: nil)
     }
     
-    // this happens when starting the app and going back from a popover segue
+    /**
+     viewWillAppear happens when:
+     - Starting the app
+     - Going back from a popover segue, like the WKWebPageController
+     */
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
         if pageStatus == .webViewDisplayed || pageStatus == .webViewWarned {
@@ -128,7 +124,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
-    //On mobile phone, lock the screen to portrait only
+    // MARK: On mobile phone, lock the screen to portrait only
     override var supportedInterfaceOrientations : UIInterfaceOrientationMask {
         if UIDevice.current.userInterfaceIdiom == .pad {
             return UIInterfaceOrientationMask.all
@@ -146,7 +142,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     
-    // if there's no ad to load
+    // MARK: if there's no ad to load
     func normalOverlayView() {
         if let overlayViewNormal = overlayView {
             maxAdTimeAfterLaunch = 3.0
@@ -160,7 +156,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             view.addConstraint(NSLayoutConstraint(item: overlayViewNormal, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.leading, multiplier: 1, constant: 0))
             view.addConstraint(NSLayoutConstraint(item: overlayViewNormal, attribute: NSLayoutAttribute.trailing, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.trailing, multiplier: 1, constant: 0))
             
-            // the icon image
+            // MARK: the icon image
             if let image = UIImage(named: "FTC-start") {
                 let imageView =  UIImageView(image: image)
                 imageView.frame = CGRect(x: 0, y: 0, width: 266, height: 210)
@@ -173,7 +169,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 view.addConstraint(NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 210))
             }
             
-            // the lable
+            // MARK: the lable at the bottom
             let label = UILabel(frame: CGRect(x: 0, y: 0, width: 441, height: 21))
             label.center = CGPoint(x: 160, y: 284)
             label.textAlignment = NSTextAlignment.center
@@ -190,7 +186,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     
-    // if there's a full screen screen ad to show
+    // MARK: if there's a full screen screen ad to show
     private func adOverlayView() {
         if self.adType == "none" {
             maxAdTimeAfterLaunch = 1.0
@@ -216,9 +212,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             normalOverlayView()
             return
         }
-        //button to close the full screen ad
+        // MARK: button to close the full screen ad
         addCloseButton()
-        //set custom background
+        // MARK: set custom background
         setAdBackground()
     }
     
@@ -317,11 +313,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         let asset = AVURLAsset(url: URL(fileURLWithPath: path))
         let videoDuration = asset.duration
         
-        // video view must be added to the self.view, not a subview
-        // otherwise Xcode complains about constraints
+        // MARK: video view must be added to the self.view, not a subview, otherwise Xcode complains about constraints
         playerController.player = player
         
-        // the following line seems to be useless
+        // MARK: the following line seems to be useless
         self.addChildViewController(playerController)
         playerController.showsPlaybackControls = false
         
@@ -333,7 +328,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         playerController.view.tag = 111
         playerController.view.frame = self.view.frame
         
-        // label for time at the left bottom
+        // MARK: label for time at the left bottom
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 21))
         let timeLabel = String(format:"%.0f", CMTimeGetSeconds(videoDuration))
         label.textAlignment = NSTextAlignment.center
@@ -375,13 +370,12 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             if let theLabel = self?.view.viewWithTag(112) as? UILabel {
                 theLabel.text = String(format:"%.0f", timeLeft)
             }
-            // record play time as events
+            // MARK: record play time as events
             let timeSpent = Int(CMTimeGetSeconds(timeInterval))
             let timeRecordStep = 5
             if !timeRecorded.contains(timeSpent) && timeSpent % timeRecordStep == 0 {
                 print(timeSpent)
                 let jsCode = "try{ga('send','event', '\(deviceType) Launch Video Play', '\(lastcomponent)', '\(timeSpent)', {'nonInteraction':1});}catch(ignore){}"
-                //let webView = self.view as! WKWebView
                 self?.webView.evaluateJavaScript(jsCode) { (result, error) in
                 }
                 timeRecorded.append(timeSpent)
@@ -415,7 +409,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             player?.isMuted = true
             sender.isSelected = false
         } else {
-            // this will make the video play sound even when iPhone is muted
+            // MARK: this will make the video play sound even when iPhone is muted
             player?.isMuted = false
             sender.isSelected = true
             do {
@@ -438,7 +432,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     
-    // report ad impressions
+    // MARK: report ad impressions
     private func reportImpressionToWeb(impressions: [String]) {
         var deviceType = "iPhone"
         if UIDevice.current.userInterfaceIdiom == .pad {
@@ -465,13 +459,13 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
-    // this should be public
+    // MARK: this should be public
     func clickAd() {
         openInView(adSchedule.adLink)
     }
     
     
-    //Load HTML String from Bundle to start the App
+    // MARK: Load HTML String from Bundle to start the App
     private func loadFromLocal() {
         if adSchedule.adType != "none" {
             startUrl = "\(startUrl)&\(useNativeLaunchAd)"
@@ -499,7 +493,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     
-    // this is public because AppDelegate is going to use it
+    // MARK: this is public because AppDelegate is going to use it
     func checkBlankPage() {
         self.webView.evaluateJavaScript("document.querySelector('body').innerHTML") { (result, error) in
             if error != nil {
@@ -510,8 +504,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
-    // when user tap on a remote notification
-    // this should be public
+    // MARK: User tap on a remote notification. This should be public.
     func openNotification(_ action: String?, id: String?, title: String?) {
         if let action = action, let id = id {
             var jsCode: String
@@ -588,15 +581,13 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     
     
-    // this should be public
+    // MARK: this should be public
     func displayWebView() {
         if pageStatus != .webViewDisplayed {
             if let overlay = overlayView {
                 for subUIView in overlay.subviews {
                     subUIView.removeFromSuperview()
                 }
-                
-                
                 UIView.animate(
                     withDuration: fadeOutDuration,
                     animations: {
@@ -607,9 +598,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                         self.overlayView = nil
                 }
                 )
-                
-                //                overlay.removeFromSuperview()
-                //                overlayView = nil
             }
             if let videoView = self.view.viewWithTag(111) {
                 UIView.animate(
@@ -620,10 +608,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                     videoView.removeFromSuperview()
                 })
             }
-            //self.view.viewWithTag(111)?.removeFromSuperview()
-            
             pageStatus = .webViewDisplayed
-            //trigger prefersStatusBarHidden
+            // MARK: trigger prefersStatusBarHidden
             setNeedsStatusBarAppearanceUpdate()
             getUserId()
             player?.pause()
@@ -631,9 +617,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 player?.removeTimeObserver(t)
                 token = nil
             }
-            //send impression ping
+            // MARK: send impression ping
             reportImpressionToWeb(impressions: adSchedule.impression)
-            //show social login buttons
+            // MARK: show social login buttons
             showSocialLoginButtons()
             player = nil
         }
@@ -681,13 +667,13 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 turnOnActionSheet(urlString)
                 decisionHandler(.cancel)
             } else if url.scheme == "weixinlogin" {
-                // launch weixin login and switch to wechat
+                // MARK: launch weixin login and switch to wechat
                 let req = SendAuthReq()
                 req.scope = "snsapi_userinfo"
                 req.state = "weliveinfinancialtimes"
                 WXApi.send(req)
                 decisionHandler(.cancel)
-                // all new url schemes should be above here, otherwise the app will crash after clicking
+                // MARK: all new url schemes should be above here, otherwise the app will crash after clicking
             } else if navigationAction.navigationType == .linkActivated{
                 if urlString.range(of: "mailto:") != nil{
                     UIApplication.shared.openURL(url)
@@ -758,28 +744,28 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     func openInView(_ urlString : String) {
         webPageUrl = urlString
         if #available(iOS 9.0, *) {
-            // use the safariview for iOS 9
+            // MARK: use the safariview for iOS 9
             if urlString.range(of: "http://www.ftchinese.com") == nil {
-                //when opening an outside url which we have no control over
+                // MARK: when opening an outside url which we have no control over
                 if let url = URL(string:urlString) {
                     if let urlScheme = url.scheme?.lowercased() {
                         if ["http", "https"].contains(urlScheme) {
-                            // Can open with SFSafariViewController
+                            // MARK: Can open with SFSafariViewController
                             let webVC = SFSafariViewController(url: url)
                             webVC.delegate = self
                             self.present(webVC, animated: true, completion: nil)
                         } else {
-                            // Scheme is not supported or no scheme is given, use openURL
+                            // MARK: When Scheme is not supported or no scheme is given, use openURL
                             UIApplication.shared.openURL(url)
                         }
                     }
                 }
             } else {
-                //when opening a url on a page that I can control
+                // MARK: when opening a url on a page that we can control
                 self.performSegue(withIdentifier: "WKWebPageSegue", sender: nil)
             }
         } else {
-            // Fallback on earlier versions
+            // MARK: Fallback on earlier versions
             self.performSegue(withIdentifier: "WKWebPageSegue", sender: nil)
         }
     }
@@ -804,7 +790,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     @available(iOS 9.0, *)
     func safariViewController(_ controler: SFSafariViewController, activityItemsFor activityItemsForURL: URL, title: String?) -> [UIActivity] {
         webPageUrl = activityItemsForURL.absoluteString
-        //the title for the above page, which is not utf-8, cannot be captured
+        // MARK: the title for the above page, which is not utf-8, cannot be captured
         webPageTitle = title ?? webPageTitle0
         let wcActivity = WeChatShare(to: "chat")
         let wcMoment = WeChatShare(to: "moment")
@@ -844,7 +830,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     //            saveUsers()
     //        }
     
-    // this should be public
+    // MARK: this should be public
     func getUserId() {
         var userId = ""
         self.webView.evaluateJavaScript("getCookie('USER_ID')") { (result, error) in
@@ -905,26 +891,23 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     
     
-    // in app purchase start
-    var products = [SKProduct]()
+    // MARK: - in-app purchase start
+    private var products = [SKProduct]()
     
-    func loadProducts() {
+    private func loadProducts() {
         products = []
         FTCProducts.store.requestProducts{success, products in
             if success {
-                self.products = products!
-                //print (self.products[0].localizedDescription)
-                
-                //self.tableView.reloadData()
-                self.productToJSCode(self.products, jsVariableName: "displayProductsOnHome", jsVariableType: "function")
-                self.productToJSCode(self.products, jsVariableName: "iapProducts", jsVariableType: "object")
+                if let products = products {
+                    self.products = products
+                    self.productToJSCode(self.products, jsVariableName: "displayProductsOnHome", jsVariableType: "function")
+                    self.productToJSCode(self.products, jsVariableName: "iapProducts", jsVariableType: "object")
+                }
             }
-            
-            //self.refreshControl?.endRefreshing()
         }
     }
     
-    func buyProduct(urlString: String) {
+    private func buyProduct(urlString: String) {
         print (urlString)
         let productId = urlString.replacingOccurrences(of: "buy://", with: "")
         var product: SKProduct?
@@ -937,14 +920,17 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
         if let product = product {
             FTCProducts.store.buyProduct(product)
+            let jsCode = "iapActions('\(productId)', 'pending');"
+            self.webView.evaluateJavaScript(jsCode) { (result, error) in
+            }
         }
     }
     
-    func readBook(urlString: String) {
+    private func readBook(urlString: String) {
         print ("read book: \(urlString)")
     }
     
-    func productToJSCode (_ products: [SKProduct], jsVariableName: String, jsVariableType: String){
+    private func productToJSCode (_ products: [SKProduct], jsVariableName: String, jsVariableType: String){
         var productsString = ""
         for product in products {
             let priceFormatter: NumberFormatter = {
@@ -958,11 +944,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             var productImage = ""
             var productTeaser = ""
             let isPurchased = FTCProducts.store.isProductPurchased(product.productIdentifier)
-            for book in FTCProducts.eBooks {
-                if let bookId = book["id"] {
+            for oneProduct in FTCProducts.allProducts {
+                if let bookId = oneProduct["id"] {
                     if bookId == product.productIdentifier {
-                        productImage = book["image"] ?? ""
-                        productTeaser = book["teaser"] ?? ""
+                        productImage = oneProduct["image"] ?? ""
+                        productTeaser = oneProduct["teaser"] ?? ""
                         break
                     }
                 }
@@ -992,31 +978,34 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
-    
-    func handlePurchaseNotification(_ notification: Notification) {
-        guard let productID = notification.object as? String else { return }
+    // MARK: This should be public
+    public func handlePurchaseNotification(_ notification: Notification) {
         var jsCode = ""
-        if productID == "" {
-            // buying can fail for various reasons
-            // when failed, the interface should be restored to normal status
-            print ("Product Buying Failed: Please retry")
-        } else {
-            // when user buys or restores a product
-            // we should display relevant information
+        if let productID = notification.object as? String {
+            // MARK: when user buys or restores a product, we should display relevant information
             for (_, product) in products.enumerated() {
                 guard product.productIdentifier == productID else { continue }
                 print ("Product Buying Done: \(productID), you can continue to display the information to user")
-                //tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .fade)
-                jsCode = "deliverIAPGoods('\(productID)')"
+                jsCode = "iapActions('\(productID)', 'success')"
             }
+        } else if let errorObject = notification.object as? NSError {
+            let alert = UIAlertController(title: "交易失败，您的钱还在口袋里", message: errorObject.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "我知道了", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+            jsCode = "iapActions('', 'fail')"
+        } else if notification.object == nil {
+            // MARK: When the transaction fail without any error message (NSError)
+            let alert = UIAlertController(title: "交易失败，您的钱还在口袋里", message: "未知错误", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "我知道了", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+            jsCode = "iapActions('', 'fail')"
         }
         print(jsCode)
         self.webView.evaluateJavaScript(jsCode) { (result, error) in
         }
     }
     
-    
-    // in app purchase end
+    // MARK: - in-app purchase end
     
 }
 

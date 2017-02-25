@@ -287,13 +287,13 @@
 		50256C9C1A4B9D0B005950B9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				50A677261A4EBFBC002B347F /* index.html */,
 				503435231DB9FDC200B2F686 /* sound.png */,
 				503435241DB9FDC200B2F686 /* mute.png */,
 				5005FB811D9D090800E2B3DC /* schedule.json */,
 				50E577D61DB754880016A73F /* close.png */,
 				50159E5C1BA05EBD00F22FFC /* ftcicon.jpg */,
 				50256C9D1A4B9D0B005950B9 /* Info.plist */,
-				50A677261A4EBFBC002B347F /* index.html */,
 				50604A621A5552F1003803E6 /* webview.html */,
 				50D450591DED6A130095ECC4 /* bnp20161129H.mp4 */,
 				508DE4191DEE7D8600C61ED5 /* bnp20161129.mp4 */,
@@ -352,10 +352,10 @@
 			isa = PBXGroup;
 			children = (
 				501797F81E49699F00A2F2A9 /* FTCProducts.swift */,
+				501797F41E49669400A2F2A9 /* IAPHelper.swift */,
 				501797F61E49673800A2F2A9 /* ProductCell.swift */,
 				501797FD1E498C3900A2F2A9 /* ProductMasterViewController.swift */,
 				501798001E498C5A00A2F2A9 /* ProductDetailViewController.swift */,
-				501797F41E49669400A2F2A9 /* IAPHelper.swift */,
 			);
 			name = IAP;
 			sourceTree = "<group>";

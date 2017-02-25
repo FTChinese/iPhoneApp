@@ -25,8 +25,6 @@ import StoreKit
 public typealias ProductIdentifier = String
 public typealias ProductsRequestCompletionHandler = (_ success: Bool, _ products: [SKProduct]?) -> ()
 
-
-
 open class IAPHelper : NSObject  {
     fileprivate let productIdentifiers: Set<ProductIdentifier>
     fileprivate var purchasedProductIdentifiers = Set<ProductIdentifier>()
@@ -46,21 +44,19 @@ open class IAPHelper : NSObject  {
         }
         super.init()
         SKPaymentQueue.default().add(self)
+        print("payment queue added")
     }
 }
 
 // MARK: - StoreKit API
 
 extension IAPHelper {
-    
-
     public func requestProducts(completionHandler: @escaping ProductsRequestCompletionHandler) {
         productsRequest?.cancel()
         productsRequestCompletionHandler = completionHandler
-        
         productsRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
-        productsRequest!.delegate = self
-        productsRequest!.start()
+        productsRequest?.delegate = self
+        productsRequest?.start()
     }
     
     public func buyProduct(_ product: SKProduct) {
@@ -84,9 +80,7 @@ extension IAPHelper {
 
 
 // MARK: - SKProductsRequestDelegate
-
 extension IAPHelper: SKProductsRequestDelegate {
-    
     public func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         print("Loaded list of products...")
         let products = response.products
@@ -116,7 +110,6 @@ extension IAPHelper: SKProductsRequestDelegate {
 // MARK: - SKPaymentTransactionObserver
 
 extension IAPHelper: SKPaymentTransactionObserver {
-    
     public func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         for transaction in transactions {
             switch (transaction.transactionState) {
@@ -130,8 +123,10 @@ extension IAPHelper: SKPaymentTransactionObserver {
                 restore(transaction: transaction)
                 break
             case .deferred:
+                print ("defered state! should do something")
                 break
             case .purchasing:
+                print ("purchasing, user should know about this")
                 break
             }
         }
@@ -145,7 +140,6 @@ extension IAPHelper: SKPaymentTransactionObserver {
     
     private func restore(transaction: SKPaymentTransaction) {
         guard let productIdentifier = transaction.original?.payment.productIdentifier else { return }
-        
         print("restore... \(productIdentifier)")
         deliverPurchaseNotificationFor(identifier: productIdentifier)
         SKPaymentQueue.default().finishTransaction(transaction)
@@ -153,25 +147,21 @@ extension IAPHelper: SKPaymentTransactionObserver {
     
     private func fail(transaction: SKPaymentTransaction) {
         print("fail...")
-        if let transactionError = transaction.error as? NSError {
-            if transactionError.code != SKError.paymentCancelled.rawValue {
-                print("Transaction Error: \(transaction.error?.localizedDescription)")
-            }
-        }
-        deliverPurchaseFailNotification()
+        let transactionError = transaction.error as? NSError
+        print("Transaction Error: \(transaction.error?.localizedDescription)")
+        deliverPurchaseFailNotification(transactionError)
         SKPaymentQueue.default().finishTransaction(transaction)
     }
     
     private func deliverPurchaseNotificationFor(identifier: String?) {
         guard let identifier = identifier else { return }
-        
         purchasedProductIdentifiers.insert(identifier)
         UserDefaults.standard.set(true, forKey: identifier)
         UserDefaults.standard.synchronize()
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: IAPHelper.IAPHelperPurchaseNotification), object: identifier)
     }
     
-    private func deliverPurchaseFailNotification() {
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: IAPHelper.IAPHelperPurchaseNotification), object: "")
+    private func deliverPurchaseFailNotification(_ transactionError: NSError?) {
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: IAPHelper.IAPHelperPurchaseNotification), object: transactionError)
     }
 }

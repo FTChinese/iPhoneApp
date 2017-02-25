@@ -18,11 +18,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         // admob tracking for activision
+        
+        //SKPaymentQueue.default().add(self)
         if UIDevice.current.userInterfaceIdiom == .pad {
             ACTConversionReporter.report(withConversionID: "937693643", label: "Qe7aCL-Kx2MQy6OQvwM", value: "1.00", isRepeatable: false)
         } else {
             ACTConversionReporter.report(withConversionID: "937693643", label: "TvNTCJmOiGMQy6OQvwM", value: "1.00", isRepeatable: false)
         }
+        
         
         WXApi.registerApp(wechatAppId, withDescription: "FT中文网")
         
