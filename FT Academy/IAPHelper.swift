@@ -33,6 +33,7 @@ open class IAPHelper : NSObject  {
     static let IAPHelperPurchaseNotification = "IAPHelperPurchaseNotification"
     public init(productIds: Set<ProductIdentifier>) {
         productIdentifiers = productIds
+        print ("check if the product is purchased privious from the same device")
         for productIdentifier in productIds {
             let purchased = UserDefaults.standard.bool(forKey: productIdentifier)
             if purchased {
@@ -63,6 +64,9 @@ extension IAPHelper {
         let payment = SKPayment(product: product)
         SKPaymentQueue.default().add(payment)
     }
+    
+    
+    // MARK: - User defaults may not be the best place to store information about purchased products in a real application. An owner of a jailbroken device could easily access your app’s UserDefaults plist, and modify it to ‘unlock’ purchases. If this sort of thing concerns you, then it’s worth checking out Apple’s documentation on Validating App Store Receipts – this allows you to verify that a user has made a particular purchase.
     
     public func isProductPurchased(_ productIdentifier: ProductIdentifier) -> Bool {
         return purchasedProductIdentifiers.contains(productIdentifier)
