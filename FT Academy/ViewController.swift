@@ -661,7 +661,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 readBook(urlString: urlString)
                 decisionHandler(.cancel)
             }  else if url.scheme == "iap" {
-                self.performSegue(withIdentifier: "iap", sender: nil)
+                print("iap scheme is not in use any more")
                 decisionHandler(.cancel)
             } else if url.scheme == "iosaction" {
                 turnOnActionSheet(urlString)
