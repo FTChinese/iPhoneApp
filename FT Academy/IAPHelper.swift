@@ -31,6 +31,8 @@ open class IAPHelper : NSObject  {
     fileprivate var productsRequest: SKProductsRequest?
     fileprivate var productsRequestCompletionHandler: ProductsRequestCompletionHandler?
     static let IAPHelperPurchaseNotification = "IAPHelperPurchaseNotification"
+    fileprivate static let url = Bundle.main.appStoreReceiptURL
+    fileprivate lazy var receipt: NSData? = nil
     public init(productIds: Set<ProductIdentifier>) {
         productIdentifiers = productIds
         for productIdentifier in productIds {
@@ -44,6 +46,11 @@ open class IAPHelper : NSObject  {
             }
         }
         super.init()
+        // MARK: - If there's a receipt url, get the receipt data
+        if let url = IAPHelper.url {
+            receipt = NSData(contentsOf: url)
+        }
+        //print (receipt ?? "no receipt is found")
         SKPaymentQueue.default().add(self)
     }
 }
