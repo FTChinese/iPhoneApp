@@ -86,6 +86,8 @@
 		50FC07EC1A53A589006EE23F /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FC07EB1A53A589006EE23F /* libsqlite3.dylib */; };
 		50FCC9C11D34C1D300FC1892 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FCC9C01D34C1D300FC1892 /* User.swift */; };
 		50FCC9C31D34C1D300FC1892 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FCC9C01D34C1D300FC1892 /* User.swift */; };
+		CD6C7E714D02A4C7ED3C3236 /* Pods_FT___.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF896B870CE411A5E6A3044D /* Pods_FT___.framework */; };
+		CE83F38E5B8EC2ED9CD8CBEA /* Pods_FT____iPad.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04063C10DFA84D4B9E2DB85F /* Pods_FT____iPad.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,6 +101,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		04063C10DFA84D4B9E2DB85F /* Pods_FT____iPad.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "Pods_FT____iPad.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		244FCD22C95076D181258B54 /* Pods-FT中文网-iPad.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FT中文网-iPad.release.xcconfig"; path = "Pods/Target Support Files/Pods-FT中文网-iPad/Pods-FT中文网-iPad.release.xcconfig"; sourceTree = "<group>"; };
 		5005FB811D9D090800E2B3DC /* schedule.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = schedule.json; sourceTree = "<group>"; };
 		50119E7C1DC873C6003667DE /* WeChatShare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeChatShare.swift; sourceTree = "<group>"; };
 		50159E461B9B147500F22FFC /* DataForShare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataForShare.swift; sourceTree = "<group>"; };
@@ -155,6 +159,10 @@
 		50FC07E91A53A44C006EE23F /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		50FC07EB1A53A589006EE23F /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		50FCC9C01D34C1D300FC1892 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		976359DE7C996269A56DA9C6 /* Pods-FT中文网.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FT中文网.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FT中文网/Pods-FT中文网.debug.xcconfig"; sourceTree = "<group>"; };
+		B1B0C223055A04C366CDF337 /* Pods-FT中文网-iPad.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FT中文网-iPad.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FT中文网-iPad/Pods-FT中文网-iPad.debug.xcconfig"; sourceTree = "<group>"; };
+		CF896B870CE411A5E6A3044D /* Pods_FT___.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "Pods_FT___.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F23BDF4DA58F76843F7DFE97 /* Pods-FT中文网.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FT中文网.release.xcconfig"; path = "Pods/Target Support Files/Pods-FT中文网/Pods-FT中文网.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +182,7 @@
 				5039A4B21C61FAD40008F2AD /* libGoogleConversionTracking.a in Frameworks */,
 				50256CBF1A4BF7E4005950B9 /* WebKit.framework in Frameworks */,
 				50FC07E21A539BF3006EE23F /* libWeChatSDK.a in Frameworks */,
+				CD6C7E714D02A4C7ED3C3236 /* Pods_FT___.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -199,16 +208,30 @@
 				507C7E621DB0BCE800A8EF50 /* libGoogleConversionTracking.a in Frameworks */,
 				507C7E631DB0BCE800A8EF50 /* WebKit.framework in Frameworks */,
 				507C7E641DB0BCE800A8EF50 /* libWeChatSDK.a in Frameworks */,
+				CE83F38E5B8EC2ED9CD8CBEA /* Pods_FT____iPad.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0C856F6A7A0F75F9FBE233C7 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				976359DE7C996269A56DA9C6 /* Pods-FT中文网.debug.xcconfig */,
+				F23BDF4DA58F76843F7DFE97 /* Pods-FT中文网.release.xcconfig */,
+				B1B0C223055A04C366CDF337 /* Pods-FT中文网-iPad.debug.xcconfig */,
+				244FCD22C95076D181258B54 /* Pods-FT中文网-iPad.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		501F90161E3C72EB009EA5DD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				501F90171E3C72EB009EA5DD /* StoreKit.framework */,
+				CF896B870CE411A5E6A3044D /* Pods_FT___.framework */,
+				04063C10DFA84D4B9E2DB85F /* Pods_FT____iPad.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -236,6 +259,7 @@
 				50C34C361BC664AE00C8A8CB /* FT中文网HD.plist */,
 				507C7E751DB0BCE800A8EF50 /* FT中文网 copy-Info.plist */,
 				501F90161E3C72EB009EA5DD /* Frameworks */,
+				0C856F6A7A0F75F9FBE233C7 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -363,9 +387,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 50256CB81A4B9D0B005950B9 /* Build configuration list for PBXNativeTarget "FT中文网" */;
 			buildPhases = (
+				FBE7D6D07B818F27F0989802 /* [CP] Check Pods Manifest.lock */,
 				50256C951A4B9D0B005950B9 /* Sources */,
 				50256C961A4B9D0B005950B9 /* Frameworks */,
 				50256C971A4B9D0B005950B9 /* Resources */,
+				E53D8B75F9AF784689873A33 /* [CP] Embed Pods Frameworks */,
+				73EE785BE1EDA45DBFC01C8B /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -398,9 +425,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 507C7E711DB0BCE800A8EF50 /* Build configuration list for PBXNativeTarget "FT中文网-iPad" */;
 			buildPhases = (
+				0DFF67271A97045F6EB26099 /* [CP] Check Pods Manifest.lock */,
 				507C7E4C1DB0BCE800A8EF50 /* Sources */,
 				507C7E591DB0BCE800A8EF50 /* Frameworks */,
 				507C7E651DB0BCE800A8EF50 /* Resources */,
+				B52338BFBE049593C10C7333 /* [CP] Embed Pods Frameworks */,
+				78948BB24DEE9780FB2A92B5 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -517,6 +547,99 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0DFF67271A97045F6EB26099 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		73EE785BE1EDA45DBFC01C8B /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FT中文网/Pods-FT中文网-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		78948BB24DEE9780FB2A92B5 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FT中文网-iPad/Pods-FT中文网-iPad-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B52338BFBE049593C10C7333 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FT中文网-iPad/Pods-FT中文网-iPad-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E53D8B75F9AF784689873A33 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FT中文网/Pods-FT中文网-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FBE7D6D07B818F27F0989802 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		50256C951A4B9D0B005950B9 /* Sources */ = {
@@ -698,6 +821,7 @@
 		};
 		50256CB91A4B9D0B005950B9 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 976359DE7C996269A56DA9C6 /* Pods-FT中文网.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -706,7 +830,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = CAEDT8EKGV;
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "FT Academy/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -728,6 +852,7 @@
 		};
 		50256CBA1A4B9D0B005950B9 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F23BDF4DA58F76843F7DFE97 /* Pods-FT中文网.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -736,7 +861,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = CAEDT8EKGV;
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "FT Academy/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -791,6 +916,7 @@
 		};
 		507C7E721DB0BCE800A8EF50 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B1B0C223055A04C366CDF337 /* Pods-FT中文网-iPad.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -799,7 +925,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = CAEDT8EKGV;
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "FT中文网 copy-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -821,6 +947,7 @@
 		};
 		507C7E731DB0BCE800A8EF50 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 244FCD22C95076D181258B54 /* Pods-FT中文网-iPad.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -829,7 +956,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = CAEDT8EKGV;
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "FT中文网 copy-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

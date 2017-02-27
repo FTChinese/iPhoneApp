@@ -13,7 +13,21 @@ import AVKit
 import AVFoundation
 import StoreKit
 
+
+import FolioReaderKit
+
+
+
+
 class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, SFSafariViewControllerDelegate {
+    
+    func open(sender: AnyObject) {
+        let config = FolioReaderConfig()
+        let bookPath = Bundle.main.path(forResource: "book", ofType: "epub")
+        FolioReader.presentReader(parentViewController: self, withEpubPath: bookPath!, andConfig: config)
+    }
+    
+    
     // MARK: after ios 8, WKWebView is always needed
     var webView = WKWebView()
     private weak var timer: Timer?

@@ -1,0 +1,6 @@
+framework module Pods_FT___ {
+  umbrella header "Pods-FT中文网-umbrella.h"
+
+  export *
+  module * { export * }
+}
