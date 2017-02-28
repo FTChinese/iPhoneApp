@@ -52,10 +52,13 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
-        if #available(iOS 10.0, *) {
-            config.mediaTypesRequiringUserActionForPlayback = .init(rawValue: 0)
-        } else {
-            config.mediaPlaybackRequiresUserAction = false
+        let statusType = IJReachability().connectedToNetworkOfType()
+        if statusType == .wiFi {
+            if #available(iOS 10.0, *) {
+                config.mediaTypesRequiringUserActionForPlayback = .init(rawValue: 0)
+            } else {
+                config.mediaPlaybackRequiresUserAction = false
+            }
         }
         webView = WKWebView(frame: self.view.bounds, configuration: config)
         //let webView = WKWebView(frame: self.topView.bounds, configuration: config)
