@@ -12,24 +12,13 @@ import SafariServices
 import AVKit
 import AVFoundation
 import StoreKit
-
-
 import FolioReaderKit
-
-
 
 
 class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, SFSafariViewControllerDelegate {
     
-    func open(sender: AnyObject) {
-        let config = FolioReaderConfig()
-        let bookPath = Bundle.main.path(forResource: "book", ofType: "epub")
-        FolioReader.presentReader(parentViewController: self, withEpubPath: bookPath!, andConfig: config)
-    }
-    
-    
     // MARK: after ios 8, WKWebView is always needed
-    var webView = WKWebView()
+    lazy var webView = WKWebView()
     private weak var timer: Timer?
     var pageStatus: WebViewStatus?
     private var startUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
@@ -48,25 +37,33 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     private let screenHeight = UIScreen.main.bounds.height
     
     
-    
-    
     deinit {
         //print("main view is being deinitialized")
     }
     
     // start to load the webview as soon as possible
     // and cover the whole view with an overlayview of either advertisement or launchscreen
-    
-    
     override func loadView() {
         super.loadView()
         pageStatus = .viewToLoad
         if UIDevice.current.userInterfaceIdiom == .pad {
             startUrl = iPadStartUrl
         }
+        
+        let config = WKWebViewConfiguration()
+        config.allowsInlineMediaPlayback = true
+        if #available(iOS 10.0, *) {
+            config.mediaTypesRequiringUserActionForPlayback = .init(rawValue: 0)
+        } else {
+            config.mediaPlaybackRequiresUserAction = false
+        }
+        webView = WKWebView(frame: self.view.bounds, configuration: config)
+        //let webView = WKWebView(frame: self.topView.bounds, configuration: config)
+        
         self.view = self.webView
         webView.scrollView.bounces = false
-        self.webView.navigationDelegate = self
+        webView.configuration.allowsInlineMediaPlayback = true
+        webView.navigationDelegate = self
         NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "statusBarSelected"), object: nil, queue: nil) { event in
             self.webView.evaluateJavaScript("scrollToTop()") { (result, error) in
                 if error != nil {
@@ -232,8 +229,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         setAdBackground()
     }
     
-    
-    
     private func addOverlayView() {
         if let overlay = overlayView {
             overlay.backgroundColor = UIColor(netHex:0x000000)
@@ -314,7 +309,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             adPageLinkOverlay.addGestureRecognizer(tapRecognizer)
         }
     }
-    
     
     private func playVideo() {
         let path = adSchedule.videoFilePath
@@ -478,7 +472,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         openInView(adSchedule.adLink)
     }
     
-    
     // MARK: Load HTML String from Bundle to start the App
     private func loadFromLocal() {
         if adSchedule.adType != "none" {
@@ -505,7 +498,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             self.webView.load(req)
         }
     }
-    
     
     // MARK: this is public because AppDelegate is going to use it
     func checkBlankPage() {
@@ -555,7 +547,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
-    
     private func checkConnectionType() {
         let statusType = IJReachability().connectedToNetworkOfType()
         var connectionType = "unknown"
@@ -570,15 +561,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         updateConnectionToWeb(connectionType)
     }
     
-    
-    
     private func updateConnectionToWeb(_ connectionType: String) {
         let jsCode = "window.gConnectionType = '\(connectionType)';"
         self.webView.evaluateJavaScript(jsCode) { (result, error) in
         }
-        
     }
-    
     
     private func displayWebviewAfterSeconds(_ seconds: TimeInterval) {
         timer?.invalidate()
@@ -592,7 +579,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         nextTimer.tolerance = 1
         timer = nextTimer
     }
-    
     
     
     // MARK: this should be public
@@ -922,6 +908,15 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     private func readBook(urlString: String) {
         print ("read book: \(urlString)")
+        let config = FolioReaderConfig()
+        config.scrollDirection = .horizontal
+        config.allowSharing = false
+        config.tintColor = UIColor(netHex: 0x9E2F50)
+        config.menuBackgroundColor = UIColor(netHex: 0xFFF1E0)
+        if let bookPath = Bundle.main.path(forResource: "lunch", ofType: "epub") {
+            FolioReader.presentReader(parentViewController: self, withEpubPath: bookPath, andConfig: config)
+        }
+        //self.performSegue(withIdentifier: "ReadBookSegue", sender: nil)
     }
     
     private func productToJSCode (_ products: [SKProduct], jsVariableName: String, jsVariableType: String){
