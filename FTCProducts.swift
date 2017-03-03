@@ -37,19 +37,22 @@ public struct FTCProducts {
             "id":"com.ft.ftchinese.mobile.book.ChinaEconomyAfterFXReform",
             "title":"汇改后的中国经济",
             "teaser":"人民币会继续贬值吗？",
-            "image":"http://i.ftimg.net/picture/1/000065581_piclink.jpg"
+            "image":"http://i.ftimg.net/picture/1/000065581_piclink.jpg",
+            "download": "https://creatives.ftimg.net/ads/office/lunch.epub"
         ],
         [
             "id":"com.ft.ftchinese.mobile.book.lunch1",
             "title":"与FT共进午餐（一）",
             "teaser":"英国《金融时报》最受欢迎的栏目",
-            "image":"http://i.ftimg.net/picture/6/000061936_piclink.jpg"
+            "image":"http://i.ftimg.net/picture/6/000061936_piclink.jpg",
+            "download": "https://creatives.ftimg.net/ads/office/lunch.epub"
         ],
         [
             "id":"com.ft.ftchinese.mobile.book.lunch2",
             "title":"与FT共进午餐（二）",
             "teaser":"英国《金融时报》最受欢迎的栏目",
-            "image":"http://i.ftimg.net/picture/7/000061937_piclink.jpg"
+            "image":"http://i.ftimg.net/picture/7/000061937_piclink.jpg",
+            "download": "https://creatives.ftimg.net/ads/office/lunch.epub"
         ]
     ]
     public static let allProducts = subscriptions + eBooks

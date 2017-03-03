@@ -38,7 +38,18 @@ open class IAPHelper : NSObject  {
         for productIdentifier in productIds {
             // TODO: - User defaults may not be the best place to store information about purchased products in a real application. An owner of a jailbroken device could easily access your app’s UserDefaults plist, and modify it to ‘unlock’ purchases. If this sort of thing concerns you, then it’s worth checking out Apple’s documentation on Validating App Store Receipts – this allows you to verify that a user has made a particular purchase.
             let purchased = UserDefaults.standard.bool(forKey: productIdentifier)
-            if purchased {
+            print ("\(productIdentifier) is set to \(UserDefaults.standard.bool(forKey: productIdentifier))")
+            let downloaded = { () -> Bool in 
+                if checkFilePath(fileUrl: productIdentifier) == nil {
+                    return false
+                } else {
+                    return true
+                }
+            }()
+            if downloaded {
+                purchasedProductIdentifiers.insert(productIdentifier)
+                print("Previously downloaded: \(productIdentifier)")
+            } else if purchased {
                 purchasedProductIdentifiers.insert(productIdentifier)
                 print("Previously purchased: \(productIdentifier)")
             } else {
@@ -46,7 +57,7 @@ open class IAPHelper : NSObject  {
             }
         }
         super.init()
-        // MARK: - If there's a receipt url, get the receipt data
+        // TODO: - If there's a receipt url, get the receipt data
         if let url = IAPHelper.url {
             receipt = NSData(contentsOf: url)
         }
@@ -81,6 +92,7 @@ extension IAPHelper {
     }
     
     public func restorePurchases() {
+        print ("restore purchase transaction")
         SKPaymentQueue.default().restoreCompletedTransactions()
     }
 }
@@ -165,6 +177,7 @@ extension IAPHelper: SKPaymentTransactionObserver {
         purchasedProductIdentifiers.insert(identifier)
         UserDefaults.standard.set(true, forKey: identifier)
         UserDefaults.standard.synchronize()
+        print ("\(identifier) is set to \(UserDefaults.standard.bool(forKey: identifier))")
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: IAPHelper.IAPHelperPurchaseNotification), object: identifier)
     }
     

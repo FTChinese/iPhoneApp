@@ -131,6 +131,26 @@ func getDataFromUrl(_ url:URL, completion: @escaping ((_ data: Data?, _ response
     listTask.resume()
 }
 
+func checkFilePath(fileUrl: String) -> String? {
+    let url = NSURL(string:fileUrl)
+    if let lastComponent = url?.lastPathComponent {
+        let templatepathInBuddle = Bundle.main.bundlePath + "/" + lastComponent
+        do {
+            let DocumentDirURL = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+            let templatepathInDocument = DocumentDirURL.appendingPathComponent(lastComponent)
+            var templatePath: String? = nil
+            if FileManager.default.fileExists(atPath: templatepathInBuddle) {
+                templatePath = templatepathInBuddle
+            } else if FileManager().fileExists(atPath: templatepathInDocument.path) {
+                templatePath = templatepathInDocument.path
+            }
+            return templatePath
+        } catch {
+            return nil
+        }
+    }
+    return nil
+}
 
 func updateWeChatShareIcon(_ url: URL) {
     print("Start downloading \(url) for WeChat Shareing. lastPathComponent: \(url.absoluteString)")

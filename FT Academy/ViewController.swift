@@ -15,7 +15,7 @@ import StoreKit
 import FolioReaderKit
 
 
-class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, SFSafariViewControllerDelegate {
+class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, SFSafariViewControllerDelegate, URLSessionDownloadDelegate {
     
     // MARK: after ios 8, WKWebView is always needed
     lazy var webView = WKWebView()
@@ -660,10 +660,30 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             } else if url.scheme == "buy" {
                 buyProduct(urlString: urlString)
                 decisionHandler(.cancel)
+            } else if url.scheme == "restorepurchases" {
+                restorePurchases()
+                decisionHandler(.cancel)
+            } else if url.scheme == "downloadproduct" {
+                //buyProduct(urlString: urlString)
+                downloadProductFromWeb(urlString)
+                decisionHandler(.cancel)
+            } else if url.scheme == "canceldownload" {
+                cancelDownload(urlString)
+                decisionHandler(.cancel)
+            } else if url.scheme == "pausedownload" {
+                pauseDownload(urlString)
+                decisionHandler(.cancel)
+            } else if url.scheme == "resumedownload" {
+                resumeDownload(urlString)
+                decisionHandler(.cancel)
+            } else if url.scheme == "removedownload" {
+                //buyProduct(urlString: urlString)
+                removeDownload(urlString)
+                decisionHandler(.cancel)
             } else if url.scheme == "readbook" {
                 readBook(urlString: urlString)
                 decisionHandler(.cancel)
-            }  else if url.scheme == "iap" {
+            } else if url.scheme == "iap" {
                 print("iap scheme is not in use any more")
                 decisionHandler(.cancel)
             } else if url.scheme == "iosaction" {
@@ -893,14 +913,17 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     private func buyProduct(urlString: String) {
         print (urlString)
         let productId = urlString.replacingOccurrences(of: "buy://", with: "")
-        var product: SKProduct?
-        for p in products {
-            if p.productIdentifier == productId {
-                product = p
-                print ("product id matched: \(p.productIdentifier)")
-                break
-            }
-        }
+        /*
+         var product: SKProduct?
+         for p in products {
+         if p.productIdentifier == productId {
+         product = p
+         print ("product id matched: \(p.productIdentifier)")
+         break
+         }
+         }
+         */
+        let product = findSKProductByID(productId)
         if let product = product {
             FTCProducts.store.buyProduct(product)
             let jsCode = "iapActions('\(productId)', 'pending');"
@@ -909,18 +932,239 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
+    private func restorePurchases() {
+        print ("restore purchase button clicked")
+        FTCProducts.store.restorePurchases()
+    }
+    
+    private func findSKProductByID(_ productID: String) -> SKProduct? {
+        var product: SKProduct?
+        for p in products {
+            if p.productIdentifier == productID {
+                product = p
+                print ("product id matched: \(p.productIdentifier)")
+                break
+            }
+        }
+        return product
+    }
+    
+    private func findProductInfoById(_ productID: String) -> [String: String]? {
+        var product: [String: String]?
+        for p in FTCProducts.allProducts {
+            if p["id"] == productID {
+                product = p
+                break
+            }
+        }
+        return product
+    }
+    
+    
+    
     private func readBook(urlString: String) {
         print ("read book: \(urlString)")
-        let config = FolioReaderConfig()
-        config.scrollDirection = .horizontal
-        config.allowSharing = false
-        config.tintColor = UIColor(netHex: 0x9E2F50)
-        config.menuBackgroundColor = UIColor(netHex: 0xFFF1E0)
-        if let bookPath = Bundle.main.path(forResource: "lunch", ofType: "epub") {
-            FolioReader.presentReader(parentViewController: self, withEpubPath: bookPath, andConfig: config)
+        let productIdentifier = urlString.replacingOccurrences(of: "readbook://", with: "")
+            .replacingOccurrences(of: "?isad=1", with: "")
+        // MARK: - check if the file exists locally
+        
+        if let fileLocation = checkFilePath(fileUrl: productIdentifier) {
+            print (fileLocation)
+            let config = FolioReaderConfig()
+            config.scrollDirection = .horizontal
+            config.allowSharing = false
+            config.tintColor = UIColor(netHex: 0x9E2F50)
+            config.menuBackgroundColor = UIColor(netHex: 0xFFF1E0)
+            FolioReader.presentReader(parentViewController: self, withEpubPath: fileLocation, andConfig: config)
+        } else {
+            print ("file not found: download it")
+            let alert = UIAlertController(title: "文件还没有下载，要现在下载吗？", message: "下载到本地可以打开并阅读", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "立即下载",
+                                          style: UIAlertActionStyle.default,
+                                          handler: {_ in self.downloadProduct(productIdentifier)}
+            ))
+            alert.addAction(UIAlertAction(title: "以后再说", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         }
         //self.performSegue(withIdentifier: "ReadBookSegue", sender: nil)
     }
+    
+    // MARK: - The Download Operation Queue
+    lazy var downloadQueue:OperationQueue = {
+        var queue = OperationQueue()
+        queue.name = "Download queue"
+        queue.maxConcurrentOperationCount = 1
+        return queue
+    }()
+    
+    // MARK: keep a reference of all the Download Tasks
+    var downloadTasks = [String: URLSessionDownloadTask]()
+    
+    private func downloadProductFromWeb(_ urlString: String) {
+        let productId = urlString.replacingOccurrences(of: "downloadproduct://", with: "")
+            .replacingOccurrences(of: "?isad=1", with: "")
+        downloadProduct(productId)
+    }
+    
+    private func downloadProduct(_ productID: String) {
+        print ("Download this product by id: \(productID), you can continue to download and/or display the information to user")
+        if let fileDownloadUrl = findProductInfoById(productID)?["download"] {
+            print ("download this file: \(fileDownloadUrl)")
+            var jsCode = ""
+            if checkFilePath(fileUrl: productID) == nil {
+                // MARK: - Download the file through the internet
+                print ("The file does not exist. Download from \(fileDownloadUrl)")
+                let backgroundSessionConfiguration = URLSessionConfiguration.background(withIdentifier: productID)
+                let backgroundSession = URLSession(configuration: backgroundSessionConfiguration, delegate: self, delegateQueue: downloadQueue)
+                if let url = URL(string: fileDownloadUrl) {
+                    let request = URLRequest(url: url)
+                    downloadTasks[productID] = backgroundSession.downloadTask(with: request)
+                    downloadTasks[productID]?.resume()
+                    jsCode = "iapActions('\(productID)', 'downloading')"
+                } else {
+                    jsCode = "iapActions('\(productID)', 'pendingdownload')"
+                }
+            } else {
+                // TODO: - Update interface to change the button action into read
+                print ("The file already exists. No need to download. Update Interface")
+                jsCode = "iapActions('\(productID)', 'success')"
+            }
+            self.webView.evaluateJavaScript(jsCode) { (result, error) in
+            }
+        }
+    }
+    
+    private func cancelDownload(_ urlString: String) {
+        let productId = urlString.replacingOccurrences(of: "canceldownload://", with: "")
+            .replacingOccurrences(of: "?isad=1", with: "")
+        downloadTasks[productId]?.cancel()
+        let jsCode = "iapActions('\(productId)', 'pendingdownload')"
+        self.webView.evaluateJavaScript(jsCode) { (result, error) in
+        }
+    }
+    
+    private func pauseDownload(_ urlString: String) {
+        let productId = urlString.replacingOccurrences(of: "pausedownload://", with: "")
+            .replacingOccurrences(of: "?isad=1", with: "")
+        downloadTasks[productId]?.suspend()
+        let jsCode = "updateDownloadPauseButton('\(productId)', 'pause')"
+        self.webView.evaluateJavaScript(jsCode) { (result, error) in
+        }
+    }
+    
+    private func resumeDownload(_ urlString: String) {
+        let productId = urlString.replacingOccurrences(of: "resumedownload://", with: "")
+            .replacingOccurrences(of: "?isad=1", with: "")
+        downloadTasks[productId]?.resume()
+        let jsCode = "updateDownloadPauseButton('\(productId)', 'resume')"
+        self.webView.evaluateJavaScript(jsCode) { (result, error) in
+        }
+    }
+    
+    private func removeDownload(_ urlString: String) {
+        let productId = urlString.replacingOccurrences(of: "removedownload://", with: "")
+            .replacingOccurrences(of: "?isad=1", with: "")
+        let fileManager = FileManager.default
+        let nsDocumentDirectory = FileManager.SearchPathDirectory.documentDirectory
+        let nsUserDomainMask = FileManager.SearchPathDomainMask.userDomainMask
+        let paths = NSSearchPathForDirectoriesInDomains(nsDocumentDirectory, nsUserDomainMask, true)
+        guard let dirPath = paths.first else {
+            return
+        }
+        let filePath = "\(dirPath)/\(productId)"
+        do {
+            try fileManager.removeItem(atPath: filePath)
+            print ("removed the file at \(filePath)")
+            let jsCode = "iapActions('\(productId)', 'pendingdownload')"
+            self.webView.evaluateJavaScript(jsCode) { (result, error) in
+            }
+        } catch let error as NSError {
+            print(error.debugDescription)
+        }
+    }
+    
+    
+    
+    
+    
+    
+    //MARK: URLSessionDownloadDelegate
+    // 1
+    func urlSession(_ session: URLSession,
+                    downloadTask: URLSessionDownloadTask,
+                    didFinishDownloadingTo location: URL){
+        if let productId = session.configuration.identifier {
+            let path = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
+            let documentDirectoryPath:String = path[0]
+            let fileManager = FileManager()
+            let destinationURLForFile = URL(fileURLWithPath: documentDirectoryPath.appendingFormat("/\(productId)"))
+            
+            print ("file downloaded to: \(location.absoluteURL)")
+            if fileManager.fileExists(atPath: destinationURLForFile.path){
+                //showFileWithPath(path: destinationURLForFile.path)
+                print ("the file exists, you can open it. ")
+            } else {
+                do {
+                    try fileManager.moveItem(at: location, to: destinationURLForFile)
+                    // show file
+                    // showFileWithPath(path: destinationURLForFile.path)
+                    print ("file moved. you can open it")
+                }catch{
+                    print("An error occurred while moving file to destination url")
+                }
+            }
+            let jsCode = "iapActions('\(productId)', 'success');"
+            self.webView.evaluateJavaScript(jsCode) { (result, error) in
+            }
+        }
+    }
+    // 2
+    // MARK: keep a reference of all the Download Progress
+    var downloadProgresses = [String: String]()
+    func urlSession(_ session: URLSession,
+                    downloadTask: URLSessionDownloadTask,
+                    didWriteData bytesWritten: Int64,
+                    totalBytesWritten: Int64,
+                    totalBytesExpectedToWrite: Int64){
+        // MARK: - evaluateJavaScript is very energy consuming, do this only several times
+        if let productId = session.configuration.identifier {
+            let totalMBsWritten = String(format: "%.1f", Float(totalBytesWritten)/1000000)
+            let percentageNumber = 100 * Float(totalBytesWritten)/Float(totalBytesExpectedToWrite)
+            if totalMBsWritten == "0.0" {
+                downloadProgresses[productId] = "0.0"
+            }
+            if downloadProgresses[productId] != totalMBsWritten {
+                downloadProgresses[productId] = totalMBsWritten
+                let totalMBsExpectedToWrite = String(format: "%.1f", Float(totalBytesExpectedToWrite)/1000000)
+                let jsCode = "updateDownloadProgress('\(productId)', '\(percentageNumber)%', '\(totalMBsWritten)M / \(totalMBsExpectedToWrite)M')"
+                self.webView.evaluateJavaScript(jsCode) { (result, error) in
+                }
+                //print (totalMBsWritten)
+            }
+        }
+    }
+    
+    //MARK: URLSessionTaskDelegate
+    func urlSession(_ session: URLSession,
+                    task: URLSessionTask,
+                    didCompleteWithError error: Error?){
+        // downloadTask = nil
+        // progressView.setProgress(0.0, animated: true)
+        if (error != nil) {
+            print(error!.localizedDescription)
+            if let productId = session.configuration.identifier {
+                let jsCode = "iapActions('\(productId)', 'pendingdownload');"
+                self.webView.evaluateJavaScript(jsCode) { (result, error) in
+                }
+            }
+        }else{
+            // MARK: - the interface should have been updated through the didFinishDownloadingTo func
+            print("The task finished transferring data successfully")
+        }
+    }
+    
+    
+    
     
     private func productToJSCode (_ products: [SKProduct], jsVariableName: String, jsVariableType: String){
         var productsString = ""
@@ -945,7 +1189,14 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                     }
                 }
             }
-            let productString = "{title: '\(product.localizedTitle)',description: '\(product.localizedDescription)',price: '\(productPrice)',id: '\(product.productIdentifier)',image: '\(productImage)', teaser: '\(productTeaser)', isPurchased: \(isPurchased)}"
+            let isDownloaded = { () -> Bool in
+                if checkFilePath(fileUrl: product.productIdentifier) == nil {
+                    return false
+                } else {
+                    return true
+                }
+            }()
+            let productString = "{title: '\(product.localizedTitle)',description: '\(product.localizedDescription)',price: '\(productPrice)',id: '\(product.productIdentifier)',image: '\(productImage)', teaser: '\(productTeaser)', isPurchased: \(isPurchased), isDownloaded: \(isDownloaded)}"
             productsString += ",\(productString)"
         }
         switch jsVariableType{
@@ -977,25 +1228,30 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             // MARK: when user buys or restores a product, we should display relevant information
             for (_, product) in products.enumerated() {
                 guard product.productIdentifier == productID else { continue }
-                print ("Product Buying Done: \(productID), you can continue to display the information to user")
-                jsCode = "iapActions('\(productID)', 'success')"
+                jsCode = "iapActions('\(productID)', 'downloading')"
+                self.webView.evaluateJavaScript(jsCode) { (result, error) in
+                }
+                downloadProduct(productID)
             }
         } else if let errorObject = notification.object as? NSError {
             let alert = UIAlertController(title: "交易失败，您的钱还在口袋里", message: errorObject.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "我知道了", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
             jsCode = "iapActions('', 'fail')"
+            self.webView.evaluateJavaScript(jsCode) { (result, error) in
+            }
         } else if notification.object == nil {
             // MARK: When the transaction fail without any error message (NSError)
             let alert = UIAlertController(title: "交易失败，您的钱还在口袋里", message: "未知错误", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "我知道了", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
             jsCode = "iapActions('', 'fail')"
-        }
-        print(jsCode)
-        self.webView.evaluateJavaScript(jsCode) { (result, error) in
+            self.webView.evaluateJavaScript(jsCode) { (result, error) in
+            }
         }
     }
+    
+    
     
     // MARK: - in-app purchase end
     

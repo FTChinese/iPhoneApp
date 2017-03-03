@@ -320,4 +320,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
     // code related to wechat authorization end
     
     
+    func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
+        //let config = URLSessionConfiguration.background(withIdentifier: backgroundDownloadIdentifier)
+        //let session = URLSession(configuration: config, delegate: self, delegateQueue: OperationQueue.main)
+        // TODO: - https://developer.apple.com/reference/uikit/uiapplicationdelegate/1622941-application?language=objc
+        // TODO: - identifier can be used to store the file name or product id
+        
+        print ("handle events for background url session with the identifier \(identifier)")
+    }
+    
+    
 }
