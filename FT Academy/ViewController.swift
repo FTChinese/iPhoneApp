@@ -77,6 +77,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             }
         }
         adOverlayView()
+        
+        //TextToSpeech()
     }
     /**
      Once view is loaded:
@@ -975,6 +977,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             config.allowSharing = false
             config.tintColor = UIColor(netHex: 0x9E2F50)
             config.menuBackgroundColor = UIColor(netHex: 0xFFF1E0)
+            config.enableTTS = false
             FolioReader.presentReader(parentViewController: self, withEpubPath: fileLocation, andConfig: config)
         } else {
             print ("file not found: download it")
@@ -1254,6 +1257,17 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     
     // MARK: - in-app purchase end
+    
+    
+    // Text to Speech
+    func TextToSpeech() {
+        let mySpeechSynthesizer:AVSpeechSynthesizer = AVSpeechSynthesizer()
+        let myString:String = "人民币无疑是当前宏观经济政策制定者和全球金融市场最关注的问题之一。<br>“8·11”汇改全球市场震动，一周年过去了，人民币的故事并没有结束。如何评价这一事件？中国对世界经济影响有何变化？人民币在全球市场上究竟占据何种地位？与美元的“难舍难分”又会带来什么影响？<br>随着人民币正式加入SDR在即，经济放缓下的贬值压力也随之加大。人民币会继续贬值吗？想要打破贬值预期，到底应该怎么做？"
+        let mySpeechUtterance:AVSpeechUtterance = AVSpeechUtterance(string:myString)
+        mySpeechUtterance.voice = AVSpeechSynthesisVoice(language: "zh-CN")
+        //mySpeechUtterance.rate = 1.2
+        mySpeechSynthesizer.speak(mySpeechUtterance)
+    }
     
 }
 
