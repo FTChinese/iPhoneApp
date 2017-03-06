@@ -1182,12 +1182,16 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             let productPrice = priceFormatter.string(from: product.price) ?? ""
             var productImage = ""
             var productTeaser = ""
+            var productGroup = ""
+            var productGroupTitle = ""
             let isPurchased = FTCProducts.store.isProductPurchased(product.productIdentifier)
             for oneProduct in FTCProducts.allProducts {
                 if let bookId = oneProduct["id"] {
                     if bookId == product.productIdentifier {
                         productImage = oneProduct["image"] ?? ""
                         productTeaser = oneProduct["teaser"] ?? ""
+                        productGroup = oneProduct["group"] ?? ""
+                        productGroupTitle = oneProduct["groupTitle"] ?? ""
                         break
                     }
                 }
@@ -1199,7 +1203,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                     return true
                 }
             }()
-            let productString = "{title: '\(product.localizedTitle)',description: '\(product.localizedDescription)',price: '\(productPrice)',id: '\(product.productIdentifier)',image: '\(productImage)', teaser: '\(productTeaser)', isPurchased: \(isPurchased), isDownloaded: \(isDownloaded)}"
+            let productString = "{title: '\(product.localizedTitle)',description: '\(product.localizedDescription)',price: '\(productPrice)',id: '\(product.productIdentifier)',image: '\(productImage)', teaser: '\(productTeaser)', isPurchased: \(isPurchased), isDownloaded: \(isDownloaded), group: '\(productGroup)', groupTitle: '\(productGroupTitle)'}"
             productsString += ",\(productString)"
         }
         switch jsVariableType{
@@ -1236,12 +1240,15 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 }
                 downloadProduct(productID)
             }
-        } else if let errorObject = notification.object as? NSError {
-            let alert = UIAlertController(title: "交易失败，您的钱还在口袋里", message: errorObject.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
+        } else if let errorObject = notification.object as? [String : String?] {
+            let alert = UIAlertController(title: "交易失败，您的钱还在口袋里", message: errorObject["error"] ?? "", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "我知道了", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
-            jsCode = "iapActions('', 'fail')"
-            self.webView.evaluateJavaScript(jsCode) { (result, error) in
+            if let productId = errorObject["id"] {
+                jsCode = "iapActions('\(productId ?? "")', 'fail')"
+                print (jsCode)
+                self.webView.evaluateJavaScript(jsCode) { (result, error) in
+                }
             }
         } else if notification.object == nil {
             // MARK: When the transaction fail without any error message (NSError)

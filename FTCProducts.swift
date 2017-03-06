@@ -24,7 +24,7 @@ import Foundation
 
 public struct FTCProducts {
     // MARK: Store all products locally to avoid networking problems
-    public static let subscriptions = [
+    private static let subscriptionsData = [
         [
             "id":"com.ft.ftchinese.mobile.subscription.intelligence2",
             "title":"FT研究院",
@@ -32,7 +32,7 @@ public struct FTCProducts {
             "image":"http://i.ftimg.net/picture/3/000068413_piclink.jpg"
         ]
     ]
-    public static let eBooks = [
+    private static let eBooksData = [
         [
             "id":"com.ft.ftchinese.mobile.book.ChinaEconomyAfterFXReform",
             "title":"汇改后的中国经济",
@@ -55,9 +55,23 @@ public struct FTCProducts {
             "download": "https://creatives.ftimg.net/ads/office/lunch.epub"
         ]
     ]
+    // MARK: - add product group names and titles
+    public static let subscriptions = addProductGroup(subscriptionsData, group: "subscription", groupTitle: "订阅")
+    public static let eBooks = addProductGroup(eBooksData, group: "ebook", groupTitle: "FT电子书")
     public static let allProducts = subscriptions + eBooks
     fileprivate static let productIdentifiers: Set<ProductIdentifier> = getProductIds(products: allProducts)
     public static let store = IAPHelper(productIds: productIdentifiers)
+    
+    fileprivate static func addProductGroup(_ products:  [Dictionary<String, String>], group: String, groupTitle: String) -> [Dictionary<String, String>]{
+        var newProducts:  [Dictionary<String, String>] = []
+        for product in products {
+            var newProduct = product
+            newProduct["group"] = group
+            newProduct["groupTitle"] = groupTitle
+            newProducts.append(newProduct)
+        }
+        return newProducts
+    }
     
     fileprivate static func getProductIds(products: [Dictionary<String, String>]) -> Set<ProductIdentifier> {
         var productIds: Set<ProductIdentifier> = []

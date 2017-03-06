@@ -167,8 +167,9 @@ extension IAPHelper: SKPaymentTransactionObserver {
     private func fail(transaction: SKPaymentTransaction) {
         print("fail...")
         let transactionError = transaction.error as? NSError
+        let productId = transaction.payment.productIdentifier
         print("Transaction Error: \(transaction.error?.localizedDescription)")
-        deliverPurchaseFailNotification(transactionError)
+        deliverPurchaseFailNotification(transactionError, productId: productId)
         SKPaymentQueue.default().finishTransaction(transaction)
     }
     
@@ -181,7 +182,12 @@ extension IAPHelper: SKPaymentTransactionObserver {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: IAPHelper.IAPHelperPurchaseNotification), object: identifier)
     }
     
-    private func deliverPurchaseFailNotification(_ transactionError: NSError?) {
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: IAPHelper.IAPHelperPurchaseNotification), object: transactionError)
+    private func deliverPurchaseFailNotification(_ transactionError: NSError?, productId: String) {
+        let transactionErrorObject = [
+            "id": productId,
+            "error": transactionError?.localizedDescription
+        ]
+        print(transactionErrorObject)
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: IAPHelper.IAPHelperPurchaseNotification), object: transactionErrorObject)
     }
 }
