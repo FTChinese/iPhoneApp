@@ -34,25 +34,36 @@ public struct FTCProducts {
     ]
     private static let eBooksData = [
         [
+            "id":"com.ft.ftchinese.mobile.book.OutlookoftheFutureof2017",
+            "title":"精选2016，展望2017",
+            "teaser":" 2017年，我们熟悉的那个世界是否正在远去？",
+            "image":"http://i.ftimg.net/picture/9/000068669_piclink.jpg",
+            "download": "https://creatives.ftimg.net/commodity/JingXuan_2016_ZhanWang_2017_YiYiYingGu_FTChinese.epub",
+            "downloadfortry": "https://creatives.ftimg.net/ads/office/lunch.epub"
+        ],
+        [
             "id":"com.ft.ftchinese.mobile.book.ChinaEconomyAfterFXReform",
             "title":"汇改后的中国经济",
             "teaser":"人民币会继续贬值吗？",
             "image":"http://i.ftimg.net/picture/1/000065581_piclink.jpg",
-            "download": "https://creatives.ftimg.net/ads/office/lunch.epub"
+            "download": "https://creatives.ftimg.net/ads/office/lunch.epub",
+            "downloadfortry": "https://creatives.ftimg.net/ads/office/lunch.epub"
         ],
         [
             "id":"com.ft.ftchinese.mobile.book.lunch1",
             "title":"与FT共进午餐（一）",
             "teaser":"英国《金融时报》最受欢迎的栏目",
             "image":"http://i.ftimg.net/picture/6/000061936_piclink.jpg",
-            "download": "https://creatives.ftimg.net/ads/office/lunch.epub"
+            "download": "https://creatives.ftimg.net/ads/office/lunch.epub",
+            "downloadfortry": "https://creatives.ftimg.net/ads/office/lunch.epub"
         ],
         [
             "id":"com.ft.ftchinese.mobile.book.lunch2",
             "title":"与FT共进午餐（二）",
             "teaser":"英国《金融时报》最受欢迎的栏目",
             "image":"http://i.ftimg.net/picture/7/000061937_piclink.jpg",
-            "download": "https://creatives.ftimg.net/ads/office/lunch.epub"
+            "download": "https://creatives.ftimg.net/ads/office/lunch.epub",
+            "downloadfortry": "https://creatives.ftimg.net/ads/office/lunch.epub"
         ]
     ]
     // MARK: - add product group names and titles

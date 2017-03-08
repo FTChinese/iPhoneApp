@@ -685,6 +685,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             } else if url.scheme == "readbook" {
                 readBook(urlString: urlString)
                 decisionHandler(.cancel)
+            } else if url.scheme == "try" {
+                tryBook(urlString: urlString)
+                decisionHandler(.cancel)
             } else if url.scheme == "iap" {
                 print("iap scheme is not in use any more")
                 decisionHandler(.cancel)
@@ -897,6 +900,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     // MARK: - in-app purchase start
     
+    // TODO: - There should be functions to clear useless file, for example, by removing trial files when user downloaded the paid for files
+    
     private var products = [SKProduct]()
     
     private func loadProducts() {
@@ -992,6 +997,36 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         //self.performSegue(withIdentifier: "ReadBookSegue", sender: nil)
     }
     
+    private func tryBook(urlString: String) {
+        print ("try book: \(urlString)")
+        let productIdentifier = urlString.replacingOccurrences(of: "try://", with: "")
+            .replacingOccurrences(of: "?isad=1", with: "")
+        
+        let tryBookFileName = "try." + productIdentifier
+        // MARK: - check if the file exists locally
+        
+        if let fileLocation = checkFilePath(fileUrl: tryBookFileName) {
+            print (fileLocation)
+            let config = FolioReaderConfig()
+            config.scrollDirection = .horizontal
+            config.allowSharing = false
+            config.tintColor = UIColor(netHex: 0x9E2F50)
+            config.menuBackgroundColor = UIColor(netHex: 0xFFF1E0)
+            config.enableTTS = false
+            FolioReader.presentReader(parentViewController: self, withEpubPath: fileLocation, andConfig: config)
+        } else {
+            print ("file not found: download it")
+            let alert = UIAlertController(title: "文件还没有下载，要现在下载吗？", message: "下载到本地可以打开并阅读", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "立即下载",
+                                          style: UIAlertActionStyle.default,
+                                          handler: {_ in self.downloadProductForTrying(productIdentifier)}
+            ))
+            alert.addAction(UIAlertAction(title: "以后再说", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
+        //self.performSegue(withIdentifier: "ReadBookSegue", sender: nil)
+    }
+    
     // MARK: - The Download Operation Queue
     lazy var downloadQueue:OperationQueue = {
         var queue = OperationQueue()
@@ -1031,6 +1066,35 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 // TODO: - Update interface to change the button action into read
                 print ("The file already exists. No need to download. Update Interface")
                 jsCode = "iapActions('\(productID)', 'success')"
+            }
+            self.webView.evaluateJavaScript(jsCode) { (result, error) in
+            }
+        }
+    }
+    
+    private func downloadProductForTrying(_ productID: String) {
+        print ("Download this product for trying by id: \(productID), you can continue to download and/or display the information to user")
+        if let fileDownloadUrl = findProductInfoById(productID)?["downloadfortry"] {
+            print ("download this file: \(fileDownloadUrl)")
+            var jsCode = ""
+            let productIdForTrying = "try." + productID
+            if checkFilePath(fileUrl: productIdForTrying) == nil {
+                // MARK: - Download the file through the internet
+                print ("The file does not exist. Download from \(fileDownloadUrl)")
+                let backgroundSessionConfiguration = URLSessionConfiguration.background(withIdentifier: productIdForTrying)
+                let backgroundSession = URLSession(configuration: backgroundSessionConfiguration, delegate: self, delegateQueue: downloadQueue)
+                if let url = URL(string: fileDownloadUrl) {
+                    let request = URLRequest(url: url)
+                    downloadTasks[productIdForTrying] = backgroundSession.downloadTask(with: request)
+                    downloadTasks[productIdForTrying]?.resume()
+                    jsCode = "iapActions('\(productID)', 'pending')"
+                } else {
+                    jsCode = "iapActions('\(productID)', 'fail')"
+                }
+            } else {
+                // TODO: - Update interface to change the button action into read
+                print ("The file already exists. No need to download. Update Interface")
+                jsCode = "iapActions('\(productID)', 'fail')"
             }
             self.webView.evaluateJavaScript(jsCode) { (result, error) in
             }
@@ -1102,7 +1166,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             let fileManager = FileManager()
             let destinationURLForFile = URL(fileURLWithPath: documentDirectoryPath.appendingFormat("/\(productId)"))
             
-            print ("file downloaded to: \(location.absoluteURL)")
+            print ("\(productId) file downloaded to: \(location.absoluteURL)")
             if fileManager.fileExists(atPath: destinationURLForFile.path){
                 //showFileWithPath(path: destinationURLForFile.path)
                 print ("the file exists, you can open it. ")
@@ -1112,6 +1176,26 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                     // show file
                     // showFileWithPath(path: destinationURLForFile.path)
                     print ("file moved. you can open it")
+                    
+                    if productId.hasPrefix("try") {
+                        // MARK: - This is a trial file, open it immediately
+                        print ("open the try book")
+                        let config = FolioReaderConfig()
+                        config.scrollDirection = .horizontal
+                        config.allowSharing = false
+                        config.tintColor = UIColor(netHex: 0x9E2F50)
+                        config.menuBackgroundColor = UIColor(netHex: 0xFFF1E0)
+                        config.enableTTS = false
+                        let jsCode = "iapActions('\(productId.replacingOccurrences(of: "try.", with: ""))', 'fail');"
+                        self.webView.evaluateJavaScript(jsCode) { (result, error) in
+                        }
+                        if let fileLocation = checkFilePath(fileUrl: productId) {
+                            DispatchQueue.main.async {
+                                FolioReader.presentReader(parentViewController: self, withEpubPath: fileLocation, andConfig: config)
+                            }
+                        }
+                        return
+                    }
                 }catch{
                     print("An error occurred while moving file to destination url")
                 }
@@ -1172,6 +1256,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     private func productToJSCode (_ products: [SKProduct], jsVariableName: String, jsVariableType: String){
         var productsString = ""
         for product in products {
+            print("product from oliver: ")
+            print("title: \(product.localizedTitle); id: \(product.productIdentifier); ")
             let priceFormatter: NumberFormatter = {
                 let formatter = NumberFormatter()
                 formatter.formatterBehavior = .behavior10_4
