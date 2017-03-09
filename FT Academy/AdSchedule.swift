@@ -8,7 +8,7 @@
 
 import Foundation
 class AdSchedule {
-    // common properties for all types of creatives
+    // MARK: - Common properties for all types of creatives
     var adType = "none"
     var htmlBase = ""
     var adLink = ""
@@ -22,10 +22,7 @@ class AdSchedule {
     lazy var durationInSeconds: Double? = nil
     var showSoundButton = true
     lazy var impression: [String] = []
-    
     private let adScheduleFileName = "schedule.json"
-    //private let lauchAdSchedule = "http://m.ftchinese.com/index.php/jsapi/applaunchschedule"
-    //https://m.ftimg.net
     private let lauchAdSchedule = "https://m.ftimg.net/index.php/jsapi/applaunchschedule"
     private let imageTypes = ["png","jpg","gif"]
     private let videoTypes = ["mov","mp4"]
@@ -87,15 +84,14 @@ class AdSchedule {
                         }
                     }
                     
-                    // if this creaive is scheduled for today
-                    // and for this type of device(platform)
+                    // MARK: - if this creaive is scheduled for today and for this type of device(platform)
                     if dates.contains(dateInInt) && platforms.contains(self.currentPlatform){
                         guard var currentFileName = currentCreative["fileName"] as? String else {
                             print("cannot find file name of creative")
                             continue
                         }
                         
-                        // on iPad landscape mode, use the landscapeFileName
+                        // MARK: - On iPad landscape mode, use the landscapeFileName
                         if currentPlatform == "ipad" && UIScreen.main.bounds.width > UIScreen.main.bounds.height {
                             if let landscapeFileName = currentCreative["landscapeFileName"] as? String {
                                 if landscapeFileName != "" {
@@ -110,13 +106,11 @@ class AdSchedule {
                             }
                         }
                         
-                        // extract the file name to figure out the adType
+                        // MARK: - Extract the file name to figure out the adType
                         let url = NSURL(string:currentFileName)
                         let pathExtention = url?.pathExtension
                         
-                        // if the file exists locally
-                        // return its path
-                        // otherwise return nil
+                        // MARK: - If the file exists locally, return its path, otherwise return nil
                         let templatePath = checkFilePath(fileUrl: currentFileName)
                         // if the file exits
                         if templatePath != nil && pathExtention != nil{
@@ -153,9 +147,8 @@ class AdSchedule {
                                 }
                             }
                             
-                            // specific properties like image file, video file, backup image file
+                            // MARK: - Specific properties like image file, video file, backup image file
                             if imageTypes.contains(pathExtention!.lowercased()) {
-                                //print("it is image \(templatePath)")
                                 self.adType = "image"
                                 self.image = UIImage(contentsOfFile: templatePath!)
                                 break
@@ -184,8 +177,6 @@ class AdSchedule {
                                 }
                                 break
                             }
-                            
-                            
                         }
                     }
                 }
@@ -196,7 +187,7 @@ class AdSchedule {
         
     }
     
-    // convert a hex string into UIColor
+    // MARK: - convert a hex string into UIColor
     private func hexStringToUIColor (hex:String) -> UIColor {
         var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
         

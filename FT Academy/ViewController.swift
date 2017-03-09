@@ -902,7 +902,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     // TODO: - There should be functions to clear useless file, for example, by removing trial files when user downloaded the paid for files
     
+    // MARK: - Product information from app store, need to be online to access
     private var products = [SKProduct]()
+    private let myPurchasesKey = "My Purchases"
     
     private func loadProducts() {
         products = []
@@ -910,10 +912,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             if success {
                 if let products = products {
                     self.products = products
-                    self.productToJSCode(self.products, jsVariableName: "displayProductsOnHome", jsVariableType: "function")
-                    self.productToJSCode(self.products, jsVariableName: "iapProducts", jsVariableType: "object")
                 }
             }
+            // MARK: - Get product regardless of the request result
+            self.productToJSCode(self.products, jsVariableName: "displayProductsOnHome", jsVariableType: "function")
+            self.productToJSCode(self.products, jsVariableName: "iapProducts", jsVariableType: "object")
         }
     }
     
@@ -936,12 +939,37 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             let jsCode = "iapActions('\(productId)', 'pending');"
             self.webView.evaluateJavaScript(jsCode) { (result, error) in
             }
+            trackIAPActions("buy", productId: productId)
+        } else {
+            print ("cannot find the product id, try load product again")
+            FTCProducts.store.requestProducts{success, products in
+                if success {
+                    if let products = products {
+                        self.products = products
+                        if let productNew = self.findSKProductByID(productId) {
+                            FTCProducts.store.buyProduct(productNew)
+                            let jsCode = "iapActions('\(productId)', 'pending');"
+                            self.webView.evaluateJavaScript(jsCode) { (result, error) in
+                            }
+                        }
+                        self.productToJSCode(self.products, jsVariableName: "displayProductsOnHome", jsVariableType: "function")
+                        self.productToJSCode(self.products, jsVariableName: "iapProducts", jsVariableType: "object")
+                    }
+                } else {
+                    print ("cannot connect to app store right now!")
+                    // TODO: - pop up alert to let user know about this
+                    let alert = UIAlertController(title: "交易失败", message: "现在无法连接到App Store进行购买，请在网络状况比较好的情况下重试", preferredStyle: UIAlertControllerStyle.alert)
+                    alert.addAction(UIAlertAction(title: "知道了", style: UIAlertActionStyle.default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                }
+            }
         }
     }
     
     private func restorePurchases() {
         print ("restore purchase button clicked")
         FTCProducts.store.restorePurchases()
+        trackIAPActions("restore", productId: "")
     }
     
     private func findSKProductByID(_ productID: String) -> SKProduct? {
@@ -994,6 +1022,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             alert.addAction(UIAlertAction(title: "以后再说", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
         }
+        trackIAPActions("read", productId: productIdentifier)
         //self.performSegue(withIdentifier: "ReadBookSegue", sender: nil)
     }
     
@@ -1024,6 +1053,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             alert.addAction(UIAlertAction(title: "以后再说", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
         }
+        trackIAPActions("try", productId: productIdentifier)
         //self.performSegue(withIdentifier: "ReadBookSegue", sender: nil)
     }
     
@@ -1037,6 +1067,12 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     // MARK: keep a reference of all the Download Tasks
     var downloadTasks = [String: URLSessionDownloadTask]()
+    
+    private func trackIAPActions(_ actionType: String, productId: String) {
+        let jsCode = "ga('send','event','In-App Purchase', '\(actionType)', '\(productId)');"
+        self.webView.evaluateJavaScript(jsCode) { (result, error) in
+        }
+    }
     
     private func downloadProductFromWeb(_ urlString: String) {
         let productId = urlString.replacingOccurrences(of: "downloadproduct://", with: "")
@@ -1063,12 +1099,13 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                     jsCode = "iapActions('\(productID)', 'pendingdownload')"
                 }
             } else {
-                // TODO: - Update interface to change the button action into read
+                // MARK: - Update interface to change the button action into read
                 print ("The file already exists. No need to download. Update Interface")
                 jsCode = "iapActions('\(productID)', 'success')"
             }
             self.webView.evaluateJavaScript(jsCode) { (result, error) in
             }
+            trackIAPActions("download", productId: productID)
         }
     }
     
@@ -1092,12 +1129,13 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                     jsCode = "iapActions('\(productID)', 'fail')"
                 }
             } else {
-                // TODO: - Update interface to change the button action into read
+                // MARK: - Update interface to change the button action into read
                 print ("The file already exists. No need to download. Update Interface")
                 jsCode = "iapActions('\(productID)', 'fail')"
             }
             self.webView.evaluateJavaScript(jsCode) { (result, error) in
             }
+            trackIAPActions("download excerpt", productId: productID)
         }
     }
     
@@ -1108,6 +1146,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         let jsCode = "iapActions('\(productId)', 'pendingdownload')"
         self.webView.evaluateJavaScript(jsCode) { (result, error) in
         }
+        trackIAPActions("cancel download", productId: productId)
     }
     
     private func pauseDownload(_ urlString: String) {
@@ -1117,6 +1156,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         let jsCode = "updateDownloadPauseButton('\(productId)', 'pause')"
         self.webView.evaluateJavaScript(jsCode) { (result, error) in
         }
+        trackIAPActions("pause download", productId: productId)
     }
     
     private func resumeDownload(_ urlString: String) {
@@ -1126,6 +1166,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         let jsCode = "updateDownloadPauseButton('\(productId)', 'resume')"
         self.webView.evaluateJavaScript(jsCode) { (result, error) in
         }
+        trackIAPActions("resume download", productId: productId)
     }
     
     private func removeDownload(_ urlString: String) {
@@ -1142,12 +1183,14 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         do {
             try fileManager.removeItem(atPath: filePath)
             print ("removed the file at \(filePath)")
+            savePurchase(productId)
             let jsCode = "iapActions('\(productId)', 'pendingdownload')"
             self.webView.evaluateJavaScript(jsCode) { (result, error) in
             }
         } catch let error as NSError {
             print(error.debugDescription)
         }
+        trackIAPActions("remove download", productId: productId)
     }
     
     
@@ -1173,10 +1216,23 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             } else {
                 do {
                     try fileManager.moveItem(at: location, to: destinationURLForFile)
-                    // show file
-                    // showFileWithPath(path: destinationURLForFile.path)
                     print ("file moved. you can open it")
                     
+                    // MARK: - Remove excerpt file when user downloaded the full file
+                    if !productId.hasPrefix("try") {
+                        let exerptPath = "try." + destinationURLForFile.path
+                        if fileManager.fileExists(atPath: exerptPath){
+                            try FileManager.default.removeItem(atPath: exerptPath)
+                            print ("removed the excerpt file")
+                        }
+                    }
+                    
+                    // MARK: - Save the purchase information in the user default
+                    if !productId.hasPrefix("try") {
+                        savePurchase(productId)
+                    }
+                    
+                    trackIAPActions("download success", productId: productId)
                     if productId.hasPrefix("try") {
                         // MARK: - This is a trial file, open it immediately
                         print ("open the try book")
@@ -1192,12 +1248,14 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                         if let fileLocation = checkFilePath(fileUrl: productId) {
                             DispatchQueue.main.async {
                                 FolioReader.presentReader(parentViewController: self, withEpubPath: fileLocation, andConfig: config)
+                                self.trackIAPActions("download excerpt success", productId: productId)
                             }
                         }
                         return
                     }
                 }catch{
                     print("An error occurred while moving file to destination url")
+                    trackIAPActions("save fail", productId: productId)
                 }
             }
             let jsCode = "iapActions('\(productId)', 'success');"
@@ -1224,6 +1282,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 downloadProgresses[productId] = totalMBsWritten
                 let totalMBsExpectedToWrite = String(format: "%.1f", Float(totalBytesExpectedToWrite)/1000000)
                 let jsCode = "updateDownloadProgress('\(productId)', '\(percentageNumber)%', '\(totalMBsWritten)M / \(totalMBsExpectedToWrite)M')"
+                //print (jsCode)
                 self.webView.evaluateJavaScript(jsCode) { (result, error) in
                 }
                 //print (totalMBsWritten)
@@ -1243,10 +1302,12 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 let jsCode = "iapActions('\(productId)', 'pendingdownload');"
                 self.webView.evaluateJavaScript(jsCode) { (result, error) in
                 }
+                trackIAPActions("download fail", productId: productId)
             }
         }else{
             // MARK: - the interface should have been updated through the didFinishDownloadingTo func
             print("The task finished transferring data successfully")
+            
         }
     }
     
@@ -1255,43 +1316,64 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     private func productToJSCode (_ products: [SKProduct], jsVariableName: String, jsVariableType: String){
         var productsString = ""
-        for product in products {
-            print("product from oliver: ")
-            print("title: \(product.localizedTitle); id: \(product.productIdentifier); ")
-            let priceFormatter: NumberFormatter = {
-                let formatter = NumberFormatter()
-                formatter.formatterBehavior = .behavior10_4
-                formatter.numberStyle = .currency
-                formatter.locale = product.priceLocale
-                return formatter
-            }()
-            let productPrice = priceFormatter.string(from: product.price) ?? ""
-            var productImage = ""
-            var productTeaser = ""
-            var productGroup = ""
-            var productGroupTitle = ""
-            let isPurchased = FTCProducts.store.isProductPurchased(product.productIdentifier)
-            for oneProduct in FTCProducts.allProducts {
-                if let bookId = oneProduct["id"] {
-                    if bookId == product.productIdentifier {
-                        productImage = oneProduct["image"] ?? ""
-                        productTeaser = oneProduct["teaser"] ?? ""
-                        productGroup = oneProduct["group"] ?? ""
-                        productGroupTitle = oneProduct["groupTitle"] ?? ""
+        // MARK: - check for each product in FTCProducts.allProducts rather than products
+        for oneProduct in FTCProducts.allProducts {
+            if let id = oneProduct["id"] {
+                // MARK: - Get product information from bundle
+                var productTitle = oneProduct["title"] ?? ""
+                let productImage = oneProduct["image"] ?? ""
+                let productTeaser = oneProduct["teaser"] ?? ""
+                let productGroup = oneProduct["group"] ?? ""
+                let productGroupTitle = oneProduct["groupTitle"] ?? ""
+                let isDownloaded = { () -> Bool in
+                    if checkFilePath(fileUrl: id) == nil {
+                        return false
+                    } else {
+                        return true
+                    }
+                }()
+                // MARK: - Get product information from StoreKit
+                var isPurchased = FTCProducts.store.isProductPurchased(id)
+                
+                // MARK: - if isPurchaed is false, check the user default
+                // FIXME: - This might be a potential loophole later if we are selling more expensive products
+                if isPurchased == false {
+                    if let myPurchases = UserDefaults.standard.array(forKey: myPurchasesKey) as? [String] {
+                        if myPurchases.contains(id) {
+                            isPurchased = true
+                        }
+                    }
+                }
+                var productPrice: String = ""
+                var productDescription: String = ""
+                for product in products {
+                    if id == product.productIdentifier {
+                        let priceFormatter: NumberFormatter = {
+                            let formatter = NumberFormatter()
+                            formatter.formatterBehavior = .behavior10_4
+                            formatter.numberStyle = .currency
+                            formatter.locale = product.priceLocale
+                            return formatter
+                        }()
+                        productPrice = priceFormatter.string(from: product.price) ?? ""
+                        productDescription = product.localizedDescription
+
+                        productTitle = product.localizedTitle
                         break
                     }
                 }
-            }
-            let isDownloaded = { () -> Bool in
-                if checkFilePath(fileUrl: product.productIdentifier) == nil {
-                    return false
-                } else {
-                    return true
+                
+                // MARK: if product description cannot be retrieved, use teaser
+                if productDescription == "" {
+                    productDescription = productTeaser
                 }
-            }()
-            let productString = "{title: '\(product.localizedTitle)',description: '\(product.localizedDescription)',price: '\(productPrice)',id: '\(product.productIdentifier)',image: '\(productImage)', teaser: '\(productTeaser)', isPurchased: \(isPurchased), isDownloaded: \(isDownloaded), group: '\(productGroup)', groupTitle: '\(productGroupTitle)'}"
-            productsString += ",\(productString)"
+                productDescription = "<p>\(productDescription.replacingOccurrences(of: "\n", with: "</p><p>", options: .regularExpression))</p>"
+                
+                let productString = "{title: '\(productTitle)',description: '\(productDescription)',price: '\(productPrice)',id: '\(id)',image: '\(productImage)', teaser: '\(productTeaser)', isPurchased: \(isPurchased), isDownloaded: \(isDownloaded), group: '\(productGroup)', groupTitle: '\(productGroupTitle)'}"
+                productsString += ",\(productString)"
+            }
         }
+        
         switch jsVariableType{
         case "function":
             productsString = "\(jsVariableName)([\(productsString)]);"
@@ -1314,6 +1396,18 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
+    private func savePurchase(_ productId: String) {
+        // MARK: - Save the purchase information in the user default
+        if var myPurchases = UserDefaults.standard.array(forKey: myPurchasesKey) as? [String] {
+            if !myPurchases.contains(productId) {
+                myPurchases.append(productId)
+                UserDefaults.standard.set(myPurchases, forKey: myPurchasesKey)
+            }
+        } else {
+            UserDefaults.standard.set([productId], forKey: myPurchasesKey)
+        }
+    }
+    
     // MARK: This should be public
     public func handlePurchaseNotification(_ notification: Notification) {
         var jsCode = ""
@@ -1324,7 +1418,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 jsCode = "iapActions('\(productID)', 'downloading')"
                 self.webView.evaluateJavaScript(jsCode) { (result, error) in
                 }
+                savePurchase(productID)
                 downloadProduct(productID)
+                trackIAPActions("buy or restore success", productId: productID)
             }
         } else if let errorObject = notification.object as? [String : String?] {
             let alert = UIAlertController(title: "交易失败，您的钱还在口袋里", message: errorObject["error"] ?? "", preferredStyle: UIAlertControllerStyle.alert)
@@ -1335,6 +1431,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 print (jsCode)
                 self.webView.evaluateJavaScript(jsCode) { (result, error) in
                 }
+                trackIAPActions("buy or restore error", productId: productId ?? "")
             }
         } else if notification.object == nil {
             // MARK: When the transaction fail without any error message (NSError)
@@ -1344,6 +1441,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             jsCode = "iapActions('', 'fail')"
             self.webView.evaluateJavaScript(jsCode) { (result, error) in
             }
+            trackIAPActions("buy or restore error", productId: "")
         }
     }
     
