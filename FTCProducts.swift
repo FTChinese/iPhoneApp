@@ -24,16 +24,50 @@ import Foundation
 
 public struct FTCProducts {
     // MARK: Store all products locally to avoid networking problems
-    private static let subscriptionsData: [Dictionary<String, String>] = [
-        /*
+    private static let subscriptionsData = [
         [
-            "id":"com.ft.ftchinese.mobile.subscription.intelligence2",
+            "id":"com.ft.ftchinese.mobile.subscription.intelligence3",
             "title":"FT研究院",
             "teaser":"中国商业和消费数据",
             "image":"http://i.ftimg.net/picture/3/000068413_piclink.jpg"
         ]
- */
     ]
+    private static let membershipData = [
+        [
+            "id":"com.ft.ftchinese.mobile.subscription.premium",
+            "title":"高端会员",
+            "teaser":"注册成为高端会员",
+            "image":"http://i.ftimg.net/picture/3/000068863_piclink.jpg",
+            "benefits": [
+                "All the benefits of a Standard FT Subscription, plus exclusive news and analysis",
+                "Mobile and tablet access via our award-winning apps",
+                "FT Confidential Research - in-depth China and Southeast Asia analysis"
+            ]
+        ],
+        [
+            "id":"com.ft.ftchinese.mobile.subscription.standard",
+            "title":"普通会员",
+            "teaser":"注册成为普通会员",
+            "image":"http://i.ftimg.net/picture/3/000068863_piclink.jpg",
+            "benefits": [
+                "Unlimited access to all Standard-access articles and blogs",
+                "Mobile and tablet access via our award-winning apps",
+                "Personalised email briefings and alerts"
+            ]
+        ],
+        [
+            "id":"com.ft.ftchinese.mobile.subscription.trial",
+            "title":"试读会员",
+            "teaser":"注册成为试读会员",
+            "image":"http://i.ftimg.net/picture/3/000068863_piclink.jpg",
+            "benefits": [
+                "benefit 1",
+                "benefit 2",
+                "benefit 3"
+            ]
+        ]
+    ]
+    
     private static let eBooksData = [
         [
             "id":"com.ft.ftchinese.mobile.book.OutlookoftheFutureof2017",
@@ -63,12 +97,13 @@ public struct FTCProducts {
     // MARK: - add product group names and titles
     public static let subscriptions = addProductGroup(subscriptionsData, group: "subscription", groupTitle: "订阅")
     public static let eBooks = addProductGroup(eBooksData, group: "ebook", groupTitle: "FT电子书")
-    public static let allProducts = subscriptions + eBooks
+    public static let memberships = addProductGroup(membershipData, group: "membership", groupTitle: "会员")
+    public static let allProducts = memberships + subscriptions + eBooks
     fileprivate static let productIdentifiers: Set<ProductIdentifier> = getProductIds(products: allProducts)
     public static let store = IAPHelper(productIds: productIdentifiers)
     
-    fileprivate static func addProductGroup(_ products:  [Dictionary<String, String>], group: String, groupTitle: String) -> [Dictionary<String, String>]{
-        var newProducts:  [Dictionary<String, String>] = []
+    fileprivate static func addProductGroup(_ products:  [Dictionary<String, Any>], group: String, groupTitle: String) -> [Dictionary<String, Any>]{
+        var newProducts:  [Dictionary<String, Any>] = []
         for product in products {
             var newProduct = product
             newProduct["group"] = group
@@ -78,10 +113,10 @@ public struct FTCProducts {
         return newProducts
     }
     
-    fileprivate static func getProductIds(products: [Dictionary<String, String>]) -> Set<ProductIdentifier> {
+    fileprivate static func getProductIds(products: [Dictionary<String, Any>]) -> Set<ProductIdentifier> {
         var productIds: Set<ProductIdentifier> = []
         for product in products {
-            if let productId = product["id"] {
+            if let productId = product["id"] as? String {
                 productIds.insert(productId)
             }
         }

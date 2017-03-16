@@ -19,14 +19,14 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     // MARK: - Use WKWebView as our app supports iOS 8 and above
     lazy var webView = WKWebView()
-    private weak var timer: Timer?
+    private lazy var timer: Timer? = nil
     var pageStatus: WebViewStatus?
     private var startUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
     private let iPadStartUrl = "http://app005.ftmailbox.com/ipad-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
     // MARK: - If the app use a native launch ad, suppress the pop up one
     private let useNativeLaunchAd = "useNativeLaunchAd"
-    private var maxAdTimeAfterLaunch = 6.0
-    private var maxAdTimeAfterWebRequest = 3.0
+    private var maxAdTimeAfterLaunch = 5.0
+    private var maxAdTimeAfterWebRequest = 2.5
     private let fadeOutDuration = 0.5
     private let adSchedule = AdSchedule()
     private lazy var player: AVPlayer? = {return nil} ()
@@ -568,16 +568,18 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     private func displayWebviewAfterSeconds(_ seconds: TimeInterval) {
-        timer?.invalidate()
-        let nextTimer = Timer.scheduledTimer(
-            timeInterval: seconds,
-            target: self,
-            selector: #selector(ViewController.displayWebView),
-            userInfo: nil,
-            repeats: false
-        )
-        nextTimer.tolerance = 1
-        timer = nextTimer
+        if timer == nil {
+            //timer?.invalidate()
+            let nextTimer = Timer.scheduledTimer(
+                timeInterval: seconds,
+                target: self,
+                selector: #selector(ViewController.displayWebView),
+                userInfo: nil,
+                repeats: false
+            )
+            nextTimer.tolerance = 1
+            timer = nextTimer
+        }
     }
     
     
@@ -650,7 +652,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         if let url = navigationAction.request.url {
             let urlString = url.absoluteString
             if (urlString != startUrl && urlString != "about:blank") {
-                displayWebviewAfterSeconds(maxAdTimeAfterLaunch)
+                displayWebviewAfterSeconds(maxAdTimeAfterWebRequest)
             }
             if url.scheme == "ftcweixin" {
                 shareToWeChat(urlString)
@@ -967,12 +969,14 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         return product
     }
     
-    private func findProductInfoById(_ productID: String) -> [String: String]? {
-        var product: [String: String]?
+    private func findProductInfoById(_ productID: String) -> [String: Any]? {
+        var product: [String: Any]?
         for p in FTCProducts.allProducts {
-            if p["id"] == productID {
-                product = p
-                break
+            if let id = p["id"] as? String {
+                if id == productID {
+                    product = p
+                    break
+                }
             }
         }
         return product
@@ -1059,7 +1063,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     private func downloadProduct(_ productID: String) {
         print ("Download this product by id: \(productID), you can continue to download and/or display the information to user")
-        if let fileDownloadUrl = findProductInfoById(productID)?["download"] {
+        if let fileDownloadUrl = findProductInfoById(productID)?["download"] as? String {
             print ("download this file: \(fileDownloadUrl)")
             var jsCode = ""
             if checkFilePath(fileUrl: productID) == nil {
@@ -1088,7 +1092,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     private func downloadProductForTrying(_ productID: String) {
         print ("Download this product for trying by id: \(productID), you can continue to download and/or display the information to user")
-        if let fileDownloadUrl = findProductInfoById(productID)?["downloadfortry"] {
+        if let fileDownloadUrl = findProductInfoById(productID)?["downloadfortry"] as? String {
             print ("download this file: \(fileDownloadUrl)")
             var jsCode = ""
             let productIdForTrying = "try." + productID
@@ -1280,13 +1284,15 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         var productsString = ""
         // MARK: - Check for each product in FTCProducts.allProducts rather than products
         for oneProduct in FTCProducts.allProducts {
-            if let id = oneProduct["id"] {
+            if let id = oneProduct["id"] as? String {
                 // MARK: - Get product information from bundle
-                var productTitle = oneProduct["title"] ?? ""
-                let productImage = oneProduct["image"] ?? ""
-                let productTeaser = oneProduct["teaser"] ?? ""
-                let productGroup = oneProduct["group"] ?? ""
-                let productGroupTitle = oneProduct["groupTitle"] ?? ""
+                var productTitle = oneProduct["title"] as? String ?? ""
+                
+                // print ("product title is now: \(productTitle)")
+                let productImage = oneProduct["image"] as? String ?? ""
+                let productTeaser = oneProduct["teaser"] as? String ?? ""
+                let productGroup = oneProduct["group"] as? String ?? ""
+                let productGroupTitle = oneProduct["groupTitle"] as? String ?? ""
                 let isDownloaded = { () -> Bool in
                     if checkFilePath(fileUrl: id) == nil {
                         return false
@@ -1296,6 +1302,19 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 }()
                 // MARK: - Get product information from StoreKit
                 var isPurchased = FTCProducts.store.isProductPurchased(id)
+                
+                // MARK: - Membership Benefits
+                var benefitsString = ""
+                if let benefits = oneProduct["benefits"] as? [String] {
+                    for benefit in benefits {
+                        benefitsString += ",'\(benefit)'"
+                    }
+                }
+                if benefitsString != "" {
+                    benefitsString = ",benefits:[\(benefitsString)]".replacingOccurrences(of: "[,", with: "[")
+                }
+                
+                
                 
                 // MARK: - if isPurchaed is false, check the user default
                 // FIXME: - This might be a potential loophole later if we are selling more expensive products
@@ -1318,7 +1337,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                         productPrice = priceFormatter.string(from: product.price) ?? ""
                         productDescription = product.localizedDescription
                         
-                        productTitle = product.localizedTitle
+                        if product.localizedTitle != "" {
+                            productTitle = product.localizedTitle
+                        }
+                        //print ("product title changed to: \(productTitle)")
                         break
                     }
                 }
@@ -1334,7 +1356,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 
                 productDescription = "<p>\(productDescription.replacingOccurrences(of: "\n", with: "</p><p>", options: .regularExpression))</p>"
                 
-                let productString = "{title: '\(productTitle)',description: '\(productDescription)',price: '\(productPrice)',id: '\(id)',image: '\(productImage)', teaser: '\(productTeaser)', isPurchased: \(isPurchased), isDownloaded: \(isDownloaded), group: '\(productGroup)', groupTitle: '\(productGroupTitle)'}"
+                let productString = "{title: '\(productTitle)',description: '\(productDescription)',price: '\(productPrice)',id: '\(id)',image: '\(productImage)', teaser: '\(productTeaser)', isPurchased: \(isPurchased), isDownloaded: \(isDownloaded), group: '\(productGroup)', groupTitle: '\(productGroupTitle)'\(benefitsString)}"
                 productsString += ",\(productString)"
             }
         }
