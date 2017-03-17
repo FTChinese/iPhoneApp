@@ -271,8 +271,8 @@
 			isa = PBXGroup;
 			children = (
 				50256CA01A4B9D0B005950B9 /* ViewController.swift */,
-				50256CC21A4BFAE7005950B9 /* Globals.swift */,
 				50256C9E1A4B9D0B005950B9 /* AppDelegate.swift */,
+				50256CC21A4BFAE7005950B9 /* Globals.swift */,
 				503435691DBDEC8200B2F686 /* AdSchedule.swift */,
 				50256CC41A4C1916005950B9 /* WKWebPageController.swift */,
 				50119E7C1DC873C6003667DE /* WeChatShare.swift */,
@@ -449,6 +449,9 @@
 						DevelopmentTeam = CAEDT8EKGV;
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
 							com.apple.InAppPurchase = {
 								enabled = 1;
 							};
@@ -465,6 +468,11 @@
 					};
 					507C7E4B1DB0BCE800A8EF50 = {
 						DevelopmentTeam = CAEDT8EKGV;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};

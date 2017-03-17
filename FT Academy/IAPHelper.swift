@@ -20,8 +20,10 @@
  * THE SOFTWARE.
  */
 
-import StoreKit
+// MARK: - IAP Tutorial 1: Basic Insfrastructure
 
+import StoreKit
+// MARK: - Product Identifier is used to find and retrieve products and download processes
 public typealias ProductIdentifier = String
 public typealias ProductsRequestCompletionHandler = (_ success: Bool, _ products: [SKProduct]?) -> ()
 
@@ -36,10 +38,11 @@ open class IAPHelper : NSObject  {
     public init(productIds: Set<ProductIdentifier>) {
         productIdentifiers = productIds
         for productIdentifier in productIds {
+            // MARK: - Saving the purchase information when you init the app again. If the user is not online or logged into apple account, he/she will not be able to use or see the products he already bought last time. So the user defaults need to be updated in the view controller event listeners when a purchase or download is successful. This is useful if the user switch to another device.
             // TODO: - User defaults may not be the best place to store information about purchased products in a real application. An owner of a jailbroken device could easily access your app’s UserDefaults plist, and modify it to ‘unlock’ purchases. If this sort of thing concerns you, then it’s worth checking out Apple’s documentation on Validating App Store Receipts – this allows you to verify that a user has made a particular purchase.
             let purchased = UserDefaults.standard.bool(forKey: productIdentifier)
             print ("\(productIdentifier) is set to \(UserDefaults.standard.bool(forKey: productIdentifier))")
-            let downloaded = { () -> Bool in 
+            let downloaded = { () -> Bool in
                 if checkFilePath(fileUrl: productIdentifier) == nil {
                     return false
                 } else {
@@ -69,6 +72,7 @@ open class IAPHelper : NSObject  {
 // MARK: - StoreKit API
 
 extension IAPHelper {
+    // MARK: Request products from app store by passing product identifiers. Note that Apple doesn't allow you to request products if you don't already know the product ids.
     public func requestProducts(completionHandler: @escaping ProductsRequestCompletionHandler) {
         productsRequest?.cancel()
         productsRequestCompletionHandler = completionHandler
@@ -91,6 +95,7 @@ extension IAPHelper {
         return SKPaymentQueue.canMakePayments()
     }
     
+    // MARK: - Only non-consumable and auto-renewal subscriptions can be restored. For consumablables and non-renewal subscriptions, the developer needs to manage restoration by themselves.
     public func restorePurchases() {
         print ("restore purchase transaction")
         SKPaymentQueue.default().restoreCompletedTransactions()
@@ -98,7 +103,7 @@ extension IAPHelper {
 }
 
 
-// MARK: - SKProductsRequestDelegate
+// MARK: - SKProductsRequestDelegate: Handle requests' responses
 extension IAPHelper: SKProductsRequestDelegate {
     public func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         print("Loaded list of products...")

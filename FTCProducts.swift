@@ -20,6 +20,8 @@
  * THE SOFTWARE.
  */
 
+// MARK: - IAP Tutorial 2: FTC's IAP Products Data
+
 import Foundation
 
 public struct FTCProducts {
@@ -94,10 +96,12 @@ public struct FTCProducts {
             "downloadfortry": "https://creatives.ftimg.net/commodity/Yu_FT_GongJinWuCan_II_FTChinese_Short.epub"
         ]
     ]
-    // MARK: - add product group names and titles
+    // MARK: - Add product group names and titles
     public static let subscriptions = addProductGroup(subscriptionsData, group: "subscription", groupTitle: "订阅")
     public static let eBooks = addProductGroup(eBooksData, group: "ebook", groupTitle: "FT电子书")
     public static let memberships = addProductGroup(membershipData, group: "membership", groupTitle: "会员")
+    
+    // MARK: - Combine all types of products into one and request for more information, such as price, from app store
     public static let allProducts = memberships + subscriptions + eBooks
     fileprivate static let productIdentifiers: Set<ProductIdentifier> = getProductIds(products: allProducts)
     public static let store = IAPHelper(productIds: productIdentifiers)

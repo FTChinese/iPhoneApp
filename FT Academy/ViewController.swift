@@ -623,6 +623,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             reportImpressionToWeb(impressions: adSchedule.impression)
             // MARK: show social login buttons
             showSocialLoginButtons()
+            enableTextToSpeech()
             player = nil
         }
     }
@@ -656,6 +657,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             }
             if url.scheme == "ftcweixin" {
                 shareToWeChat(urlString)
+                decisionHandler(.cancel)
+            } else if url.scheme == "speak" {
+                speak(urlString)
                 decisionHandler(.cancel)
             } else if url.scheme == "buy" {
                 buyProduct(urlString: urlString)
@@ -892,6 +896,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     
     
+    // MARK: - IAP Tutorial 3: View Controller
     
     // MARK: - In-app purchase start
     
@@ -899,8 +904,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     // MARK: - Product information from app store, need to be online to access
     private var products = [SKProduct]()
+    
+    // MARK: - The key name for purchase information in user defaults
     private let myPurchasesKey = "My Purchases"
     
+    // MARK: - load IAP products and update UI
     private func loadProducts() {
         products = []
         FTCProducts.store.requestProducts{success, products in
@@ -982,6 +990,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         return product
     }
     
+    // MARK: - use Folio reader to read eBook
     private func readBook(urlString: String) {
         print ("read book: \(urlString)")
         let productIdentifier = urlString.replacingOccurrences(of: "readbook://", with: "")
@@ -1010,6 +1019,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         trackIAPActions("read", productId: productIdentifier)
     }
     
+    // MARK: - Read the excerpt of eBook
     private func tryBook(urlString: String) {
         print ("try book: \(urlString)")
         let productIdentifier = urlString.replacingOccurrences(of: "try://", with: "")
@@ -1038,6 +1048,12 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         trackIAPActions("try", productId: productIdentifier)
     }
     
+    private func trackIAPActions(_ actionType: String, productId: String) {
+        let jsCode = "ga('send','event','In-App Purchase', '\(actionType)', '\(productId)');"
+        self.webView.evaluateJavaScript(jsCode) { (result, error) in
+        }
+    }
+    
     // MARK: - The Download Operation Queue
     lazy var downloadQueue:OperationQueue = {
         var queue = OperationQueue()
@@ -1048,12 +1064,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     // MARK: keep a reference of all the Download Tasks
     var downloadTasks = [String: URLSessionDownloadTask]()
-    
-    private func trackIAPActions(_ actionType: String, productId: String) {
-        let jsCode = "ga('send','event','In-App Purchase', '\(actionType)', '\(productId)');"
-        self.webView.evaluateJavaScript(jsCode) { (result, error) in
-        }
-    }
     
     private func downloadProductFromWeb(_ urlString: String) {
         let productId = urlString.replacingOccurrences(of: "downloadproduct://", with: "")
@@ -1265,7 +1275,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
-    //MARK: - Deal with errors in download process
+    // MARK: - Deal with errors in download process
     func urlSession(_ session: URLSession,
                     task: URLSessionTask,
                     didCompleteWithError error: Error?){
@@ -1280,7 +1290,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
-    private func productToJSCode (_ products: [SKProduct], jsVariableName: String, jsVariableType: String){
+    // MARK: - Update UI by injecting javascript based on products data
+    private func productToJSCode(_ products: [SKProduct], jsVariableName: String, jsVariableType: String){
         var productsString = ""
         // MARK: - Check for each product in FTCProducts.allProducts rather than products
         for oneProduct in FTCProducts.allProducts {
@@ -1450,6 +1461,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     
     // MARK: Read the Text
+    // MARK: Further Reading: http://www.appcoda.com/text-to-speech-ios-tutorial/
     func textToSpeech(_ text: String, language: String) {
         let mySpeechSynthesizer:AVSpeechSynthesizer = AVSpeechSynthesizer()
         let mySpeechUtterance:AVSpeechUtterance = AVSpeechUtterance(string: text)
@@ -1457,6 +1469,25 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         mySpeechUtterance.voice = AVSpeechSynthesisVoice(language: language)
         //mySpeechUtterance.rate = 1.2
         mySpeechSynthesizer.speak(mySpeechUtterance)
+    }
+    
+    func speak (_ urlString: String) {
+        let text = urlString.replacingOccurrences(of: "speak://", with: "")
+            .replacingOccurrences(of: "?isad=1", with: "")
+            .replacingOccurrences(of: "%0A", with: "")
+            .replacingOccurrences(of: "%20", with: "")
+        print(text)
+        textToSpeech(text, language: "en-GB")
+    }
+    
+    func enableTextToSpeech() {
+        let jsCode = "window.enableTextToSpeech = true;"
+        self.webView.evaluateJavaScript(jsCode) { (result, error) in
+        }
+        // MARK: - Continue audio even when device is set to mute
+        try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: .mixWithOthers)
+        // MARK: - Continue audio when device is in background
+        try? AVAudioSession.sharedInstance().setActive(true)
     }
     
     // TODO: There should be a stop function for textToSpeech
