@@ -170,7 +170,6 @@ extension IAPHelper: SKPaymentTransactionObserver {
     }
     
     private func fail(transaction: SKPaymentTransaction) {
-        print("fail...")
         let transactionError = transaction.error as? NSError
         let productId = transaction.payment.productIdentifier
         print("Transaction Error: \(transaction.error?.localizedDescription)")
@@ -188,11 +187,42 @@ extension IAPHelper: SKPaymentTransactionObserver {
     }
     
     private func deliverPurchaseFailNotification(_ transactionError: NSError?, productId: String) {
+        // MARK: - Handle User Cancel
+        var errorMessage: String? = nil
+        if let error = transactionError {
+            if error.domain == SKErrorDomain {
+                // Mark: - handle user cancel
+                switch (error.code) {
+                case SKError.paymentCancelled.rawValue:
+                    print("user cancelled the request")
+                    errorMessage = "usercancel"
+                    /*
+                     case SKError.unknown.rawValue:
+                     print("Unknown error")
+                     
+                     case SKError.clientInvalid.rawValue:
+                     print("client is not allowed to issue the request")
+                     
+                     
+                     
+                     case SKError.paymentInvalid.rawValue:
+                     print("purchase identifier was invalid")
+                     
+                     case SKError.paymentNotAllowed.rawValue:
+                     print("this device is not allowed to make the payment")
+                     */
+                default:
+                    errorMessage = transactionError?.localizedDescription
+                    break;
+                }
+            }
+        }
+        
         let transactionErrorObject = [
             "id": productId,
-            "error": transactionError?.localizedDescription
+            "error": errorMessage
         ]
-        print(transactionErrorObject)
+        //print(transactionErrorObject)
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: IAPHelper.IAPHelperPurchaseNotification), object: transactionErrorObject)
     }
 }

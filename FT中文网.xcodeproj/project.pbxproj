@@ -71,6 +71,7 @@
 		50982C7F1BC7A7C800907575 /* IJReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50982C7D1BC7A7C800907575 /* IJReachability.swift */; };
 		50982C801BC7A7C800907575 /* IJReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50982C7D1BC7A7C800907575 /* IJReachability.swift */; };
 		50A677271A4EBFBC002B347F /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 50A677261A4EBFBC002B347F /* index.html */; };
+		50B49B941E7D15BB00E53C0C /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50B49B931E7D15BB00E53C0C /* MediaPlayer.framework */; };
 		50DF3E9F1D484B3C0054DDD2 /* ShareImageActivityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DF3E9E1D484B3C0054DDD2 /* ShareImageActivityProvider.swift */; };
 		50E577D71DB754880016A73F /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E577D61DB754880016A73F /* close.png */; };
 		50E577D81DB754880016A73F /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E577D61DB754880016A73F /* close.png */; };
@@ -138,6 +139,7 @@
 		50873CC91A503A870027955A /* FT Academy-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FT Academy-Bridging-Header.h"; sourceTree = "<group>"; };
 		50982C7D1BC7A7C800907575 /* IJReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IJReachability.swift; sourceTree = "<group>"; };
 		50A677261A4EBFBC002B347F /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = index.html; path = supporting/index.html; sourceTree = "<group>"; };
+		50B49B931E7D15BB00E53C0C /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		50B5D05D1DAF1E450052C954 /* FT中文网.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "FT中文网.entitlements"; sourceTree = SOURCE_ROOT; };
 		50C34C361BC664AE00C8A8CB /* FT中文网HD.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "FT中文网HD.plist"; path = "/Users/zhangoliver/sandbox/FTCiPhone/FT中文网HD.plist"; sourceTree = "<absolute>"; };
 		50C34C381BC664B300C8A8CB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = "Resources-iPad/FT Academy/Base.lproj/LaunchScreen.xib"; sourceTree = "<group>"; };
@@ -164,6 +166,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50B49B941E7D15BB00E53C0C /* MediaPlayer.framework in Frameworks */,
 				5039A4B71C61FB170008F2AD /* AdSupport.framework in Frameworks */,
 				50E5E6F21BD8A21B00F4A33E /* CoreTelephony.framework in Frameworks */,
 				50FC07EC1A53A589006EE23F /* libsqlite3.dylib in Frameworks */,
@@ -223,6 +226,7 @@
 		501F90161E3C72EB009EA5DD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				50B49B931E7D15BB00E53C0C /* MediaPlayer.framework */,
 				501F90171E3C72EB009EA5DD /* StoreKit.framework */,
 				CF896B870CE411A5E6A3044D /* Pods_FT___.framework */,
 				04063C10DFA84D4B9E2DB85F /* Pods_FT____iPad.framework */,

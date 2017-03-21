@@ -13,6 +13,7 @@ import AVKit
 import AVFoundation
 import StoreKit
 import FolioReaderKit
+import MediaPlayer
 
 
 class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, SFSafariViewControllerDelegate, URLSessionDownloadDelegate {
@@ -39,6 +40,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     deinit {
         //print("main view is being deinitialized")
+        //NotificationCenter.default.removeObserver(self)
+        print ("notification removed")
     }
     
     // MARK: - start to load the webview as soon as possible and cover the whole view with an overlayview of either advertisement or launchscreen
@@ -96,6 +99,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.handlePurchaseNotification(_:)),
                                                name: NSNotification.Name(rawValue: IAPHelper.IAPHelperPurchaseNotification),
                                                object: nil)
+        
+        // MARK: - 告诉系统接受远程响应事件，并注册成为第一响应者
+        UIApplication.shared.beginReceivingRemoteControlEvents()
+        self.becomeFirstResponder()
     }
     
     // MARK: - viewWillAppear happens when: 1) Starting the app and 2)Going back from a popover segue, like the WKWebPageController
@@ -111,6 +118,12 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(false)
+        UIApplication.shared.endReceivingRemoteControlEvents()
+        self.resignFirstResponder()
+    }
+    
+    override var canBecomeFirstResponder: Bool {
+        return true
     }
     
     override func didReceiveMemoryWarning() {
@@ -1433,15 +1446,21 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 trackIAPActions("buy or restore success", productId: productID)
             }
         } else if let errorObject = notification.object as? [String : String?] {
-            let alert = UIAlertController(title: "交易失败，您的钱还在口袋里", message: errorObject["error"] ?? "", preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "我知道了", style: UIAlertActionStyle.default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
-            if let productId = errorObject["id"] {
+            if let productId = errorObject["id"]{
+                let errorMessage = (errorObject["error"] ?? "") ?? ""
+                let productIdForTracking = productId ?? ""
+                // MARK: - If user cancel buying, no need to pop out alert
+                if errorMessage == "usercancel" {
+                    trackIAPActions("cancel buying", productId: productIdForTracking)
+                } else {
+                    let alert = UIAlertController(title: "交易失败，您的钱还在口袋里", message: errorMessage, preferredStyle: UIAlertControllerStyle.alert)
+                    alert.addAction(UIAlertAction(title: "我知道了", style: UIAlertActionStyle.default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                    trackIAPActions("buy or restore error", productId: "\(productIdForTracking): \(errorMessage)")
+                }
                 jsCode = "iapActions('\(productId ?? "")', 'fail')"
-                print (jsCode)
                 self.webView.evaluateJavaScript(jsCode) { (result, error) in
                 }
-                trackIAPActions("buy or restore error", productId: productId ?? "")
             }
         } else if notification.object == nil {
             // MARK: When the transaction fail without any error message (NSError)
@@ -1463,12 +1482,33 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     // MARK: Read the Text
     // MARK: Further Reading: http://www.appcoda.com/text-to-speech-ios-tutorial/
     func textToSpeech(_ text: String, language: String) {
+        // MARK: - Continue audio even when device is set to mute. Do this only when user is actually playing audio because users might want to read FTC news while listening to music from other apps.
+        try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: .duckOthers)
+        //try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+        
+        // MARK: - Continue audio when device is in background
+        try? AVAudioSession.sharedInstance().setActive(true)
+        
         let mySpeechSynthesizer:AVSpeechSynthesizer = AVSpeechSynthesizer()
         let mySpeechUtterance:AVSpeechUtterance = AVSpeechUtterance(string: text)
         // MARK: Set lguange. Chinese is zh-CN
         mySpeechUtterance.voice = AVSpeechSynthesisVoice(language: language)
-        //mySpeechUtterance.rate = 1.2
+        // mySpeechUtterance.rate = 1.0
         mySpeechSynthesizer.speak(mySpeechUtterance)
+        
+        
+        //大标题 - 小标题  - 歌曲总时长 - 歌曲当前播放时长 - 封面
+        /*
+         if let artwork = UIImage(named: "ftcicon.jpg") {
+         let settings = [MPMediaItemPropertyTitle: "FT中文网",
+         MPMediaItemPropertyArtist: "全球财经精粹",
+         //MPMediaItemPropertyPlaybackDuration: "\(audioPlayer.duration)",
+         //MPNowPlayingInfoPropertyElapsedPlaybackTime: "\(audioPlayer.currentTime)",
+         MPMediaItemPropertyArtwork: MPMediaItemArtwork(image: artwork)] as [String : Any]
+         MPNowPlayingInfoCenter.default().setValue(settings, forKey: "nowPlayingInfo")
+         }
+         */
+        
     }
     
     func speak (_ urlString: String) {
@@ -1484,10 +1524,36 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         let jsCode = "window.enableTextToSpeech = true;"
         self.webView.evaluateJavaScript(jsCode) { (result, error) in
         }
-        // MARK: - Continue audio even when device is set to mute
-        try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: .mixWithOthers)
-        // MARK: - Continue audio when device is in background
-        try? AVAudioSession.sharedInstance().setActive(true)
+        
+        /*
+         textToSpeech("iOS is an operating system with many possibilities, allowing to create from really simple to super-advanced applications. There are times where applications have to be multi-featured, providing elegant solutions that exceed the limits of the common places, and lead to a superb user experience. Also, there are numerous technologies one could exploit, and in this tutorial we are going to focus on one of them, which is no other than the Text to Speech.iOS is an operating system with many possibilities, allowing to create from really simple to super-advanced applications. ", language: "en-GB")
+         
+         UIApplication.shared.beginReceivingRemoteControlEvents();
+         MPRemoteCommandCenter.shared().playCommand.addTarget {event in
+         print("resume music")
+         /*
+         self.audioPlayer.resume()
+         self.updateNowPlayingInfoCenter()
+         
+         */
+         return .success
+         }
+         MPRemoteCommandCenter.shared().pauseCommand.addTarget {event in
+         print ("pause speech")
+         // self.audioPlayer.pause()
+         return .success
+         }
+         MPRemoteCommandCenter.shared().nextTrackCommand.addTarget {event in
+         print ("next audio")
+         // self.next()
+         return .success
+         }
+         MPRemoteCommandCenter.shared().previousTrackCommand.addTarget {event in
+         print ("previous audio")
+         //self.prev()
+         return .success
+         }
+         */
     }
     
     // TODO: There should be a stop function for textToSpeech

@@ -82,6 +82,8 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSContactsUsageDescription</key>
+	<string>允许访问相册来保存或分享FT中文网的图片</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>允许FT中文网获取您的所在城市，免去手动填写的麻烦</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -89,6 +91,8 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
+		<string>fetch</string>
+		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

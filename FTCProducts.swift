@@ -39,7 +39,7 @@ public struct FTCProducts {
             "id":"com.ft.ftchinese.mobile.subscription.premium",
             "title":"高端会员",
             "teaser":"注册成为高端会员",
-            "image":"http://i.ftimg.net/picture/3/000068863_piclink.jpg",
+            "image":"http://i.ftimg.net/picture/6/000068886_piclink.jpg",
             "benefits": [
                 "All the benefits of a Standard FT Subscription, plus exclusive news and analysis",
                 "Mobile and tablet access via our award-winning apps",
@@ -50,7 +50,7 @@ public struct FTCProducts {
             "id":"com.ft.ftchinese.mobile.subscription.standard",
             "title":"普通会员",
             "teaser":"注册成为普通会员",
-            "image":"http://i.ftimg.net/picture/3/000068863_piclink.jpg",
+            "image":"http://i.ftimg.net/picture/6/000068886_piclink.jpg",
             "benefits": [
                 "Unlimited access to all Standard-access articles and blogs",
                 "Mobile and tablet access via our award-winning apps",
@@ -61,7 +61,7 @@ public struct FTCProducts {
             "id":"com.ft.ftchinese.mobile.subscription.trial",
             "title":"试读会员",
             "teaser":"注册成为试读会员",
-            "image":"http://i.ftimg.net/picture/3/000068863_piclink.jpg",
+            "image":"http://i.ftimg.net/picture/6/000068886_piclink.jpg",
             "benefits": [
                 "benefit 1",
                 "benefit 2",
