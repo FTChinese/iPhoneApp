@@ -158,14 +158,14 @@ extension IAPHelper: SKPaymentTransactionObserver {
     
     private func complete(transaction: SKPaymentTransaction) {
         print("complete...")
-        deliverPurchaseNotificationFor(identifier: transaction.payment.productIdentifier)
+        deliverPurchaseNotificationFor("buy success", identifier: transaction.payment.productIdentifier, date: transaction.transactionDate)
         SKPaymentQueue.default().finishTransaction(transaction)
     }
     
     private func restore(transaction: SKPaymentTransaction) {
         guard let productIdentifier = transaction.original?.payment.productIdentifier else { return }
         print("restore... \(productIdentifier)")
-        deliverPurchaseNotificationFor(identifier: productIdentifier)
+        deliverPurchaseNotificationFor("restore success", identifier: productIdentifier, date: transaction.transactionDate)
         SKPaymentQueue.default().finishTransaction(transaction)
     }
     
@@ -177,13 +177,20 @@ extension IAPHelper: SKPaymentTransactionObserver {
         SKPaymentQueue.default().finishTransaction(transaction)
     }
     
-    private func deliverPurchaseNotificationFor(identifier: String?) {
-        guard let identifier = identifier else { return }
-        purchasedProductIdentifiers.insert(identifier)
-        UserDefaults.standard.set(true, forKey: identifier)
-        UserDefaults.standard.synchronize()
-        print ("\(identifier) is set to \(UserDefaults.standard.bool(forKey: identifier))")
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: IAPHelper.IAPHelperPurchaseNotification), object: identifier)
+    private func deliverPurchaseNotificationFor(_ actionType: String, identifier: String?, date: Date?) {
+        if let identifier = identifier {
+            purchasedProductIdentifiers.insert(identifier)
+            UserDefaults.standard.set(true, forKey: identifier)
+            // TODO: - save purchase history here, something like updatePurchaseHistory()
+            UserDefaults.standard.synchronize()
+            print ("\(identifier) is set to \(UserDefaults.standard.bool(forKey: identifier))")
+            let transactionSuccessObject = [
+                "id": identifier,
+                "actionType": actionType,
+                "date": date as Any
+            ] as [String : Any]
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: IAPHelper.IAPHelperPurchaseNotification), object: transactionSuccessObject)
+        }
     }
     
     private func deliverPurchaseFailNotification(_ transactionError: NSError?, productId: String) {

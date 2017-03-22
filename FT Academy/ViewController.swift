@@ -1334,19 +1334,34 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                         benefitsString += ",'\(benefit)'"
                     }
                 }
+                
                 if benefitsString != "" {
                     benefitsString = ",benefits:[\(benefitsString)]".replacingOccurrences(of: "[,", with: "[")
                 }
                 
-                
-                
-                // MARK: - if isPurchaed is false, check the user default
+                // MARK: - If isPurchaed is false, check the user default
                 // FIXME: - This might be a potential loophole later if we are selling more expensive products
                 if isPurchased == false {
                     if getPropertyFromUserDefault(id, property: "purchased") == "Y" {
                         isPurchased = true
                     }
                 }
+                
+                // MARK: - Get expire date from user default
+                var expireDateString = ""
+                var periodString = ""
+                if let priodLenth = oneProduct["period"] as? String {
+                    let expireDateUnix = getExpireDateFromPurchaseHistory(id, periodLength: priodLenth)
+                    if let expireDateUnix = expireDateUnix {
+                        let expireDate = Date(timeIntervalSince1970: expireDateUnix)
+                        let dayTimePeriodFormatter = DateFormatter()
+                        dayTimePeriodFormatter.dateFormat = "YYYY年MM月dd日"
+                        let dateString = dayTimePeriodFormatter.string(from: expireDate)
+                        expireDateString = ",expire:'\(dateString)'"
+                    }
+                    periodString = ",period:'\(priodLenth)'"
+                }
+                
                 var productPrice: String = ""
                 var productDescription: String = ""
                 for product in products {
@@ -1380,7 +1395,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 
                 productDescription = "<p>\(productDescription.replacingOccurrences(of: "\n", with: "</p><p>", options: .regularExpression))</p>"
                 
-                let productString = "{title: '\(productTitle)',description: '\(productDescription)',price: '\(productPrice)',id: '\(id)',image: '\(productImage)', teaser: '\(productTeaser)', isPurchased: \(isPurchased), isDownloaded: \(isDownloaded), group: '\(productGroup)', groupTitle: '\(productGroupTitle)'\(benefitsString)}"
+                let productString = "{title: '\(productTitle)',description: '\(productDescription)',price: '\(productPrice)',id: '\(id)',image: '\(productImage)', teaser: '\(productTeaser)', isPurchased: \(isPurchased), isDownloaded: \(isDownloaded), group: '\(productGroup)', groupTitle: '\(productGroupTitle)'\(benefitsString)\(expireDateString)\(periodString)}"
                 productsString += ",\(productString)"
             }
         }
@@ -1408,20 +1423,22 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         if var myPurchases = UserDefaults.standard.dictionary(forKey: myPurchasesKey) as? [String: Dictionary<String, String>] {
             if myPurchases[productId] != nil {
                 myPurchases[productId]?[property] = value
-                print ("updated my purchase \(productId) \(property): ")
+                //print ("updated my purchase \(productId) \(property): ")
             } else {
                 myPurchases[productId] = [property: value]
-                print ("updated my purchase \(productId) by adding \(property): ")
+                //print ("updated my purchase \(productId) by adding \(property): ")
             }
             UserDefaults.standard.set(myPurchases, forKey: myPurchasesKey)
-            print (myPurchases)
+            //print (myPurchases)
         } else {
             let myPurchases = [productId: [property: value]]
             UserDefaults.standard.set(myPurchases, forKey: myPurchasesKey)
-            print ("created my purchase status: ")
-            print (myPurchases)
+            //print ("created my purchase status: ")
+            //print (myPurchases)
         }
     }
+    
+    
     
     // MARK: - Retrieve a property value from the user default's "my purchase" key
     private func getPropertyFromUserDefault(_ id: String, property: String) -> String? {
@@ -1431,38 +1448,125 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         return nil
     }
     
+    
+    // MARK: - Update purchase history by inserting buying times
+    let purchaseHistoryKey = "purchase history"
+    private func updatePurchaseHistory(_ productId: String, date: Date?) {
+        // MARK: - Use the date from app store's API and fall back to today's date
+        let transactionDate: Date = date ?? Date()
+        let unixDateStamp = round(transactionDate.timeIntervalSince1970)
+        if var purchaseHistory = UserDefaults.standard.dictionary(forKey: purchaseHistoryKey) as? [String: Array<TimeInterval>] {
+            if purchaseHistory[productId] != nil {
+                purchaseHistory[productId]?.append(unixDateStamp)
+                //print ("updated \(productId) by adding \(unixDateStamp): ")
+            } else {
+                purchaseHistory[productId] = [unixDateStamp]
+                //print ("create \(productId) with \(unixDateStamp): ")
+            }
+            UserDefaults.standard.set(purchaseHistory, forKey: purchaseHistoryKey)
+            //print (purchaseHistory)
+        } else {
+            let purchaseHistory = [productId: [unixDateStamp]]
+            UserDefaults.standard.set(purchaseHistory, forKey: purchaseHistoryKey)
+            //print ("created purchase history record")
+            //print (purchaseHistory)
+        }
+    }
+    
+    // MARK: - Get the expire date of non-renewing subscriptions from purchase history
+    private func getExpireDateFromPurchaseHistory(_ productId: String, periodLength: String) -> TimeInterval? {
+        if let purchaseHistories = UserDefaults.standard.dictionary(forKey: purchaseHistoryKey) as? [String: Array<TimeInterval>] {
+            if let purchaseHistory = purchaseHistories[productId] {
+                let onePeriod:Double
+                switch periodLength{
+                case "month":
+                    onePeriod = Double(31 * 24 * 60 * 60)
+                case "week":
+                    onePeriod = Double(7 * 24 * 60 * 60)
+                case "day":
+                    onePeriod = Double(2 * 24 * 60 * 60)
+                default:
+                    onePeriod =  Double(366 * 24 * 60 * 60)
+                }
+                let purchaseHistoryInOrder = purchaseHistory.sorted()
+                var expireTime: Double?
+                for purchaseTime in purchaseHistoryInOrder {
+                    // MARK: - renewal
+                    if let newExpireTime = expireTime {
+                        if newExpireTime > purchaseTime {
+                            expireTime = newExpireTime + onePeriod
+                        } else {
+                            expireTime = purchaseTime + onePeriod
+                        }
+                    } else {
+                        // MARK: - the first purchase
+                        expireTime = purchaseTime + onePeriod
+                    }
+                }
+                let finalExpireTime = expireTime as TimeInterval?
+                return finalExpireTime
+            }
+        }
+        return nil
+    }
+    
     // MARK: This should be public, as it will be called by other classes
     public func handlePurchaseNotification(_ notification: Notification) {
         var jsCode = ""
-        if let productID = notification.object as? String {
+        if let notificationObject = notification.object as? [String: Any?]{
             // MARK: when user buys or restores a product, we should display relevant information
-            for (_, product) in products.enumerated() {
-                guard product.productIdentifier == productID else { continue }
-                jsCode = "iapActions('\(productID)', 'downloading')"
-                self.webView.evaluateJavaScript(jsCode) { (result, error) in
+            if let productID = notificationObject["id"] as? String, let actionType = notificationObject["actionType"] as? String {
+                for (_, product) in products.enumerated() {
+                    guard product.productIdentifier == productID else { continue }
+                    var iapAction: String = "success"
+                    let currentProduct = findProductInfoById(productID)
+                    let productGroup = currentProduct?["group"] as? String
+                    var expireDateString = ""
+                    // MARK: - If it's an eBook, download immediately and update UI to "downloading"
+                    if productGroup == "ebook" {
+                        iapAction = "downloading"
+                        downloadProduct(productID)
+                        savePurchase(productID, property: "purchased", value: "Y")
+                    } else if actionType == "buy success" {
+                        // MARK: Otherwise if it's a buy action, save the purchase information and update UI accordingly
+                        let transactionDate = notificationObject["date"] as? Date
+                        updatePurchaseHistory(productID, date: transactionDate)
+                        if let periodLength = currentProduct?["period"] as? String {
+                            if let expire = getExpireDateFromPurchaseHistory(productID, periodLength: periodLength) {
+                                let expireDate = Date(timeIntervalSince1970: expire)
+                                let dayTimePeriodFormatter = DateFormatter()
+                                dayTimePeriodFormatter.dateFormat = "YYYY年MM月dd日"
+                                expireDateString = dayTimePeriodFormatter.string(from: expireDate)
+                            }
+                        }
+                    }
+                    jsCode = "iapActions('\(productID)', '\(iapAction)', '\(expireDateString)')"
+                    print(jsCode)
+                    self.webView.evaluateJavaScript(jsCode) { (result, error) in
+                    }
+                    trackIAPActions(actionType, productId: productID)
                 }
-                savePurchase(productID, property: "purchased", value: "Y")
-                downloadProduct(productID)
-                trackIAPActions("buy or restore success", productId: productID)
+            } else if let errorObject = notification.object as? [String : String?] {
+                // MARK: - When there is an error
+                if let productId = errorObject["id"]{
+                    let errorMessage = (errorObject["error"] ?? "") ?? ""
+                    let productIdForTracking = productId ?? ""
+                    // MARK: - If user cancel buying, no need to pop out alert
+                    if errorMessage == "usercancel" {
+                        trackIAPActions("cancel buying", productId: productIdForTracking)
+                    } else {
+                        let alert = UIAlertController(title: "交易失败，您的钱还在口袋里", message: errorMessage, preferredStyle: UIAlertControllerStyle.alert)
+                        alert.addAction(UIAlertAction(title: "我知道了", style: UIAlertActionStyle.default, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
+                        trackIAPActions("buy or restore error", productId: "\(productIdForTracking): \(errorMessage)")
+                    }
+                    // TODO: For subscription types, should consider the situation of Failing to Renew, which means the UI should go back to renew button and display expire date
+                    jsCode = "iapActions('\(productId ?? "")', 'fail')"
+                    self.webView.evaluateJavaScript(jsCode) { (result, error) in
+                    }
+                }
             }
-        } else if let errorObject = notification.object as? [String : String?] {
-            if let productId = errorObject["id"]{
-                let errorMessage = (errorObject["error"] ?? "") ?? ""
-                let productIdForTracking = productId ?? ""
-                // MARK: - If user cancel buying, no need to pop out alert
-                if errorMessage == "usercancel" {
-                    trackIAPActions("cancel buying", productId: productIdForTracking)
-                } else {
-                    let alert = UIAlertController(title: "交易失败，您的钱还在口袋里", message: errorMessage, preferredStyle: UIAlertControllerStyle.alert)
-                    alert.addAction(UIAlertAction(title: "我知道了", style: UIAlertActionStyle.default, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
-                    trackIAPActions("buy or restore error", productId: "\(productIdForTracking): \(errorMessage)")
-                }
-                jsCode = "iapActions('\(productId ?? "")', 'fail')"
-                self.webView.evaluateJavaScript(jsCode) { (result, error) in
-                }
-            }
-        } else if notification.object == nil {
+        } else {
             // MARK: When the transaction fail without any error message (NSError)
             let alert = UIAlertController(title: "交易失败，您的钱还在口袋里", message: "未知错误", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "我知道了", style: UIAlertActionStyle.default, handler: nil))

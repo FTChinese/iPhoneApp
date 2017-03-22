@@ -31,7 +31,8 @@ public struct FTCProducts {
             "id":"com.ft.ftchinese.mobile.subscription.intelligence3",
             "title":"FT研究院",
             "teaser":"中国商业和消费数据",
-            "image":"http://i.ftimg.net/picture/3/000068413_piclink.jpg"
+            "image":"http://i.ftimg.net/picture/3/000068413_piclink.jpg",
+            "period":"year"
         ]
     ]
     private static let membershipData = [
@@ -40,6 +41,7 @@ public struct FTCProducts {
             "title":"高端会员",
             "teaser":"注册成为高端会员",
             "image":"http://i.ftimg.net/picture/6/000068886_piclink.jpg",
+            "period":"year",
             "benefits": [
                 "All the benefits of a Standard FT Subscription, plus exclusive news and analysis",
                 "Mobile and tablet access via our award-winning apps",
@@ -51,6 +53,7 @@ public struct FTCProducts {
             "title":"普通会员",
             "teaser":"注册成为普通会员",
             "image":"http://i.ftimg.net/picture/6/000068886_piclink.jpg",
+            "period":"year",
             "benefits": [
                 "Unlimited access to all Standard-access articles and blogs",
                 "Mobile and tablet access via our award-winning apps",
@@ -62,6 +65,7 @@ public struct FTCProducts {
             "title":"试读会员",
             "teaser":"注册成为试读会员",
             "image":"http://i.ftimg.net/picture/6/000068886_piclink.jpg",
+            "period":"month",
             "benefits": [
                 "benefit 1",
                 "benefit 2",
