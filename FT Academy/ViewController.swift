@@ -1357,7 +1357,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                         let dayTimePeriodFormatter = DateFormatter()
                         dayTimePeriodFormatter.dateFormat = "YYYY年MM月dd日"
                         let dateString = dayTimePeriodFormatter.string(from: expireDate)
-                        expireDateString = ",expire:'\(dateString)'"
+                        expireDateString = ",expire:'\(dateString)',expireDateUnix:\(expireDateUnix)"
                     }
                     periodString = ",period:'\(priodLenth)'"
                 }
@@ -1521,7 +1521,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                     var iapAction: String = "success"
                     let currentProduct = findProductInfoById(productID)
                     let productGroup = currentProduct?["group"] as? String
-                    var expireDateString = ""
                     // MARK: - If it's an eBook, download immediately and update UI to "downloading"
                     if productGroup == "ebook" {
                         iapAction = "downloading"
@@ -1531,6 +1530,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                         // MARK: Otherwise if it's a buy action, save the purchase information and update UI accordingly
                         let transactionDate = notificationObject["date"] as? Date
                         updatePurchaseHistory(productID, date: transactionDate)
+                        /*
                         if let periodLength = currentProduct?["period"] as? String {
                             if let expire = getExpireDateFromPurchaseHistory(productID, periodLength: periodLength) {
                                 let expireDate = Date(timeIntervalSince1970: expire)
@@ -1539,8 +1539,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                                 expireDateString = dayTimePeriodFormatter.string(from: expireDate)
                             }
                         }
+ */
                     }
-                    jsCode = "iapActions('\(productID)', '\(iapAction)', '\(expireDateString)')"
+                    jsCode = "iapActions('\(productID)', '\(iapAction)')"
                     print(jsCode)
                     self.webView.evaluateJavaScript(jsCode) { (result, error) in
                     }
@@ -1560,7 +1561,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                         self.present(alert, animated: true, completion: nil)
                         trackIAPActions("buy or restore error", productId: "\(productIdForTracking): \(errorMessage)")
                     }
-                    // TODO: For subscription types, should consider the situation of Failing to Renew, which means the UI should go back to renew button and display expire date
+                    // MARK: - For subscription types, should consider the situation of Failing to Renew in the webview's JavaScript Code of function iapActions, which means the UI should go back to renew button and display expire date
                     jsCode = "iapActions('\(productId ?? "")', 'fail')"
                     self.webView.evaluateJavaScript(jsCode) { (result, error) in
                     }
