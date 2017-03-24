@@ -1682,8 +1682,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "listen" {
             if let body = message.body as? [String: String] {
-                if let text = body["text"] {
-                    print (text)
+                if let action = body["action"] {
+                    print (action)
                     //textToSpeech(text, language: "en-GB")
                 }
             }
