@@ -16,7 +16,7 @@ import FolioReaderKit
 import MediaPlayer
 
 
-class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, SFSafariViewControllerDelegate, URLSessionDownloadDelegate {
+class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, WKScriptMessageHandler, WKUIDelegate,SFSafariViewControllerDelegate, URLSessionDownloadDelegate {
     
     // MARK: - Use WKWebView as our app supports iOS 8 and above
     lazy var webView = WKWebView()
@@ -53,6 +53,17 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
+        
+        // MARK: - Add a user script so that the native can receive messages from web view
+        let contentController = WKUserContentController();
+        // MARK: - Receive text to audio related messages
+        contentController.add(
+            self,
+            name: "listen"
+        )
+        // MARK: - add the user content controller to web view's configuration
+        config.userContentController = contentController
+        
         let statusType = IJReachability().connectedToNetworkOfType()
         if statusType == .wiFi {
             if #available(iOS 10.0, *) {
@@ -76,6 +87,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             }
         }
         adOverlayView()
+        
+        
+        
     }
     
     /** Once view is loaded:
@@ -1531,15 +1545,15 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                         let transactionDate = notificationObject["date"] as? Date
                         updatePurchaseHistory(productID, date: transactionDate)
                         /*
-                        if let periodLength = currentProduct?["period"] as? String {
-                            if let expire = getExpireDateFromPurchaseHistory(productID, periodLength: periodLength) {
-                                let expireDate = Date(timeIntervalSince1970: expire)
-                                let dayTimePeriodFormatter = DateFormatter()
-                                dayTimePeriodFormatter.dateFormat = "YYYY年MM月dd日"
-                                expireDateString = dayTimePeriodFormatter.string(from: expireDate)
-                            }
-                        }
- */
+                         if let periodLength = currentProduct?["period"] as? String {
+                         if let expire = getExpireDateFromPurchaseHistory(productID, periodLength: periodLength) {
+                         let expireDate = Date(timeIntervalSince1970: expire)
+                         let dayTimePeriodFormatter = DateFormatter()
+                         dayTimePeriodFormatter.dateFormat = "YYYY年MM月dd日"
+                         expireDateString = dayTimePeriodFormatter.string(from: expireDate)
+                         }
+                         }
+                         */
                     }
                     jsCode = "iapActions('\(productID)', '\(iapAction)')"
                     print(jsCode)
@@ -1657,11 +1671,24 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
          print ("previous audio")
          //self.prev()
          return .success
-         }
+         }/Users/oliverzhang/ft/webapp2/app/images/ic_mic_24px.svg
          */
     }
     
     // TODO: There should be a stop function for textToSpeech
+    
+    
+    // MARK: - Handle message sent back to native app
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        if message.name == "listen" {
+            if let body = message.body as? [String: String] {
+                if let text = body["text"] {
+                    print (text)
+                    //textToSpeech(text, language: "en-GB")
+                }
+            }
+        }
+    }
     
 }
 
