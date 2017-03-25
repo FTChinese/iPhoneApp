@@ -1600,7 +1600,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     // MARK: Read the Text
     // MARK: Further Reading: http://www.appcoda.com/text-to-speech-ios-tutorial/
-    func textToSpeech(_ text: String, language: String) {
+    
+    // MARK: a lazy AVSpeechSynthesizer
+    private lazy var mySpeechSynthesizer:AVSpeechSynthesizer? = nil
+    func textToSpeech(_ text: String, language: String, title: String) {
         // MARK: - Continue audio even when device is set to mute. Do this only when user is actually playing audio because users might want to read FTC news while listening to music from other apps.
         try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: .duckOthers)
         //try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
@@ -1608,25 +1611,28 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         // MARK: - Continue audio when device is in background
         try? AVAudioSession.sharedInstance().setActive(true)
         
-        let mySpeechSynthesizer:AVSpeechSynthesizer = AVSpeechSynthesizer()
+        
+        print (text)
+        
+        mySpeechSynthesizer = AVSpeechSynthesizer()
         let mySpeechUtterance:AVSpeechUtterance = AVSpeechUtterance(string: text)
         // MARK: Set lguange. Chinese is zh-CN
         mySpeechUtterance.voice = AVSpeechSynthesisVoice(language: language)
         // mySpeechUtterance.rate = 1.0
-        mySpeechSynthesizer.speak(mySpeechUtterance)
+        mySpeechSynthesizer?.speak(mySpeechUtterance)
         
         
         //大标题 - 小标题  - 歌曲总时长 - 歌曲当前播放时长 - 封面
-        /*
-         if let artwork = UIImage(named: "ftcicon.jpg") {
-         let settings = [MPMediaItemPropertyTitle: "FT中文网",
-         MPMediaItemPropertyArtist: "全球财经精粹",
-         //MPMediaItemPropertyPlaybackDuration: "\(audioPlayer.duration)",
-         //MPNowPlayingInfoPropertyElapsedPlaybackTime: "\(audioPlayer.currentTime)",
-         MPMediaItemPropertyArtwork: MPMediaItemArtwork(image: artwork)] as [String : Any]
-         MPNowPlayingInfoCenter.default().setValue(settings, forKey: "nowPlayingInfo")
-         }
-         */
+        
+        if let artwork = UIImage(named: "ftcicon.jpg") {
+            let settings = [MPMediaItemPropertyTitle: "FT中文网",
+                            MPMediaItemPropertyArtist: "全球财经精粹",
+                            //MPMediaItemPropertyPlaybackDuration: "\(audioPlayer.duration)",
+                //MPNowPlayingInfoPropertyElapsedPlaybackTime: "\(audioPlayer.currentTime)",
+                MPMediaItemPropertyArtwork: MPMediaItemArtwork(image: artwork)] as [String : Any]
+            MPNowPlayingInfoCenter.default().setValue(settings, forKey: "nowPlayingInfo")
+        }
+        
         
     }
     
@@ -1635,8 +1641,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             .replacingOccurrences(of: "?isad=1", with: "")
             .replacingOccurrences(of: "%0A", with: "")
             .replacingOccurrences(of: "%20", with: "")
-        print(text)
-        textToSpeech(text, language: "en-GB")
+        // print(text)
+        textToSpeech(text, language: "en-GB", title: text)
     }
     
     func enableTextToSpeech() {
@@ -1644,35 +1650,24 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         self.webView.evaluateJavaScript(jsCode) { (result, error) in
         }
         
-        /*
-         textToSpeech("iOS is an operating system with many possibilities, allowing to create from really simple to super-advanced applications. There are times where applications have to be multi-featured, providing elegant solutions that exceed the limits of the common places, and lead to a superb user experience. Also, there are numerous technologies one could exploit, and in this tutorial we are going to focus on one of them, which is no other than the Text to Speech.iOS is an operating system with many possibilities, allowing to create from really simple to super-advanced applications. ", language: "en-GB")
-         
-         UIApplication.shared.beginReceivingRemoteControlEvents();
-         MPRemoteCommandCenter.shared().playCommand.addTarget {event in
-         print("resume music")
-         /*
-         self.audioPlayer.resume()
-         self.updateNowPlayingInfoCenter()
-         
-         */
-         return .success
-         }
-         MPRemoteCommandCenter.shared().pauseCommand.addTarget {event in
-         print ("pause speech")
-         // self.audioPlayer.pause()
-         return .success
-         }
-         MPRemoteCommandCenter.shared().nextTrackCommand.addTarget {event in
-         print ("next audio")
-         // self.next()
-         return .success
-         }
-         MPRemoteCommandCenter.shared().previousTrackCommand.addTarget {event in
-         print ("previous audio")
-         //self.prev()
-         return .success
-         }/Users/oliverzhang/ft/webapp2/app/images/ic_mic_24px.svg
-         */
+        // MARK: Receive Messages from Lock Screen
+        UIApplication.shared.beginReceivingRemoteControlEvents();
+        MPRemoteCommandCenter.shared().playCommand.addTarget {event in
+            print("resume music")
+            return .success
+        }
+        MPRemoteCommandCenter.shared().pauseCommand.addTarget {event in
+            print ("pause speech")
+            return .success
+        }
+        MPRemoteCommandCenter.shared().nextTrackCommand.addTarget {event in
+            print ("next audio")
+            return .success
+        }
+        MPRemoteCommandCenter.shared().previousTrackCommand.addTarget {event in
+            print ("previous audio")
+            return .success
+        }
     }
     
     // TODO: There should be a stop function for textToSpeech
@@ -1682,9 +1677,26 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "listen" {
             if let body = message.body as? [String: String] {
-                if let action = body["action"] {
+                print (body)
+                if let action = body["action"], let language = body["language"], let text = body["text"], let title = body["title"] {
                     print (action)
-                    //textToSpeech(text, language: "en-GB")
+                    var speechLanguage = ""
+                    switch language {
+                    case "ch":
+                        speechLanguage = "zh-CN"
+                    default:
+                        speechLanguage = "en-GB"
+                    }
+                    switch action {
+                    case "play":
+                        textToSpeech(text, language: speechLanguage, title: title)
+                    case "pause":
+                        mySpeechSynthesizer?.pauseSpeaking(at: .word)
+                    case "continue":
+                        mySpeechSynthesizer?.continueSpeaking()
+                    default:
+                        break
+                    }
                 }
             }
         }
