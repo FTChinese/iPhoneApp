@@ -30,6 +30,24 @@
             </objects>
             <point key="canvasLocation" x="87" y="116"/>
         </scene>
+        <!--Play Speech-->
+        <scene sceneID="8NV-wC-ZuJ">
+            <objects>
+                <viewController id="6bS-lG-iHO" customClass="PlaySpeech" customModule="FT中文网" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="wgo-KV-D51"/>
+                        <viewControllerLayoutGuide type="bottom" id="IsA-QH-vOf"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="TXc-yi-Eqs">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Vko-xI-Jbh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="86" y="883"/>
+        </scene>
         <!--Web Page Controller-->
         <scene sceneID="0SU-aU-9lE">
             <objects>
