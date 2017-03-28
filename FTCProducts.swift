@@ -43,9 +43,11 @@ public struct FTCProducts {
             "image":"http://i.ftimg.net/picture/6/000068886_piclink.jpg",
             "period":"year",
             "benefits": [
-                "All the benefits of a Standard FT Subscription, plus exclusive news and analysis",
-                "Mobile and tablet access via our award-winning apps",
-                "FT Confidential Research - in-depth China and Southeast Asia analysis"
+                "会员期间屏蔽全站广告，带来极佳的阅读体验",
+                "会员期间免费阅读FT中文网所有付费内容，每篇付费内容有一个免费分享名额",
+                "购买FT自有产品享受VIP折扣",
+                "购买FT电子书可免费发送至kindle",
+                "可选择开启手机客户端专属订制内容推送，你感兴趣的不再错过"
             ]
         ],
         [
@@ -55,9 +57,10 @@ public struct FTCProducts {
             "image":"http://i.ftimg.net/picture/6/000068886_piclink.jpg",
             "period":"year",
             "benefits": [
-                "Unlimited access to all Standard-access articles and blogs",
-                "Mobile and tablet access via our award-winning apps",
-                "Personalised email briefings and alerts"
+                "会员期间屏蔽部分网站广告，升级阅读体验",
+                "会员期间免费阅读付费内容",
+                "购买FT电子书可免费发送至kindle",
+                "可选择开启手机客户端专属订制内容推送，你感兴趣的不再错过"
             ]
         ],
         [
@@ -67,9 +70,9 @@ public struct FTCProducts {
             "image":"http://i.ftimg.net/picture/6/000068886_piclink.jpg",
             "period":"month",
             "benefits": [
-                "benefit 1",
-                "benefit 2",
-                "benefit 3"
+                "1个月内屏蔽部分网站广告，升级阅读体验",
+                "会员期间免费阅读4篇付费内容",
+                "可选择开启手机客户端专属订制内容推送，你感兴趣的不再错过"
             ]
         ]
     ]
