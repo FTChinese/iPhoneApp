@@ -40,7 +40,9 @@ extension String {
 class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate {
     
     private lazy var mySpeechSynthesizer:AVSpeechSynthesizer? = nil
-    
+    private lazy var audioText: NSMutableAttributedString? = nil
+    private var audioLanguage = ""
+    private lazy var previouseRange: NSRange? = nil
     
     @IBAction func PlaySpeech(_ sender: UIBarButtonItem) {
         if let mySpeechSynthesizer = mySpeechSynthesizer {
@@ -62,20 +64,16 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate {
     
     @IBAction func stopSpeech(_ sender: UIBarButtonItem) {
         mySpeechSynthesizer?.stopSpeaking(at: .word)
-        mySpeechSynthesizer = nil
         self.dismiss(animated: true, completion: nil)
     }
     
     @IBOutlet weak var bodytext: UITextView!
     
-    private lazy var audioText: NSMutableAttributedString? = nil
-    private var audioLanguage = ""
-    
-    
     deinit {
         mySpeechSynthesizer = nil
         print ("audio cleared")
     }
+    
     override func loadView() {
         super.loadView()
         parseAudioMessage()
@@ -101,7 +99,7 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate {
             titleParagraphStyle.paragraphSpacing = 20
             let titleAttributes = [
                 NSForegroundColorAttributeName: UIColor.black,
-                NSFontAttributeName: UIFont.systemFont(ofSize: 22),
+                NSFontAttributeName: UIFont.boldSystemFont(ofSize: 22),
                 NSParagraphStyleAttributeName:titleParagraphStyle
             ]
             let bodyParagraphStyle = NSMutableParagraphStyle()
@@ -111,8 +109,8 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate {
             let bodyAttributes = [
                 NSForegroundColorAttributeName: UIColor.black,
                 NSFontAttributeName: UIFont.systemFont(ofSize: 18),
-                NSParagraphStyleAttributeName:bodyParagraphStyle
-            ]
+                NSParagraphStyleAttributeName:bodyParagraphStyle,
+                ]
             let titleAttrString = NSMutableAttributedString(
                 string: title,
                 attributes: titleAttributes
@@ -200,13 +198,13 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate {
             textToSpeech(audioText, language: audioLanguage)
         }
     }
-    private lazy var previouseRange: NSRange? = nil
+    
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, willSpeakRangeOfSpeechString characterRange: NSRange, utterance: AVSpeechUtterance) {
         if let mutableAttributedString = audioText {
             if let previouseRange = previouseRange {
                 mutableAttributedString.addAttribute(NSForegroundColorAttributeName, value: UIColor.black, range: previouseRange)
             }
-            mutableAttributedString.addAttribute(NSForegroundColorAttributeName, value: UIColor.red, range: characterRange)
+            mutableAttributedString.addAttribute(NSForegroundColorAttributeName, value: UIColor(netHex:0xF6801A), range: characterRange)
             self.bodytext.attributedText = mutableAttributedString
             self.bodytext.scrollRangeToVisible(characterRange)
         }

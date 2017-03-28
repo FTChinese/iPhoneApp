@@ -74,7 +74,7 @@
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="nWR-Su-w1K"/>
                                 </items>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <color key="barTintColor" red="0.60784313729999995" green="0.086274509799999996" blue="0.30980392159999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color key="barTintColor" red="0.14901960784313725" green="0.45490196078431372" blue="0.47843137254901957" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             </toolbar>
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.94509803921568625" blue="0.8784313725490196" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
