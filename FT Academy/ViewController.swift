@@ -802,7 +802,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         webPageUrl = urlString
         if #available(iOS 9.0, *) {
             // MARK: - Use Safariview for iOS 9 and above
-            if urlString.range(of: "http://www.ftchinese.com") == nil {
+            if urlString.range(of: "www.ftchinese.com") == nil && urlString.range(of: "i.ftimg.net") == nil {
                 // MARK: - When opening an outside url which we have no control over
                 if let url = URL(string:urlString) {
                     if let urlScheme = url.scheme?.lowercased() {
