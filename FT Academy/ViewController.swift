@@ -1628,7 +1628,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     func enableTextToSpeech() {
-        let jsCode = "window.enableTextToSpeech = true;"
+        let jsCode = "showListenButton();"
         self.webView.evaluateJavaScript(jsCode) { (result, error) in
         }
     }

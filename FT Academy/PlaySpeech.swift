@@ -42,7 +42,10 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate {
     private lazy var mySpeechSynthesizer:AVSpeechSynthesizer? = nil
     private lazy var audioText: NSMutableAttributedString? = nil
     private var audioLanguage = ""
+    private var eventCategory = ""
     private lazy var previouseRange: NSRange? = nil
+    
+    var window: UIWindow?
     
     @IBAction func PlaySpeech(_ sender: UIBarButtonItem) {
         if let mySpeechSynthesizer = mySpeechSynthesizer {
@@ -86,7 +89,7 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate {
     
     func parseAudioMessage() {
         let body = SpeechContent.sharedInstance.body
-        if let language = body["language"], let text = body["text"], let title = body["title"] {
+        if let language = body["language"], let text = body["text"], let title = body["title"], let eventCategory = body["eventCategory"] {
             var speechLanguage = ""
             switch language {
             case "ch":
@@ -95,6 +98,7 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate {
                 speechLanguage = "en-GB"
             }
             self.audioLanguage = speechLanguage
+            self.eventCategory = eventCategory
             let titleParagraphStyle = NSMutableParagraphStyle()
             titleParagraphStyle.paragraphSpacing = 20
             let titleAttributes = [
@@ -217,6 +221,14 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate {
                 mutableAttributedString.addAttribute(NSForegroundColorAttributeName, value: UIColor.black, range: previouseRange)
                 self.bodytext.attributedText = mutableAttributedString
                 self.bodytext.scrollRangeToVisible(previouseRange)
+            }
+        }
+        let body = SpeechContent.sharedInstance.body
+        if let language = body["language"], let title = body["title"] {
+            if let rootViewController = UIApplication.shared.windows[0].rootViewController as? ViewController {
+                let jsCode = "ga('send','event','\(eventCategory)', 'Finish', '\(language): \(title.replacingOccurrences(of: "'", with: ""))');"
+                rootViewController.webView.evaluateJavaScript(jsCode) { (result, error) in
+                }
             }
         }
     }
