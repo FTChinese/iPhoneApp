@@ -45,24 +45,26 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate {
     private var eventCategory = ""
     private lazy var previouseRange: NSRange? = nil
     
-    var window: UIWindow?
+    @IBOutlet weak var buttonPlayPause: UIBarButtonItem!
     
-    @IBAction func PlaySpeech(_ sender: UIBarButtonItem) {
+    @IBAction func pauseSpeech(_ sender: UIBarButtonItem) {
+        var image = UIImage(named: "PauseButton")
         if let mySpeechSynthesizer = mySpeechSynthesizer {
-            if mySpeechSynthesizer.isPaused == true {
-                mySpeechSynthesizer.continueSpeaking()
-            } else if mySpeechSynthesizer.isSpeaking != true {
+            if mySpeechSynthesizer.isPaused == false && mySpeechSynthesizer.isSpeaking == false {
                 if let titleAndText = audioText?.string {
                     let mySpeechUtterance:AVSpeechUtterance = AVSpeechUtterance(string: titleAndText)
                     mySpeechUtterance.voice = AVSpeechSynthesisVoice(language: audioLanguage)
                     mySpeechSynthesizer.speak(mySpeechUtterance)
+                    mySpeechSynthesizer.continueSpeaking()
                 }
+            } else if mySpeechSynthesizer.isPaused == false {
+                mySpeechSynthesizer.pauseSpeaking(at: .word)
+                image = UIImage(named: "PlayButton")
+            } else {
+                mySpeechSynthesizer.continueSpeaking()
             }
         }
-    }
-    
-    @IBAction func pauseSpeech(_ sender: UIBarButtonItem) {
-        mySpeechSynthesizer?.pauseSpeaking(at: .word)
+        buttonPlayPause.image = image
     }
     
     @IBAction func stopSpeech(_ sender: UIBarButtonItem) {
@@ -231,5 +233,7 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate {
                 }
             }
         }
+        let image = UIImage(named: "PlayButton")
+        buttonPlayPause.image = image
     }
 }

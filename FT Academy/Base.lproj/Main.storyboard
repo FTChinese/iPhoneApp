@@ -50,17 +50,12 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bzY-Hz-F6j">
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="bzY-Hz-F6j">
                                 <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                                <color key="backgroundColor" red="0.14901960780000001" green="0.4549019608" blue="0.47843137250000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <items>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="Y0I-RX-lbe"/>
-                                    <barButtonItem systemItem="play" id="5s3-HC-8eZ">
-                                        <connections>
-                                            <action selector="PlaySpeech:" destination="6bS-lG-iHO" id="RqM-Ow-Btt"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="osP-j6-OXq"/>
-                                    <barButtonItem systemItem="pause" id="onQ-CH-qjO">
+                                    <barButtonItem image="PauseButton" style="plain" id="onQ-CH-qjO">
                                         <connections>
                                             <action selector="pauseSpeech:" destination="6bS-lG-iHO" id="c1w-q6-Ffk"/>
                                         </connections>
@@ -90,6 +85,7 @@
                     </view>
                     <connections>
                         <outlet property="bodytext" destination="hjJ-KW-QEg" id="Wlh-7i-DU0"/>
+                        <outlet property="buttonPlayPause" destination="onQ-CH-qjO" id="Q7g-GH-8RD"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vko-xI-Jbh" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -172,4 +168,7 @@
             <point key="canvasLocation" x="1010" y="116"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="PauseButton" width="36" height="36"/>
+    </resources>
 </document>
