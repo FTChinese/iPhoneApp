@@ -130,6 +130,11 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate {
                 string: ". \r\n",
                 attributes: deliminatorAttributes
             )
+            
+            
+            
+            
+            
             let textFromHTML = text
                 .replacingOccurrences(of: "[\r\n]", with: "", options: .regularExpression, range: nil)
                 .replacingOccurrences(of: "(</p><p>)+", with: "\r\n", options: .regularExpression, range: nil)
