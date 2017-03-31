@@ -86,6 +86,10 @@
 		50FC07EC1A53A589006EE23F /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FC07EB1A53A589006EE23F /* libsqlite3.dylib */; };
 		50FCC9C11D34C1D300FC1892 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FCC9C01D34C1D300FC1892 /* User.swift */; };
 		50FCC9C31D34C1D300FC1892 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FCC9C01D34C1D300FC1892 /* User.swift */; };
+		605C58FE1E8DF0B800174DF3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 605C58FD1E8DF0B800174DF3 /* Security.framework */; };
+		605C59001E8DF0EC00174DF3 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 605C58FF1E8DF0EC00174DF3 /* CFNetwork.framework */; };
+		605C59011E8DF5E500174DF3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 605C58FD1E8DF0B800174DF3 /* Security.framework */; };
+		605C59021E8DF5EF00174DF3 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 605C58FF1E8DF0EC00174DF3 /* CFNetwork.framework */; };
 		CD6C7E714D02A4C7ED3C3236 /* Pods_FT___.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF896B870CE411A5E6A3044D /* Pods_FT___.framework */; };
 		CE83F38E5B8EC2ED9CD8CBEA /* Pods_FT____iPad.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04063C10DFA84D4B9E2DB85F /* Pods_FT____iPad.framework */; };
 /* End PBXBuildFile section */
@@ -158,6 +162,8 @@
 		50FC07E91A53A44C006EE23F /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		50FC07EB1A53A589006EE23F /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		50FCC9C01D34C1D300FC1892 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		605C58FD1E8DF0B800174DF3 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		605C58FF1E8DF0EC00174DF3 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		976359DE7C996269A56DA9C6 /* Pods-FT中文网.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FT中文网.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FT中文网/Pods-FT中文网.debug.xcconfig"; sourceTree = "<group>"; };
 		B1B0C223055A04C366CDF337 /* Pods-FT中文网-iPad.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FT中文网-iPad.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FT中文网-iPad/Pods-FT中文网-iPad.debug.xcconfig"; sourceTree = "<group>"; };
 		CF896B870CE411A5E6A3044D /* Pods_FT___.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "Pods_FT___.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -169,6 +175,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				605C59001E8DF0EC00174DF3 /* CFNetwork.framework in Frameworks */,
+				605C58FE1E8DF0B800174DF3 /* Security.framework in Frameworks */,
 				50B49B941E7D15BB00E53C0C /* MediaPlayer.framework in Frameworks */,
 				5039A4B71C61FB170008F2AD /* AdSupport.framework in Frameworks */,
 				50E5E6F21BD8A21B00F4A33E /* CoreTelephony.framework in Frameworks */,
@@ -197,6 +205,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				605C59021E8DF5EF00174DF3 /* CFNetwork.framework in Frameworks */,
+				605C59011E8DF5E500174DF3 /* Security.framework in Frameworks */,
 				507C7E5A1DB0BCE800A8EF50 /* AdSupport.framework in Frameworks */,
 				507C7E5B1DB0BCE800A8EF50 /* CoreTelephony.framework in Frameworks */,
 				507C7E5C1DB0BCE800A8EF50 /* libsqlite3.dylib in Frameworks */,
@@ -229,6 +239,8 @@
 		501F90161E3C72EB009EA5DD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				605C58FF1E8DF0EC00174DF3 /* CFNetwork.framework */,
+				605C58FD1E8DF0B800174DF3 /* Security.framework */,
 				50B49B931E7D15BB00E53C0C /* MediaPlayer.framework */,
 				501F90171E3C72EB009EA5DD /* StoreKit.framework */,
 				CF896B870CE411A5E6A3044D /* Pods_FT___.framework */,

@@ -27,7 +27,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
         }
         
         
-        WXApi.registerApp(wechatAppId, withDescription: "FT中文网")
+        //WXApi.registerApp(wechatAppId, withDescription: "FT中文网")
+        WXApi.registerApp(wechatAppId)
         
         if WXApi.isWXAppSupport() == true {
             supportedSocialPlatforms.append("wechat")

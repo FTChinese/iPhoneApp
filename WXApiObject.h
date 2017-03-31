@@ -57,6 +57,31 @@ enum WXMPWebviewType {
     WXMPWebviewType_Ad = 0,        /**< 广告网页 **/
 };
 
+
+
+/*! @brief 应用支持接收微信的文件类型
+ *
+ */
+typedef NS_ENUM(UInt64, enAppSupportContentFlag)
+{
+    MMAPP_SUPPORT_NOCONTENT = 0x0,
+    MMAPP_SUPPORT_TEXT      = 0x1,
+    MMAPP_SUPPORT_PICTURE   = 0x2,
+    MMAPP_SUPPORT_LOCATION  = 0x4,
+    MMAPP_SUPPORT_VIDEO     = 0x8,
+    MMAPP_SUPPORT_AUDIO     = 0x10,
+    MMAPP_SUPPORT_WEBPAGE   = 0x20,
+    
+    // Suport File Type
+    MMAPP_SUPPORT_DOC  = 0x40,               // doc
+    MMAPP_SUPPORT_DOCX = 0x80,               // docx
+    MMAPP_SUPPORT_PPT  = 0x100,              // ppt
+    MMAPP_SUPPORT_PPTX = 0x200,              // pptx
+    MMAPP_SUPPORT_XLS  = 0x400,              // xls
+    MMAPP_SUPPORT_XLSX = 0x800,              // xlsx
+    MMAPP_SUPPORT_PDF  = 0x1000,             // pdf
+};
+
 #pragma mark - BaseReq
 /*! @brief 该类为微信终端SDK所有请求类的基类
  *
@@ -91,6 +116,8 @@ enum WXMPWebviewType {
 #pragma mark - WXMediaMessage
 @class WXMediaMessage;
 
+#ifndef BUILD_WITHOUT_PAY
+
 /*! @brief 第三方向微信终端发起支付的消息结构体
  *
  *  第三方向微信终端发起支付的消息结构体，微信终端处理后会向第三方返回处理结果
@@ -113,7 +140,10 @@ enum WXMPWebviewType {
 
 @end
 
+#endif
 
+
+#ifndef BUILD_WITHOUT_PAY
 
 #pragma mark - PayResp
 /*! @brief 微信终端返回给第三方的关于支付结果的结构体
@@ -126,6 +156,9 @@ enum WXMPWebviewType {
 @property (nonatomic, retain) NSString *returnKey;
 
 @end
+
+#endif
+
 
 
 #pragma mark - SendAuthReq
@@ -204,6 +237,7 @@ enum WXMPWebviewType {
 @property(nonatomic, retain) NSString* lang;
 @property(nonatomic, retain) NSString* country;
 @end
+
 
 
 #pragma mark - GetMessageFromWXReq
@@ -395,14 +429,47 @@ enum WXMPWebviewType {
 @property (nonatomic,retain) NSString* cardId;
 /** ext信息
  * @attention 长度不能超过2024字节
- * 具体见http://mp.weixin.qq.com/wiki/7/aaa137b55fb2e0456bf8dd9148dd613f.html#.E9.99.84.E5.BD.954-.E5.8D.A1.E5.88.B8.E6.89.A9.E5.B1.95.E5.AD.97.E6.AE.B5.E5.8F.8A.E7.AD.BE.E5.90.8D.E7.94.9F.E6.88.90.E7.AE.97.E6.B3.95 卡券扩展字段cardExt说明
  */
 @property (nonatomic,retain) NSString* extMsg;
 /**
  * @attention 卡的状态,req不需要填。resp:0为未添加，1为已添加。
  */
 @property (nonatomic,assign) UInt32 cardState;
+/**
+ * @attention req不需要填，chooseCard返回的。
+ */
+@property (nonatomic,retain) NSString* encryptCode;
+/**
+ * @attention req不需要填，chooseCard返回的。
+ */
+@property (nonatomic,retain) NSString* appID;
 @end;
+
+#pragma mark - WXInvoiceItem
+
+@interface WXInvoiceItem : NSObject
+/** 卡id
+ * @attention 长度不能超过1024字节
+ */
+@property (nonatomic,retain) NSString* cardId;
+/** ext信息
+ * @attention 长度不能超过2024字节
+ */
+@property (nonatomic,retain) NSString* extMsg;
+/**
+ * @attention 卡的状态,req不需要填。resp:0为未添加，1为已添加。
+ */
+@property (nonatomic,assign) UInt32 cardState;
+/**
+ * @attention req不需要填，chooseCard返回的。
+ */
+@property (nonatomic,retain) NSString* encryptCode;
+/**
+ * @attention req不需要填，chooseCard返回的。
+ */
+@property (nonatomic,retain) NSString* appID;
+
+@end
 
 #pragma mark - AddCardToWXCardPackageReq
 /* ! @brief 请求添加卡券至微信卡包
@@ -428,6 +495,55 @@ enum WXMPWebviewType {
  * @attention 个数不能超过40个 类型WXCardItem
  */
 @property (nonatomic,retain) NSArray* cardAry;
+@end
+
+#pragma mark - WXChooseCardReq
+/* ! @brief 请求从微信选取卡券
+ *
+ */
+
+@interface WXChooseCardReq : BaseReq
+@property(nonatomic, strong) NSString *appID;
+@property(nonatomic, assign) UInt32 shopID;
+@property(nonatomic, assign) UInt32 canMultiSelect;
+@property(nonatomic, strong) NSString *cardType;
+@property(nonatomic, strong) NSString *cardTpID;
+@property(nonatomic, strong) NSString *signType;
+@property(nonatomic, strong) NSString *cardSign;
+@property(nonatomic, assign) UInt32 timeStamp;
+@property(nonatomic, strong) NSString *nonceStr;
+@end
+
+
+#pragma mark - WXChooseCardResp
+/** ! @brief 微信返回第三方请求选择卡券结果
+ *
+ */
+
+@interface WXChooseCardResp : BaseResp
+@property (nonatomic,retain) NSArray* cardAry;
+@end
+
+
+#pragma mark - WXChooseInvoiceReq
+/* ! @brief 请求从微信选取发票
+ *
+ */
+@interface WXChooseInvoiceReq : BaseReq
+@property (nonatomic, strong) NSString *appID;
+@property (nonatomic, assign) UInt32 shopID;
+@property (nonatomic, strong) NSString *signType;
+@property (nonatomic, strong) NSString *cardSign;
+@property (nonatomic, assign) UInt32 timeStamp;
+@property (nonatomic, strong) NSString *nonceStr;
+@end
+
+#pragma mark - WXChooseInvoiceResp
+/** ! @brief 微信返回第三方请求选择发票结果
+ *
+ */
+@interface WXChooseInvoiceResp : BaseResp
+@property (nonatomic, strong) NSArray* cardAry;
 @end
 
 #pragma mark - WXMediaMessage
@@ -481,7 +597,7 @@ enum WXMPWebviewType {
 /*! @brief 多媒体消息中包含的图片数据对象
  *
  * 微信终端和第三方程序之间传递消息中包含的图片数据对象。
- * @note imageData和imageUrl成员不能同时为空
+ * @note imageData成员不能为空
  * @see WXMediaMessage
  */
 @interface WXImageObject : NSObject
@@ -495,10 +611,6 @@ enum WXMPWebviewType {
  * @note 大小不能超过10M
  */
 @property (nonatomic, retain) NSData    *imageData;
-/** 图片url
- * @note 长度不能超过10K
- */
-@property (nonatomic, retain) NSString  *imageUrl;
 
 @end
 
@@ -665,5 +777,65 @@ enum WXMPWebviewType {
  * @note 大小不能超过10M
  */
 @property (nonatomic, retain) NSData    *fileData;
+
+@end
+
+
+#pragma mark - WXLocationObject
+/*! @brief 多媒体消息中包含的地理位置数据对象
+ *
+ * 微信终端和第三方程序之间传递消息中包含的地理位置数据对象。
+ * @see WXMediaMessage
+ */
+@interface WXLocationObject : NSObject
+
+/*! @brief 返回一个WXLocationObject对象
+ *
+ * @note 返回的WXLocationObject对象是自动释放的
+ */
++(WXLocationObject *) object;
+
+/** 地理位置信息
+ * @note 经纬度
+ */
+@property (nonatomic, assign) double lng; //经度
+@property (nonatomic, assign) double lat; //纬度
+
+@end
+
+@interface WXMiniProgramObject : NSObject
+
+/*! @brief WXMiniProgramObject对象
+ *
+ * @note 返回的WXMiniProgramObject对象是自动释放的
+ */
++(WXMiniProgramObject *) object;
+
+@property (nonatomic, strong) NSString *webpageUrl; //低版本网页链接
+
+@property (nonatomic, strong) NSString *userName;   //小程序username
+
+@property (nonatomic, strong) NSString *path;       //小程序页面的路径
+
+@end
+
+#pragma mark - WXTextObject
+/*! @brief 多媒体消息中包含的文本数据对象
+ *
+ * 微信终端和第三方程序之间传递消息中包含的文本数据对象。
+ * @see WXMediaMessage
+ */
+@interface WXTextObject : NSObject
+
+/*! @brief 返回一个WXTextObject对象
+ *
+ * @note 返回的WXTextObject对象是自动释放的
+ */
++(WXTextObject *) object;
+
+/** 地理位置信息
+ * @note 文本内容
+ */
+@property (nonatomic, retain) NSString *contentText;
 
 @end
