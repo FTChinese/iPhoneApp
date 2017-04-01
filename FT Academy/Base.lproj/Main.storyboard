@@ -139,8 +139,12 @@
                                     <action selector="closeSetting:" destination="9i7-uj-Fvq" eventType="touchUpInside" id="cXY-Cd-tbg"/>
                                 </connections>
                             </button>
-                            <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="X8A-ZV-fRx">
+                            <pickerView contentMode="scaleToFill" fixedFrame="YES" restorationIdentifier="English Accent Picker" translatesAutoresizingMaskIntoConstraints="NO" id="X8A-ZV-fRx">
                                 <rect key="frame" x="0.0" y="78" width="375" height="216"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            </pickerView>
+                            <pickerView contentMode="scaleToFill" fixedFrame="YES" restorationIdentifier="Chinese Accent Picker" translatesAutoresizingMaskIntoConstraints="NO" id="bPe-ZH-Qrx">
+                                <rect key="frame" x="0.0" y="281" width="375" height="216"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             </pickerView>
                         </subviews>
@@ -153,6 +157,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="chineseAccentPick" destination="bPe-ZH-Qrx" id="MQm-bJ-jss"/>
                         <outlet property="myPicker" destination="X8A-ZV-fRx" id="lqT-a5-oKp"/>
                     </connections>
                 </viewController>
