@@ -1599,7 +1599,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     
     // MARK: Read the Text
-
+    
     
     // MARK: a lazy AVSpeechSynthesizer
     private lazy var mySpeechSynthesizer:AVSpeechSynthesizer? = nil
@@ -1618,13 +1618,17 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         mySpeechSynthesizer?.speak(mySpeechUtterance)
     }
     
-    func speak (_ urlString: String) {
+    func speak(_ urlString: String) {
         let text = urlString.replacingOccurrences(of: "speak://", with: "")
             .replacingOccurrences(of: "?isad=1", with: "")
             .replacingOccurrences(of: "%0A", with: "")
             .replacingOccurrences(of: "%20", with: "")
         // print(text)
-        textToSpeech(text, language: "en-GB", title: text)
+        let language = "en-GB"
+        textToSpeech(text, language: language, title: text)
+        let jsCode = "ga('send','event', 'Listen to Word', '\(text)', '\(language)');"
+        self.webView.evaluateJavaScript(jsCode) { (result, error) in
+        }
     }
     
     func enableTextToSpeech() {
@@ -1632,9 +1636,6 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         self.webView.evaluateJavaScript(jsCode) { (result, error) in
         }
     }
-    
-    // TODO: There should be a stop function for textToSpeech
-    
     
     // MARK: - Handle message sent back to native app
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
