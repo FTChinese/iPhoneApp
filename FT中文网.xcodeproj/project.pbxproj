@@ -90,6 +90,8 @@
 		605C59001E8DF0EC00174DF3 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 605C58FF1E8DF0EC00174DF3 /* CFNetwork.framework */; };
 		605C59011E8DF5E500174DF3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 605C58FD1E8DF0B800174DF3 /* Security.framework */; };
 		605C59021E8DF5EF00174DF3 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 605C58FF1E8DF0EC00174DF3 /* CFNetwork.framework */; };
+		60D26FDC1E8F58D80047C6AB /* SpeechSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D26FDB1E8F58D80047C6AB /* SpeechSettings.swift */; };
+		60D26FDD1E8F58D80047C6AB /* SpeechSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D26FDB1E8F58D80047C6AB /* SpeechSettings.swift */; };
 		CD6C7E714D02A4C7ED3C3236 /* Pods_FT___.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF896B870CE411A5E6A3044D /* Pods_FT___.framework */; };
 		CE83F38E5B8EC2ED9CD8CBEA /* Pods_FT____iPad.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04063C10DFA84D4B9E2DB85F /* Pods_FT____iPad.framework */; };
 /* End PBXBuildFile section */
@@ -164,6 +166,7 @@
 		50FCC9C01D34C1D300FC1892 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		605C58FD1E8DF0B800174DF3 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		605C58FF1E8DF0EC00174DF3 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		60D26FDB1E8F58D80047C6AB /* SpeechSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeechSettings.swift; sourceTree = "<group>"; };
 		976359DE7C996269A56DA9C6 /* Pods-FT中文网.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FT中文网.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FT中文网/Pods-FT中文网.debug.xcconfig"; sourceTree = "<group>"; };
 		B1B0C223055A04C366CDF337 /* Pods-FT中文网-iPad.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FT中文网-iPad.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FT中文网-iPad/Pods-FT中文网-iPad.debug.xcconfig"; sourceTree = "<group>"; };
 		CF896B870CE411A5E6A3044D /* Pods_FT___.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "Pods_FT___.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -291,6 +294,7 @@
 			children = (
 				50256CA01A4B9D0B005950B9 /* ViewController.swift */,
 				50D6A16F1E87B5D900E2EA8C /* PlaySpeech.swift */,
+				60D26FDB1E8F58D80047C6AB /* SpeechSettings.swift */,
 				50256C9E1A4B9D0B005950B9 /* AppDelegate.swift */,
 				50256CC21A4BFAE7005950B9 /* Globals.swift */,
 				503435691DBDEC8200B2F686 /* AdSchedule.swift */,
@@ -662,6 +666,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				60D26FDC1E8F58D80047C6AB /* SpeechSettings.swift in Sources */,
 				50119E7D1DC873C6003667DE /* WeChatShare.swift in Sources */,
 				501797F51E49669400A2F2A9 /* IAPHelper.swift in Sources */,
 				50256CC31A4BFAE7005950B9 /* Globals.swift in Sources */,
@@ -693,6 +698,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				60D26FDD1E8F58D80047C6AB /* SpeechSettings.swift in Sources */,
 				50119E7E1DC873C6003667DE /* WeChatShare.swift in Sources */,
 				507C7E4D1DB0BCE800A8EF50 /* Globals.swift in Sources */,
 				507C7E4F1DB0BCE800A8EF50 /* WKWebPageController.swift in Sources */,

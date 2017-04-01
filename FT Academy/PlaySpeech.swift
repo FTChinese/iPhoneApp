@@ -72,6 +72,16 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate {
         self.dismiss(animated: true, completion: nil)
     }
     
+    @IBAction func setSpeechOptions(_ sender: UIBarButtonItem) {
+        self.performSegue(withIdentifier: "Speech Settings", sender: sender)
+//        let storyboard : UIStoryboard = UIStoryboard(name: "Play Speech", bundle: nil)
+//        let vc = storyboard.instantiateViewController(withIdentifier: "Speech Settings")
+//        vc.modalPresentationStyle = UIModalPresentationStyle.popover
+//        let popover: UIPopoverPresentationController = vc.popoverPresentationController!
+//        popover.barButtonItem = sender
+//        present(vc, animated: true, completion:nil)
+    }
+    
     @IBOutlet weak var bodytext: UITextView!
     
     deinit {
