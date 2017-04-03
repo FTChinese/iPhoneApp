@@ -61,18 +61,18 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="6C0-t0-HX3"/>
-                                    <barButtonItem title="Settings" id="r3o-AB-QCe">
+                                    <barButtonItem image="StopButton" id="4v1-3s-rhP">
+                                        <connections>
+                                            <action selector="stopSpeech:" destination="6bS-lG-iHO" id="CVO-ME-9F4"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="3yn-3Z-69b"/>
+                                    <barButtonItem image="SettingsButton" id="r3o-AB-QCe">
                                         <connections>
                                             <action selector="setSpeechOptions:" destination="6bS-lG-iHO" id="Ae8-gw-aui"/>
                                             <segue destination="9i7-uj-Fvq" kind="popoverPresentation" identifier="Speech Settings" popoverAnchorBarButtonItem="r3o-AB-QCe" id="jfe-Nh-cuK">
                                                 <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
                                             </segue>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="3yn-3Z-69b"/>
-                                    <barButtonItem systemItem="stop" id="4v1-3s-rhP">
-                                        <connections>
-                                            <action selector="stopSpeech:" destination="6bS-lG-iHO" id="CVO-ME-9F4"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="nWR-Su-w1K"/>
@@ -104,7 +104,7 @@
         <!--Speech Settings-->
         <scene sceneID="5tE-TL-N6k">
             <objects>
-                <viewController modalPresentationStyle="overCurrentContext" id="9i7-uj-Fvq" customClass="SpeechSettings" customModule="FT中文网" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Speech Settings" modalPresentationStyle="overCurrentContext" id="9i7-uj-Fvq" customClass="SpeechSettings" customModule="FT中文网" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="IOu-Cp-rDQ"/>
                         <viewControllerLayoutGuide type="bottom" id="dBs-id-BDM"/>
@@ -123,42 +123,65 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BrN-hQ-jaC">
-                                <rect key="frame" x="302" y="21" width="67" height="31"/>
+                            <pickerView contentMode="scaleToFill" fixedFrame="YES" restorationIdentifier="English Accent Picker" translatesAutoresizingMaskIntoConstraints="NO" id="X8A-ZV-fRx">
+                                <rect key="frame" x="0.0" y="86" width="375" height="87"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            </pickerView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="efy-FT-Kz3">
+                                <rect key="frame" x="162" y="629" width="50" height="30"/>
                                 <color key="backgroundColor" red="0.14901960780000001" green="0.4549019608" blue="0.47843137250000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="31" id="7gw-zw-ntg"/>
-                                    <constraint firstAttribute="width" constant="67" id="dat-Uj-WKS"/>
+                                    <constraint firstAttribute="width" constant="50" id="6r6-Ec-wup"/>
                                 </constraints>
-                                <size key="titleShadowOffset" width="5" height="5"/>
-                                <state key="normal" title="关闭">
-                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="titleShadowColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <state key="normal" title="保存"/>
                                 <connections>
-                                    <action selector="closeSetting:" destination="9i7-uj-Fvq" eventType="touchUpInside" id="cXY-Cd-tbg"/>
+                                    <action selector="saveChanges:" destination="9i7-uj-Fvq" eventType="touchUpInside" id="6cS-9X-Lk6"/>
                                 </connections>
                             </button>
-                            <pickerView contentMode="scaleToFill" fixedFrame="YES" restorationIdentifier="English Accent Picker" translatesAutoresizingMaskIntoConstraints="NO" id="X8A-ZV-fRx">
-                                <rect key="frame" x="0.0" y="78" width="375" height="216"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            </pickerView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="英文语音" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VNM-eA-Z16">
+                                <rect key="frame" x="20" y="57" width="70" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="中文语音" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SiY-AM-hBc">
+                                <rect key="frame" x="20" y="181" width="70" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <pickerView contentMode="scaleToFill" fixedFrame="YES" restorationIdentifier="Chinese Accent Picker" translatesAutoresizingMaskIntoConstraints="NO" id="bPe-ZH-Qrx">
-                                <rect key="frame" x="0.0" y="281" width="375" height="216"/>
+                                <rect key="frame" x="0.0" y="217" width="375" height="83"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             </pickerView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tKD-QH-PD7">
+                                <rect key="frame" x="339" y="20" width="36" height="36"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="36" id="8LL-m1-MQl"/>
+                                    <constraint firstAttribute="height" constant="36" id="ifY-7B-u1Z"/>
+                                </constraints>
+                                <state key="normal" image="closeButton"/>
+                                <connections>
+                                    <action selector="closeSettings:" destination="9i7-uj-Fvq" eventType="touchUpInside" id="kcN-x6-B5X"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.94509803920000002" blue="0.87843137250000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
                             <constraint firstItem="rKG-0d-sDn" firstAttribute="leading" secondItem="0ng-PB-lXW" secondAttribute="leading" constant="20" symbolic="YES" id="4Wn-Og-IJf"/>
+                            <constraint firstAttribute="trailing" secondItem="tKD-QH-PD7" secondAttribute="trailing" id="6pD-V9-CcS"/>
                             <constraint firstItem="rKG-0d-sDn" firstAttribute="top" secondItem="0ng-PB-lXW" secondAttribute="top" constant="20" symbolic="YES" id="7qI-93-mR4"/>
-                            <constraint firstAttribute="trailing" secondItem="BrN-hQ-jaC" secondAttribute="trailing" constant="6" id="P5f-wl-tEa"/>
-                            <constraint firstItem="BrN-hQ-jaC" firstAttribute="top" secondItem="IOu-Cp-rDQ" secondAttribute="bottom" constant="1" id="r2U-4I-ocD"/>
+                            <constraint firstItem="efy-FT-Kz3" firstAttribute="centerX" secondItem="0ng-PB-lXW" secondAttribute="centerX" id="9cY-n3-f3M"/>
+                            <constraint firstItem="dBs-id-BDM" firstAttribute="top" secondItem="efy-FT-Kz3" secondAttribute="bottom" constant="8" symbolic="YES" id="dpa-zB-JiB"/>
+                            <constraint firstItem="tKD-QH-PD7" firstAttribute="top" secondItem="0ng-PB-lXW" secondAttribute="top" constant="20" symbolic="YES" id="lBH-Au-Hd2"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="chineseAccentPick" destination="bPe-ZH-Qrx" id="MQm-bJ-jss"/>
-                        <outlet property="myPicker" destination="X8A-ZV-fRx" id="lqT-a5-oKp"/>
+                        <outlet property="chineseVoicePicker" destination="bPe-ZH-Qrx" id="rng-3O-XQv"/>
+                        <outlet property="englishVoicePicker" destination="X8A-ZV-fRx" id="6Pe-bq-56Q"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uXP-0W-1Wd" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -243,5 +266,8 @@
     </scenes>
     <resources>
         <image name="PauseButton" width="36" height="36"/>
+        <image name="SettingsButton" width="36" height="36"/>
+        <image name="StopButton" width="36" height="36"/>
+        <image name="closeButton" width="36" height="36"/>
     </resources>
 </document>

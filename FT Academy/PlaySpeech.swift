@@ -37,7 +37,7 @@ extension String {
 }
 
 
-class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate {
+class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate,UIPopoverPresentationControllerDelegate {
     
     private lazy var mySpeechSynthesizer:AVSpeechSynthesizer? = nil
     private lazy var audioText: NSMutableAttributedString? = nil
@@ -74,12 +74,6 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate {
     
     @IBAction func setSpeechOptions(_ sender: UIBarButtonItem) {
         self.performSegue(withIdentifier: "Speech Settings", sender: sender)
-//        let storyboard : UIStoryboard = UIStoryboard(name: "Play Speech", bundle: nil)
-//        let vc = storyboard.instantiateViewController(withIdentifier: "Speech Settings")
-//        vc.modalPresentationStyle = UIModalPresentationStyle.popover
-//        let popover: UIPopoverPresentationController = vc.popoverPresentationController!
-//        popover.barButtonItem = sender
-//        present(vc, animated: true, completion:nil)
     }
     
     @IBOutlet weak var bodytext: UITextView!
@@ -94,20 +88,44 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate {
         parseAudioMessage()
         enableBackGroundMode()
         displayText()
+        // MARK: - listen to notifications about preference change
+        let nc = NotificationCenter.default
+        nc.addObserver(
+            forName:Notification.Name(rawValue:"Replay Needed"),
+            object:nil,
+            queue:nil,
+            using:replay
+        )
+        
     }
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     
-    func parseAudioMessage() {
+    func replay(notification:Notification) -> Void {
+        //let userInfo = notification.userInfo
+        mySpeechSynthesizer?.stopSpeaking(at: .word)
+        mySpeechSynthesizer = nil
+        parseAudioMessage()
+        displayText()
+        if let titleAndText = audioText?.string {
+            let mySpeechUtterance:AVSpeechUtterance = AVSpeechUtterance(string: titleAndText)
+            mySpeechUtterance.voice = AVSpeechSynthesisVoice(language: audioLanguage)
+            mySpeechSynthesizer?.speak(mySpeechUtterance)
+            mySpeechSynthesizer?.continueSpeaking()
+        }
+        
+    }
+    
+    private func parseAudioMessage() {
         let body = SpeechContent.sharedInstance.body
         if let language = body["language"], let text = body["text"], let title = body["title"], let eventCategory = body["eventCategory"] {
             var speechLanguage = ""
             switch language {
             case "ch":
-                speechLanguage = "zh-CN"
+                speechLanguage = UserDefaults.standard.string(forKey: chineseVoiceKey) ?? "zh-CN"
             default:
-                speechLanguage = "en-GB"
+                speechLanguage = UserDefaults.standard.string(forKey: englishVoiceKey) ?? "en-GB"
             }
             self.audioLanguage = speechLanguage
             self.eventCategory = eventCategory
@@ -140,11 +158,6 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate {
                 string: ". \r\n",
                 attributes: deliminatorAttributes
             )
-            
-            
-            
-            
-            
             let textFromHTML = text
                 .replacingOccurrences(of: "[\r\n]", with: "", options: .regularExpression, range: nil)
                 .replacingOccurrences(of: "(</p><p>)+", with: "\r\n", options: .regularExpression, range: nil)
@@ -162,7 +175,7 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate {
     
     
     
-    func textToSpeech(_ text: NSMutableAttributedString, language: String) {
+    private func textToSpeech(_ text: NSMutableAttributedString, language: String) {
         // MARK: - Continue audio even when device is set to mute. Do this only when user is actually playing audio because users might want to read FTC news while listening to music from other apps.
         try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
         
@@ -189,7 +202,7 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate {
         }
     }
     
-    func enableBackGroundMode() {
+    private func enableBackGroundMode() {
         // MARK: Receive Messages from Lock Screen
         UIApplication.shared.beginReceivingRemoteControlEvents();
         MPRemoteCommandCenter.shared().playCommand.addTarget {event in
@@ -212,7 +225,7 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate {
         }
     }
     
-    func displayText() {
+    private func displayText() {
         if let audioText = audioText {
             self.bodytext.attributedText = audioText
             self.bodytext.scrollRangeToVisible(NSRange(location:0, length:0))
@@ -250,5 +263,13 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate {
         }
         let image = UIImage(named: "PlayButton")
         buttonPlayPause.image = image
+    }
+    
+    func savePreferences(voicePreferences: [String: String]) {
+        print ("save voices")
+    }
+    
+    func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
+        print ("pop over is dismissed")
     }
 }

@@ -10,62 +10,99 @@ import Foundation
 import UIKit
 class SpeechSettings: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, UIPopoverPresentationControllerDelegate {
     
-    @IBAction func closeSetting(_ sender: UIButton) {
-        self.dismiss(animated: true, completion: nil)
-    }
-    let englishAccent = [
+    let englishVoice = [
         "英国":"en-GB",
         "美国":"en-US",
         "澳大利亚":"en-AU",
         "南非":"en-ZA",
         "爱尔兰":"en-IE"
     ]
-    var englishAccentData = [String]()
-    let chineseAccent = [
+    var englishVoiceData = [String]()
+    let chineseVoice = [
         "中国大陆":"zh-CN",
         "香港":"zh-HK",
         "台湾":"zh-TW"
     ]
-    var chineseAccentData = [String]()
+    var chineseVoiceData = [String]()
+    private let currentEnglishVoice = UserDefaults.standard.string(forKey: englishVoiceKey) ?? "zh-CN"
+    private var newEnglishVoice = UserDefaults.standard.string(forKey: englishVoiceKey) ?? "zh-CN"
+    private let currentChineseVoice = UserDefaults.standard.string(forKey: chineseVoiceKey) ?? "en-GB"
+    private var newChineseVoice = UserDefaults.standard.string(forKey: chineseVoiceKey) ?? "en-GB"
+    
+    @IBAction func closeSettings(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    @IBOutlet weak var englishVoicePicker: UIPickerView!
+    
+    @IBOutlet weak var chineseVoicePicker: UIPickerView!
+    
+    @IBAction func saveChanges(_ sender: Any) {
+        UserDefaults.standard.set(newEnglishVoice, forKey: englishVoiceKey)
+        UserDefaults.standard.set(newChineseVoice, forKey: chineseVoiceKey)
+        // MARK: - Play the speech again if necessary
+        var needToReplayVoice = false
+        let body = SpeechContent.sharedInstance.body
+        if let language = body["language"] {
+            if (language == "en" && currentEnglishVoice != newEnglishVoice) || (language == "ch" && currentChineseVoice != newChineseVoice) {
+                needToReplayVoice = true
+            }
+        }
+        if needToReplayVoice == true {
+            let nc = NotificationCenter.default
+            nc.post(
+                name:Notification.Name(rawValue:"Replay Needed"),
+                object: nil,
+                userInfo: nil
+            )
+        }
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    
     
     override func loadView() {
         super.loadView()
         if self.popoverPresentationController?.adaptivePresentationStyle == .popover {
-            print ("this is popover")
-        } else {
-            print ("this is not a popover")
+            print ("this is a popover")
         }
-        englishAccentData = Array(englishAccent.keys)
-        myPicker.dataSource = self
-        myPicker.delegate = self
-        chineseAccentData = Array(chineseAccent.keys)
-        chineseAccentPick.dataSource = self
-        chineseAccentPick.delegate = self
-        //self.popoverPresentationController?.delegate = self
+        self.popoverPresentationController?.backgroundColor = UIColor(netHex: 0xFFF1E0)
+        englishVoiceData = Array(englishVoice.keys)
+        englishVoicePicker.dataSource = self
+        englishVoicePicker.delegate = self
+        let defaultRowForEnglish = getPickerRowByValue(englishVoice, value: currentEnglishVoice)
+        print (currentEnglishVoice)
+        print (defaultRowForEnglish)
+        englishVoicePicker.selectRow(defaultRowForEnglish, inComponent: 0, animated: false)
+        chineseVoiceData = Array(chineseVoice.keys)
+        chineseVoicePicker.dataSource = self
+        chineseVoicePicker.delegate = self
+        let defaultRowForChinese = getPickerRowByValue(chineseVoice, value: currentChineseVoice)
+        chineseVoicePicker.selectRow(defaultRowForChinese, inComponent: 0, animated: false)
     }
     
-    @IBOutlet weak var myPicker: UIPickerView!
-
-    
-    @IBOutlet weak var chineseAccentPick: UIPickerView!
+    private func getPickerRowByValue(_ voices: [String: String], value: String) -> Int {
+        let voicesArray = Array(voices.values)
+        let voiceIndex = voicesArray.index(of: value)
+        return voiceIndex ?? 0
+    }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {        
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         if pickerView.restorationIdentifier == "English Accent Picker" {
-        return englishAccentData.count
+            return englishVoiceData.count
         } else {
-            return chineseAccentData.count
+            return chineseVoiceData.count
         }
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         if pickerView.restorationIdentifier == "English Accent Picker" {
-        return englishAccentData[row]
+            return englishVoiceData[row]
         } else {
-            return chineseAccentData[row]
+            return chineseVoiceData[row]
         }
     }
     
@@ -74,18 +111,24 @@ class SpeechSettings: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         var accent = "en-GB"
         if pickerView.restorationIdentifier == "English Accent Picker" {
             language = "en"
-            accent = englishAccent[englishAccentData[row]] ?? "en-GB"
+            accent = englishVoice[englishVoiceData[row]] ?? "en-GB"
         } else {
             language = "ch"
-            accent = chineseAccent[chineseAccentData[row]] ?? "zh-CN"
+            accent = chineseVoice[chineseVoiceData[row]] ?? "zh-CN"
         }
-        changeAccent(language, accent: accent)
+        changeVoice(language, voice: accent)
     }
     
-    func changeAccent (_ language: String, accent: String) {
+    func changeVoice (_ language: String, voice: String) {
         // TODO: - Update Parent View's Accent and Save
-        print("change \(language) into \(accent)")
+        if language == "en" {
+            newEnglishVoice = voice
+        } else {
+            newChineseVoice = voice
+        }
     }
     
-
+    
+    
+    
 }

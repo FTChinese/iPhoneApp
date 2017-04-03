@@ -110,9 +110,12 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         // MARK: Load in-app purchase products information
         loadProducts()
         // MARK: listen to in-app purchase transaction notification
-        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.handlePurchaseNotification(_:)),
-                                               name: NSNotification.Name(rawValue: IAPHelper.IAPHelperPurchaseNotification),
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(ViewController.handlePurchaseNotification(_:)),
+            name: NSNotification.Name(rawValue: IAPHelper.IAPHelperPurchaseNotification),
+            object: nil
+        )
         
         // MARK: - 告诉系统接受远程响应事件，并注册成为第一响应者
         UIApplication.shared.beginReceivingRemoteControlEvents()
