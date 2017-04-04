@@ -64,6 +64,8 @@ func sendDeviceToken() {
         let session = URLSession.shared
         //let task = URLSession.shared().dataTask(with: request as URLRequest) {
         let task = session.dataTask(with: request as URLRequest, completionHandler: {data, response, error -> Void in
+            
+            /*
             if data != nil {
                 deviceTokenSent = true
                 let urlContent = NSString(data: data!, encoding: String.Encoding.utf8.rawValue) as NSString!
@@ -71,6 +73,7 @@ func sendDeviceToken() {
             } else {
                 print("failed to send token: \(deviceTokenString)! ")
             }
+            */
         })
         task.resume()
     }

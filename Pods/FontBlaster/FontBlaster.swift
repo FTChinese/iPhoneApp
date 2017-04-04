@@ -152,7 +152,7 @@ fileprivate extension FontBlaster {
 
             } else if let fontError = fontError?.takeRetainedValue() {
                 let errorDescription = CFErrorCopyDescription(fontError)
-                printDebugMessage(message: "Failed to load font '\(fontName)': \(errorDescription)")
+                printDebugMessage(message: "Failed to load font '\(fontName)': \(String(describing: errorDescription))")
             }
 
         } else {
@@ -163,7 +163,7 @@ fileprivate extension FontBlaster {
             }
 
             let errorDescription = CFErrorCopyDescription(fontError)
-            printDebugMessage(message: "Failed to load font '\(fontName)': \(errorDescription)")
+            printDebugMessage(message: "Failed to load font '\(fontName)': \(String(describing: errorDescription))")
         }
 
     }

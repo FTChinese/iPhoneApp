@@ -44,6 +44,7 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate,UIPopoverPresent
     private var audioLanguage = ""
     private var eventCategory = ""
     private lazy var previouseRange: NSRange? = nil
+
     
     @IBOutlet weak var buttonPlayPause: UIBarButtonItem!
     
@@ -96,8 +97,8 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate,UIPopoverPresent
             queue:nil,
             using:replay
         )
-        
     }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }

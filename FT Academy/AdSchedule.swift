@@ -115,7 +115,7 @@ class AdSchedule {
                         // if the file exits
                         if templatePath != nil && pathExtention != nil{
                             // common properties like htmlBase, impressions and links
-                            print("found the file in \(templatePath) \(pathExtention)")
+                            print("found the file in \(String(describing: templatePath)) \(String(describing: pathExtention))")
                             self.htmlBase = currentFileName
                             self.adLink = currentCreative["click"] as? String ?? ""
                             // background color
@@ -342,7 +342,7 @@ class AdSchedule {
                 let statusType = IJReachability().connectedToNetworkOfType()
                 if statusType == .wiFi || !videoTypes.contains(pathExtention!.lowercased()){
                     print("\(currentFileName) about to be downloaded")
-                    grabFileFromWeb(url: url as? URL, fileName: lastComponent, parseScheduleForDownload: false)
+                    grabFileFromWeb(url: url as URL?, fileName: lastComponent, parseScheduleForDownload: false)
                 }
             }
             return lastComponent
