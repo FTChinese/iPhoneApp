@@ -21,6 +21,7 @@ PODS:
 
 DEPENDENCIES:
   - FolioReaderKit
+  - SSZipArchive
 
 SPEC CHECKSUMS:
   AEXML: 6fc6433aa35bdc15dd8eb8d54eb7aa4520a010eb
@@ -33,6 +34,6 @@ SPEC CHECKSUMS:
   SSZipArchive: 63f8e11cfcc33e03e4cd666b4359ea8bd6facd0c
   ZFDragableModalTransition: 0d294eaaba6edfcb9839595de765f9ca06a4b524
 
-PODFILE CHECKSUM: 0b1f401b604bc2a3beb17f48d7d8f704f1a78d36
+PODFILE CHECKSUM: 8b0471c0ee3eec95e5273893d1a1cab99fd55af6
 
 COCOAPODS: 1.2.0
