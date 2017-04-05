@@ -238,9 +238,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
     
     
     
-    // code related to wechat authorization
+    // MARK: - WeChat authorized login
     
-    // wechat developer appid
+    // MARK: - wechat developer appid
     private let wechatAppId = "wxc1bc20ee7478536a"
     private let wechatAppSecret = "14999fe35546acc84ecdddab197ed0fd"
     private let accessTokenPrefix = "https://api.weixin.qq.com/sns/oauth2/access_token?"
@@ -264,7 +264,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
             if let wechatAuthCode = authResp.code {
                 let wechatAccessTokenLink = accessTokenPrefix + "appid=" + wechatAppId + "&secret=" + wechatAppSecret + "&code=" + wechatAuthCode + "&grant_type=authorization_code"
                 if let url = URL(string: wechatAccessTokenLink) {
-                    
                     getDataFromUrl(url) { (data, response, error)  in
                         DispatchQueue.main.async { () -> Void in
                             guard let data = data , error == nil else { return }
@@ -289,7 +288,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
                                             guard let data = data , error == nil else { return }
                                             if let JSONString = String(data: data, encoding: .utf8) {
                                                 if let rootViewController = self.window?.rootViewController as? ViewController {
-                                                    let jsCode = "try{socialLogin('wechat', '\(JSONString)');}catch(ignore){}"
+                                                    let jsCode = "socialLogin('wechat', '\(JSONString)');"
                                                     print(jsCode)
                                                     rootViewController.webView.evaluateJavaScript(jsCode) { (result, error) in
                                                         if result != nil {
@@ -310,12 +309,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
                         }
                     }
                 }
-                
             } else {
-                
             }
         } else {
-            
         }
     }
     // code related to wechat authorization end
