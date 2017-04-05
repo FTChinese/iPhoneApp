@@ -57,10 +57,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         // MARK: - Add a user script so that the native can receive messages from web view
         let contentController = WKUserContentController();
         // MARK: - Receive text to audio related messages
-        contentController.add(
-            self,
-            name: "listen"
-        )
+        contentController.add(self,name: "listen")
+        // MARK: - Play Audio
+        contentController.add(self, name: "audio")
         // MARK: - add the user content controller to web view's configuration
         config.userContentController = contentController
         
@@ -654,6 +653,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             // MARK: show social login buttons
             showSocialLoginButtons()
             enableTextToSpeech()
+            enableAudioPlay()
             player = nil
         }
     }
@@ -1640,12 +1640,21 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
+    func enableAudioPlay() {
+        let jsCode = "window.supportNativeAudio = true;"
+        self.webView.evaluateJavaScript(jsCode) { (result, error) in
+        }
+    }
+    
     // MARK: - Handle message sent back to native app
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        if message.name == "listen" {
-            if let body = message.body as? [String: String] {
+        if let body = message.body as? [String: String] {
+            if message.name == "listen" {
                 SpeechContent.sharedInstance.body = body
                 self.performSegue(withIdentifier: "Play Speech", sender: self)
+            } else if message.name == "audio" {
+                AudioContent.sharedInstance.body = body
+                self.performSegue(withIdentifier: "Play Audio", sender: self)
             }
         }
     }

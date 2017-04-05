@@ -71,7 +71,7 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate,UIPopoverPresent
     @IBAction func stopSpeech(_ sender: UIBarButtonItem) {
         mySpeechSynthesizer?.stopSpeaking(at: .word)
         mySpeechSynthesizer = nil
-        print ("speech should stop now! ")
+        //print ("speech should stop now! ")
         self.dismiss(animated: true, completion: nil)
     }
     
