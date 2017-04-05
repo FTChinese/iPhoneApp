@@ -70,6 +70,8 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate,UIPopoverPresent
     
     @IBAction func stopSpeech(_ sender: UIBarButtonItem) {
         mySpeechSynthesizer?.stopSpeaking(at: .word)
+        mySpeechSynthesizer = nil
+        print ("speech should stop now! ")
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -106,16 +108,14 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate,UIPopoverPresent
     func replay(notification:Notification) -> Void {
         //let userInfo = notification.userInfo
         mySpeechSynthesizer?.stopSpeaking(at: .word)
-        mySpeechSynthesizer = nil
         parseAudioMessage()
-        displayText()
+        //displayText()
         if let titleAndText = audioText?.string {
             let mySpeechUtterance:AVSpeechUtterance = AVSpeechUtterance(string: titleAndText)
             mySpeechUtterance.voice = AVSpeechSynthesisVoice(language: audioLanguage)
             mySpeechSynthesizer?.speak(mySpeechUtterance)
-            mySpeechSynthesizer?.continueSpeaking()
+            buttonPlayPause.image = UIImage(named: "PauseButton")
         }
-        
     }
     
     private func parseAudioMessage() {
@@ -123,10 +123,10 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate,UIPopoverPresent
         if let language = body["language"], let text = body["text"], let title = body["title"], let eventCategory = body["eventCategory"] {
             var speechLanguage = ""
             switch language {
-            case "ch":
-                speechLanguage = UserDefaults.standard.string(forKey: chineseVoiceKey) ?? "zh-CN"
-            default:
+            case "en":
                 speechLanguage = UserDefaults.standard.string(forKey: englishVoiceKey) ?? "en-GB"
+            default:
+                speechLanguage = UserDefaults.standard.string(forKey: chineseVoiceKey) ?? "zh-CN"
             }
             self.audioLanguage = speechLanguage
             self.eventCategory = eventCategory
@@ -266,11 +266,4 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate,UIPopoverPresent
         buttonPlayPause.image = image
     }
     
-    func savePreferences(voicePreferences: [String: String]) {
-        print ("save voices")
-    }
-    
-    func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
-        print ("pop over is dismissed")
-    }
 }

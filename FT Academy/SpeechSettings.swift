@@ -24,10 +24,10 @@ class SpeechSettings: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         "台湾":"zh-TW"
     ]
     var chineseVoiceData = [String]()
-    private let currentEnglishVoice = UserDefaults.standard.string(forKey: englishVoiceKey) ?? "zh-CN"
-    private var newEnglishVoice = UserDefaults.standard.string(forKey: englishVoiceKey) ?? "zh-CN"
-    private let currentChineseVoice = UserDefaults.standard.string(forKey: chineseVoiceKey) ?? "en-GB"
-    private var newChineseVoice = UserDefaults.standard.string(forKey: chineseVoiceKey) ?? "en-GB"
+    private let currentEnglishVoice = UserDefaults.standard.string(forKey: englishVoiceKey) ?? "en-GB"
+    private var newEnglishVoice = UserDefaults.standard.string(forKey: englishVoiceKey) ?? "en-GB"
+    private let currentChineseVoice = UserDefaults.standard.string(forKey: chineseVoiceKey) ?? "zh-CN"
+    private var newChineseVoice = UserDefaults.standard.string(forKey: chineseVoiceKey) ?? "zh-CN"
     
     @IBAction func closeSettings(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
