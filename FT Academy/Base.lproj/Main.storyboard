@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -114,9 +114,27 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="g6k-Nd-TWu">
+                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nse-G3-6DJ">
+                                <rect key="frame" x="0.0" y="581" width="375" height="86"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="xDB-s2-bV0">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="86"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <color key="backgroundColor" red="0.14901960780000001" green="0.4549019608" blue="0.47843137250000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="86" id="YrP-X3-Klq"/>
+                                </constraints>
+                                <blurEffect style="light"/>
+                            </visualEffectView>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="nvm-zh-ZMN">
+                                <rect key="frame" x="14" y="593" width="347" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="tYP-bj-aVM"/>
+                                </constraints>
+                                <color key="minimumTrackTintColor" red="1" green="0.94509803920000002" blue="0.87843137250000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </slider>
+                            <toolbar opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g6k-Nd-TWu">
                                 <rect key="frame" x="0.0" y="623" width="375" height="44"/>
-                                <color key="backgroundColor" red="0.14901960780000001" green="0.4549019608" blue="0.47843137250000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <items>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="Acd-hP-7XO"/>
                                     <barButtonItem image="PlayButton" id="KbP-uA-dyS">
@@ -138,15 +156,26 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.94509803920000002" blue="0.87898763020000004" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="nse-G3-6DJ" secondAttribute="trailing" id="BaP-Js-r1e"/>
                             <constraint firstAttribute="trailing" secondItem="g6k-Nd-TWu" secondAttribute="trailing" symbolic="YES" id="JsQ-vh-Nk8"/>
+                            <constraint firstItem="nvm-zh-ZMN" firstAttribute="leading" secondItem="UHc-We-Iak" secondAttribute="leadingMargin" id="KeT-43-aMc"/>
                             <constraint firstItem="g6k-Nd-TWu" firstAttribute="leading" secondItem="UHc-We-Iak" secondAttribute="leading" symbolic="YES" id="QOu-nv-uZH"/>
+                            <constraint firstItem="7yv-dI-Rn1" firstAttribute="top" secondItem="nse-G3-6DJ" secondAttribute="bottom" id="UGz-9A-sV9"/>
                             <constraint firstItem="7yv-dI-Rn1" firstAttribute="top" secondItem="g6k-Nd-TWu" secondAttribute="bottom" symbolic="YES" id="aD7-kJ-3LU"/>
+                            <constraint firstItem="nse-G3-6DJ" firstAttribute="leading" secondItem="UHc-We-Iak" secondAttribute="leading" id="c3u-KO-xSF"/>
+                            <constraint firstItem="g6k-Nd-TWu" firstAttribute="top" secondItem="nvm-zh-ZMN" secondAttribute="bottom" id="cge-3R-u1y"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="nvm-zh-ZMN" secondAttribute="trailing" id="uzP-ZE-UpO"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="buttonPlayAndPause" destination="KbP-uA-dyS" id="I4R-Va-yOM"/>
+                        <outlet property="progressSlider" destination="nvm-zh-ZMN" id="qxm-72-eOb"/>
+                        <outlet property="toolBar" destination="g6k-Nd-TWu" id="vgR-2b-dru"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zH1-8b-ocF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="999" y="881"/>
+            <point key="canvasLocation" x="997.60000000000002" y="880.20989505247383"/>
         </scene>
         <!--Speech Settings-->
         <scene sceneID="5tE-TL-N6k">
