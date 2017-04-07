@@ -241,7 +241,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             maxAdTimeAfterLaunch = adScheduleDurationInSeconds
             maxAdTimeAfterWebRequest = adScheduleDurationInSeconds - 2.0
         }
-        print (maxAdTimeAfterLaunch)
+        //print (maxAdTimeAfterLaunch)
         if adSchedule.adType == "page" {
             addOverlayView()
             showHTMLAd()
