@@ -43,7 +43,9 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate,UIPopoverPresent
     private lazy var audioText: NSMutableAttributedString? = nil
     private var audioLanguage = ""
     private var eventCategory = ""
+    private var audioTitle = "FT中文网"
     private lazy var previouseRange: NSRange? = nil
+    let speechDefaultVoice = SpeechDefaultVoice()
 
     
     @IBOutlet weak var buttonPlayPause: UIBarButtonItem!
@@ -121,15 +123,10 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate,UIPopoverPresent
     private func parseAudioMessage() {
         let body = SpeechContent.sharedInstance.body
         if let language = body["language"], let text = body["text"], let title = body["title"], let eventCategory = body["eventCategory"] {
-            var speechLanguage = ""
-            switch language {
-            case "en":
-                speechLanguage = UserDefaults.standard.string(forKey: englishVoiceKey) ?? "en-GB"
-            default:
-                speechLanguage = UserDefaults.standard.string(forKey: chineseVoiceKey) ?? "zh-CN"
-            }
+            let speechLanguage = speechDefaultVoice.getVoiceByLanguage(language)
             self.audioLanguage = speechLanguage
             self.eventCategory = eventCategory
+            self.audioTitle = title
             let titleParagraphStyle = NSMutableParagraphStyle()
             titleParagraphStyle.paragraphSpacing = 20
             let titleAttributes = [
@@ -193,11 +190,11 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate,UIPopoverPresent
         mySpeechSynthesizer?.speak(mySpeechUtterance)
         
         //大标题 - 小标题  - 歌曲总时长 - 歌曲当前播放时长 - 封面
-        if let artwork = UIImage(named: "ftcicon.jpg") {
-            let settings = [MPMediaItemPropertyTitle: "FT中文网",
-                            MPMediaItemPropertyArtist: "全球财经精粹",
+        if let artwork = UIImage(named: "cover.jpg") {
+            let settings = [MPMediaItemPropertyTitle: audioTitle,
+                            MPMediaItemPropertyArtist: "FT中文网",
                             //MPMediaItemPropertyPlaybackDuration: "\(audioPlayer.duration)",
-                //MPNowPlayingInfoPropertyElapsedPlaybackTime: "\(audioPlayer.currentTime)",
+                //MPNowPlayingInfoPropertyElapsedPlaybackTime: "\(mySpeechUtterance.currentTime)",
                 MPMediaItemPropertyArtwork: MPMediaItemArtwork(image: artwork)] as [String : Any]
             MPNowPlayingInfoCenter.default().setValue(settings, forKey: "nowPlayingInfo")
         }

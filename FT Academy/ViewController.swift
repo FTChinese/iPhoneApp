@@ -23,7 +23,13 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     private lazy var timer: Timer? = nil
     var pageStatus: WebViewStatus?
     private var startUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
+    private var startFileName = "index"
     private let iPadStartUrl = "http://app005.ftmailbox.com/ipad-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
+    private let big5Url = "http://big5.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
+    private let gbUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
+    private let languageKeyName = "prefer language"
+    private var languageForJS = ""
+    
     // MARK: - If the app use a native launch ad, suppress the pop up one
     private let useNativeLaunchAd = "useNativeLaunchAd"
     private var maxAdTimeAfterLaunch = 5.0
@@ -44,13 +50,12 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         print ("notification removed")
     }
     
+
     // MARK: - start to load the webview as soon as possible and cover the whole view with an overlayview of either advertisement or launchscreen
     override func loadView() {
         super.loadView()
         pageStatus = .viewToLoad
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            startUrl = iPadStartUrl
-        }
+        initLanguageSetting()
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
         
@@ -60,6 +65,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         contentController.add(self,name: "listen")
         // MARK: - Play Audio
         contentController.add(self, name: "audio")
+        // MARK: - Switch Chinese Language Preference
+        contentController.add(self, name: "language")
         // MARK: - add the user content controller to web view's configuration
         config.userContentController = contentController
         
@@ -507,7 +514,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             startUrl = "\(startUrl)&\(useNativeLaunchAd)"
         }
         print ("start url is \(startUrl)")
-        if let templatepath = Bundle.main.path(forResource: "index", ofType: "html") {
+        if let templatepath = Bundle.main.path(forResource: startFileName, ofType: "html") {
             let base = URL(string: startUrl)
             do {
                 let s = try NSString(contentsOfFile:templatepath, encoding:String.Encoding.utf8.rawValue)
@@ -654,6 +661,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             showSocialLoginButtons()
             enableTextToSpeech()
             enableAudioPlay()
+            enableLanguageSetting()
             player = nil
         }
     }
@@ -1646,6 +1654,48 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
     }
     
+    // MARK: - Change Language Preferences
+    private func initLanguageSetting() {
+        // MARK: - Check if the user prefers traditional Chinese
+        let pre = UserDefaults.standard.string(forKey: languageKeyName) ?? Locale.preferredLanguages[0]
+        if pre.hasPrefix("zh-Hant") {
+            startUrl = big5Url
+            startFileName = "indexBig5"
+            languageForJS = "traditional"
+        } else {
+            startUrl = gbUrl
+            startFileName = "index"
+            languageForJS = "simplified"
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                startUrl = iPadStartUrl
+            }
+        }
+    }
+    
+    private func changeLanguagePreference(_ object: [String: String]) {
+        if let newLanguagePreference = object["prefer"] as String? {
+            if newLanguagePreference == "traditional" {
+                UserDefaults.standard.set("zh-Hant", forKey: languageKeyName)
+                print("zh-Hant")
+            } else {
+                UserDefaults.standard.set("zh-Hans", forKey: languageKeyName)
+                print("zh-Hans")
+            }
+            initLanguageSetting()
+            loadFromLocal()
+            pageStatus = .webViewLoading
+            timer = nil
+            displayWebviewAfterSeconds(6.0)
+        }
+    }
+    
+    private func enableLanguageSetting() {
+        let jsCode = "window.chineseLanguagePreference = '\(languageForJS)';enableChineseLanguageSetting();"
+        //print(jsCode)
+        self.webView.evaluateJavaScript(jsCode) { (result, error) in
+        }
+    }
+    
     // MARK: - Handle message sent back to native app
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if let body = message.body as? [String: String] {
@@ -1655,6 +1705,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             } else if message.name == "audio" {
                 AudioContent.sharedInstance.body = body
                 self.performSegue(withIdentifier: "Play Audio", sender: self)
+            } else if message.name == "language" {
+                changeLanguagePreference(body)
             }
         }
     }

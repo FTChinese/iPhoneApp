@@ -38,8 +38,7 @@ var deviceUserId = "no"
 let deviceTokenUrl = "https://noti.ftimg.net/iphone-collect.php"
 var supportedSocialPlatforms = [String]()
 
-let englishVoiceKey = "English Voice"
-let chineseVoiceKey = "Chinese Voice"
+
 
 enum WebViewStatus {
     case viewToLoad

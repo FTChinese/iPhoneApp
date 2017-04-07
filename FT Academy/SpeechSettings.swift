@@ -24,10 +24,12 @@ class SpeechSettings: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         "台湾":"zh-TW"
     ]
     var chineseVoiceData = [String]()
-    private let currentEnglishVoice = UserDefaults.standard.string(forKey: englishVoiceKey) ?? "en-GB"
-    private var newEnglishVoice = UserDefaults.standard.string(forKey: englishVoiceKey) ?? "en-GB"
-    private let currentChineseVoice = UserDefaults.standard.string(forKey: chineseVoiceKey) ?? "zh-CN"
-    private var newChineseVoice = UserDefaults.standard.string(forKey: chineseVoiceKey) ?? "zh-CN"
+    let speechDefaultVoice = SpeechDefaultVoice()
+    
+    private var currentEnglishVoice = "en-GB"
+    private var newEnglishVoice = "en-GB"
+    private var currentChineseVoice = "zh-CN"
+    private var newChineseVoice = "zh-CN"
     
     @IBAction func closeSettings(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
@@ -37,8 +39,8 @@ class SpeechSettings: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     @IBOutlet weak var chineseVoicePicker: UIPickerView!
     
     @IBAction func saveChanges(_ sender: Any) {
-        UserDefaults.standard.set(newEnglishVoice, forKey: englishVoiceKey)
-        UserDefaults.standard.set(newChineseVoice, forKey: chineseVoiceKey)
+        UserDefaults.standard.set(newEnglishVoice, forKey: speechDefaultVoice.englishVoiceKey)
+        UserDefaults.standard.set(newChineseVoice, forKey: speechDefaultVoice.chineseVoiceKey)
         // MARK: - Play the speech again if necessary
         var needToReplayVoice = false
         let body = SpeechContent.sharedInstance.body
@@ -62,9 +64,16 @@ class SpeechSettings: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     
     override func loadView() {
         super.loadView()
-        if self.popoverPresentationController?.adaptivePresentationStyle == .popover {
-            print ("this is a popover")
-        }
+        
+        // MARK: - Set up default voice preference
+        currentEnglishVoice = speechDefaultVoice.getVoiceByLanguage("en")
+        newEnglishVoice = currentEnglishVoice
+        currentChineseVoice = speechDefaultVoice.getVoiceByLanguage("ch")
+        newChineseVoice = currentChineseVoice
+        
+//        if self.popoverPresentationController?.adaptivePresentationStyle == .popover {
+//            print ("this is a popover")
+//        }
         self.popoverPresentationController?.backgroundColor = UIColor(netHex: 0xFFF1E0)
         englishVoiceData = Array(englishVoice.keys)
         englishVoicePicker.dataSource = self
