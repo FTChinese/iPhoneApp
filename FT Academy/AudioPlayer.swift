@@ -111,22 +111,6 @@ class AudioPlayer: UIViewController {
         }
     }
     
-    
-//    override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutableRawPointer) {
-//        if object is AVPlayerItem {
-//            switch keyPath {
-//            case "playbackBufferEmpty":
-//                // Show loader
-//                
-//            case "playbackLikelyToKeepUp":
-//                // Hide loader
-//                
-//            case "playbackBufferFull":
-//                // Hide loader
-//            }
-//        }
-//    }
-    
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if object is AVPlayerItem {
             if let k = keyPath {
@@ -149,4 +133,15 @@ class AudioPlayer: UIViewController {
 
         }
     }
+    
+    // TODO: Share
+    
+    // TODO: Download Management
+    
+    // TODO: Subscribe
+    
+    // TODO: Display Background Images for Radio Columns
+    
+    // TODO: Display the audio text
+    
 }
