@@ -139,19 +139,23 @@
                             <toolbar opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g6k-Nd-TWu">
                                 <rect key="frame" x="0.0" y="623" width="375" height="44"/>
                                 <items>
+                                    <barButtonItem systemItem="action" id="XvK-Vb-LMj"/>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="Acd-hP-7XO"/>
-                                    <barButtonItem image="PlayButton" id="KbP-uA-dyS">
+                                    <barButtonItem image="DownloadButton" id="ust-f3-HnZ"/>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="trL-ol-IW3"/>
+                                    <barButtonItem image="BigPlayButton" id="KbP-uA-dyS">
                                         <connections>
                                             <action selector="ButtonPlayPause:" destination="pJa-PQ-Cxq" id="jpl-Wi-SId"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="1tq-07-jFB"/>
+                                    <barButtonItem image="SettingsButton" id="g9v-ZQ-6QH"/>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="d6q-2z-q4i"/>
                                     <barButtonItem systemItem="stop" id="rOo-Yk-jWt">
                                         <connections>
                                             <action selector="StopAudio:" destination="pJa-PQ-Cxq" id="Yh0-am-bbc"/>
                                         </connections>
                                     </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="evL-oY-dHj"/>
                                 </items>
                                 <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="barTintColor" red="0.14901960780000001" green="0.4549019608" blue="0.47843137250000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -344,8 +348,9 @@
         </scene>
     </scenes>
     <resources>
+        <image name="BigPlayButton" width="48" height="48"/>
+        <image name="DownloadButton" width="36" height="36"/>
         <image name="PauseButton" width="36" height="36"/>
-        <image name="PlayButton" width="36" height="36"/>
         <image name="SettingsButton" width="36" height="36"/>
         <image name="closeButton" width="36" height="36"/>
     </resources>

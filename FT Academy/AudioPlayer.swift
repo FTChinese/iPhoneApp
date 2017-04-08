@@ -35,12 +35,12 @@ class AudioPlayer: UIViewController {
             if (player.rate != 0) && (player.error == nil) {
                 print ("should pause audio")
                 player.pause()
-                buttonPlayAndPause.image = UIImage(named:"PlayButton")
+                buttonPlayAndPause.image = UIImage(named:"BigPlayButton")
             } else {
                 print ("should play audio")
                 player.play()
                 player.replaceCurrentItem(with: playerItem)
-                buttonPlayAndPause.image = UIImage(named:"PauseButton")
+                buttonPlayAndPause.image = UIImage(named:"BigPauseButton")
             }
         }
     }
@@ -132,7 +132,7 @@ class AudioPlayer: UIViewController {
         self.playerItem?.seek(to: startTime)
         self.player?.pause()
         self.progressSlider.value = 0
-        self.buttonPlayAndPause.image = UIImage(named:"PlayButton")
+        self.buttonPlayAndPause.image = UIImage(named:"BigPlayButton")
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -160,7 +160,7 @@ class AudioPlayer: UIViewController {
     
     // TODO: Share
     
-    // TODO: Download Management
+    // TODO: Download Management: Download or Delete
     
     // TODO: Subscribe
     
@@ -168,7 +168,7 @@ class AudioPlayer: UIViewController {
     
     // TODO: Display the audio text
     
-    // TODO: Update play progress
+    // MARK: - Done: Update play progress
     
     
 }
