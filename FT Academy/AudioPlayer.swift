@@ -53,6 +53,14 @@ class AudioPlayer: UIViewController {
         }
     }
     
+    @IBAction func sliderValueChanged(_ sender: UISlider) {
+        let currentValue = sender.value
+        //let maxTime = sender.maximumValue
+        let currentTime = CMTimeMake(Int64(currentValue), 1)
+        playerItem?.seek(to: currentTime)
+        
+        //print ("seeking to: \(currentTime)")
+    }
     
     override func loadView() {
         super.loadView()
@@ -104,11 +112,27 @@ class AudioPlayer: UIViewController {
                 }
             }
             
+            // MARK: - Observe Play to the End
+            NotificationCenter.default.addObserver(self,selector:#selector(AudioPlayer.playerDidFinishPlaying), name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: playerItem)
+            
+            
+            
+            
+            //player?.actionAtItemEnd = .pause
+            
             // MARK: - Update buffer status
             playerItem?.addObserver(self, forKeyPath: "playbackBufferEmpty", options: .new, context: nil)
             playerItem?.addObserver(self, forKeyPath: "playbackLikelyToKeepUp", options: .new, context: nil)
             playerItem?.addObserver(self, forKeyPath: "playbackBufferFull", options: .new, context: nil)
         }
+    }
+    
+    func playerDidFinishPlaying() {
+        let startTime = CMTimeMake(0, 1)
+        self.playerItem?.seek(to: startTime)
+        self.player?.pause()
+        self.progressSlider.value = 0
+        self.buttonPlayAndPause.image = UIImage(named:"PlayButton")
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -130,7 +154,7 @@ class AudioPlayer: UIViewController {
                     break
                 }
             }
-
+            
         }
     }
     
@@ -143,5 +167,8 @@ class AudioPlayer: UIViewController {
     // TODO: Display Background Images for Radio Columns
     
     // TODO: Display the audio text
+    
+    // TODO: Update play progress
+    
     
 }
