@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina4_7" orientation="portrait">
+    <device id="retina5_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -19,7 +19,7 @@
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.0084822662174701691" green="0.13179358839988708" blue="0.29942241311073303" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
@@ -42,17 +42,17 @@
                         <viewControllerLayoutGuide type="bottom" id="IsA-QH-vOf"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="TXc-yi-Eqs">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hjJ-KW-QEg">
-                                <rect key="frame" x="16" y="20" width="343" height="603"/>
+                                <rect key="frame" x="20" y="20" width="374" height="672"/>
                                 <color key="backgroundColor" red="1" green="0.94509803920000002" blue="0.87843137250000003" alpha="0.89000000000000001" colorSpace="custom" customColorSpace="displayP3"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="bzY-Hz-F6j">
-                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="692" width="414" height="44"/>
                                 <color key="backgroundColor" red="0.14901960780000001" green="0.4549019608" blue="0.47843137250000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <items>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="Y0I-RX-lbe"/>
@@ -111,13 +111,13 @@
                         <viewControllerLayoutGuide type="bottom" id="7yv-dI-Rn1"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="UHc-We-Iak">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nse-G3-6DJ">
-                                <rect key="frame" x="0.0" y="581" width="375" height="86"/>
+                                <rect key="frame" x="0.0" y="650" width="414" height="86"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="xDB-s2-bV0">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="86"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="86"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="backgroundColor" red="0.14901960780000001" green="0.4549019608" blue="0.47843137250000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 </view>
@@ -127,7 +127,7 @@
                                 <blurEffect style="light"/>
                             </visualEffectView>
                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="nvm-zh-ZMN">
-                                <rect key="frame" x="14" y="593" width="347" height="31"/>
+                                <rect key="frame" x="18" y="662" width="378" height="31"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="tYP-bj-aVM"/>
                                 </constraints>
@@ -137,7 +137,7 @@
                                 </connections>
                             </slider>
                             <toolbar opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g6k-Nd-TWu">
-                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="692" width="414" height="44"/>
                                 <items>
                                     <barButtonItem systemItem="action" id="XvK-Vb-LMj"/>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="Acd-hP-7XO"/>
@@ -160,22 +160,31 @@
                                 <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="barTintColor" red="0.14901960780000001" green="0.4549019608" blue="0.47843137250000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             </toolbar>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fPW-vk-FEr">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="654"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </webView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.94509803920000002" blue="0.87898763020000004" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="fPW-vk-FEr" secondAttribute="trailing" id="8TA-lC-WCb"/>
                             <constraint firstAttribute="trailing" secondItem="nse-G3-6DJ" secondAttribute="trailing" id="BaP-Js-r1e"/>
                             <constraint firstAttribute="trailing" secondItem="g6k-Nd-TWu" secondAttribute="trailing" symbolic="YES" id="JsQ-vh-Nk8"/>
                             <constraint firstItem="nvm-zh-ZMN" firstAttribute="leading" secondItem="UHc-We-Iak" secondAttribute="leadingMargin" id="KeT-43-aMc"/>
+                            <constraint firstItem="7yv-dI-Rn1" firstAttribute="top" secondItem="g6k-Nd-TWu" secondAttribute="bottom" symbolic="YES" id="NIX-GM-O6m"/>
                             <constraint firstItem="g6k-Nd-TWu" firstAttribute="leading" secondItem="UHc-We-Iak" secondAttribute="leading" symbolic="YES" id="QOu-nv-uZH"/>
-                            <constraint firstItem="7yv-dI-Rn1" firstAttribute="top" secondItem="nse-G3-6DJ" secondAttribute="bottom" id="UGz-9A-sV9"/>
-                            <constraint firstItem="7yv-dI-Rn1" firstAttribute="top" secondItem="g6k-Nd-TWu" secondAttribute="bottom" symbolic="YES" id="aD7-kJ-3LU"/>
                             <constraint firstItem="nse-G3-6DJ" firstAttribute="leading" secondItem="UHc-We-Iak" secondAttribute="leading" id="c3u-KO-xSF"/>
                             <constraint firstItem="g6k-Nd-TWu" firstAttribute="top" secondItem="nvm-zh-ZMN" secondAttribute="bottom" id="cge-3R-u1y"/>
+                            <constraint firstItem="fPW-vk-FEr" firstAttribute="leading" secondItem="UHc-We-Iak" secondAttribute="leading" id="fq5-BI-wgV"/>
+                            <constraint firstItem="7yv-dI-Rn1" firstAttribute="top" secondItem="nse-G3-6DJ" secondAttribute="bottom" id="lUn-sh-3UQ"/>
+                            <constraint firstItem="fPW-vk-FEr" firstAttribute="top" secondItem="UHc-We-Iak" secondAttribute="top" id="mCT-5I-TDK"/>
+                            <constraint firstAttribute="bottom" secondItem="fPW-vk-FEr" secondAttribute="bottom" constant="82" id="rgA-X8-1GY"/>
                             <constraint firstAttribute="trailingMargin" secondItem="nvm-zh-ZMN" secondAttribute="trailing" id="uzP-ZE-UpO"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="buttonPlayAndPause" destination="KbP-uA-dyS" id="I4R-Va-yOM"/>
+                        <outlet property="containerView" destination="fPW-vk-FEr" id="eJ1-ji-Ezl"/>
                         <outlet property="progressSlider" destination="nvm-zh-ZMN" id="qxm-72-eOb"/>
                         <outlet property="toolBar" destination="g6k-Nd-TWu" id="vgR-2b-dru"/>
                     </connections>
@@ -280,16 +289,16 @@
                         <viewControllerLayoutGuide type="bottom" id="zy6-az-tb3"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="27e-1q-xPU">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JnL-pu-uVc">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="623"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="692"/>
                                 <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                             </webView>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="ohG-Tp-8Av">
-                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="692" width="414" height="44"/>
                                 <items>
                                     <barButtonItem systemItem="rewind" id="Lio-a3-5pQ">
                                         <connections>

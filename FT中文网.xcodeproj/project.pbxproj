@@ -304,11 +304,11 @@
 			children = (
 				50256CA21A4B9D0B005950B9 /* Main.storyboard */,
 				50256CA01A4B9D0B005950B9 /* ViewController.swift */,
+				50256CC41A4C1916005950B9 /* WKWebPageController.swift */,
 				601BF9951E94C2230032C467 /* AudioPlayer.swift */,
 				50256C9E1A4B9D0B005950B9 /* AppDelegate.swift */,
 				50256CC21A4BFAE7005950B9 /* Globals.swift */,
 				503435691DBDEC8200B2F686 /* AdSchedule.swift */,
-				50256CC41A4C1916005950B9 /* WKWebPageController.swift */,
 				50119E7C1DC873C6003667DE /* WeChatShare.swift */,
 				50159E461B9B147500F22FFC /* DataForShare.swift */,
 				50DF3E9E1D484B3C0054DDD2 /* ShareImageActivityProvider.swift */,

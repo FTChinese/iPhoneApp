@@ -17,7 +17,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     @IBOutlet weak var containerView: UIWebView!
     @IBOutlet weak var backBarButton: UIBarButtonItem!
     @IBOutlet weak var forwardBarButton: UIBarButtonItem!
-    lazy var webView: WKWebView? = { return nil }()
+    private lazy var webView: WKWebView? = { return nil }()
     var myContext = 0
     let progressView = UIProgressView(progressViewStyle: UIProgressViewStyle.default)
     deinit {

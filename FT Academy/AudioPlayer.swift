@@ -10,6 +10,7 @@ import UIKit
 import AVKit
 import AVFoundation
 import MediaPlayer
+import WebKit
 
 
 // MARK: - Use singleton pattern to pass speech data between view controllers. It's better in in term of code style than prepare segue.
@@ -18,14 +19,16 @@ class AudioContent {
     var body = [String: String]()
 }
 
-class AudioPlayer: UIViewController {
+class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate {
     
     private var audioTitle = ""
     private var audioUrlString = ""
     private var audioId = ""
     private lazy var player: AVPlayer? = nil
     private lazy var playerItem: AVPlayerItem? = nil
-    
+    private lazy var webView: WKWebView? = nil
+
+    @IBOutlet weak var containerView: UIWebView!
     @IBOutlet weak var toolBar: UIToolbar!
     @IBOutlet weak var buttonPlayAndPause: UIBarButtonItem!
     @IBOutlet weak var progressSlider: UISlider!
@@ -66,6 +69,54 @@ class AudioPlayer: UIViewController {
         super.loadView()
         parseAudioMessage()
         prepareAudioPlay()
+        
+        webPageTitle = webPageTitle0
+        webPageDescription = webPageDescription0
+        webPageImage = webPageImage0
+        webPageImageIcon = webPageImageIcon0
+        
+        let contentController = WKUserContentController();
+        //get page information if it follows opengraph
+        let jsCode = "function getContentByMetaTagName(c) {for (var b = document.getElementsByTagName('meta'), a = 0; a < b.length; a++) {if (c == b[a].name || c == b[a].getAttribute('property')) { return b[a].content; }} return '';} var gCoverImage = getContentByMetaTagName('og:image') || '';var gIconImage = getContentByMetaTagName('thumbnail') || '';var gDescription = getContentByMetaTagName('og:description') || getContentByMetaTagName('description') || '';gIconImage=encodeURIComponent(gIconImage);webkit.messageHandlers.callbackHandler.postMessage(gCoverImage + '|' + gIconImage + '|' + gDescription);"
+        let userScript = WKUserScript(
+            source: jsCode,
+            injectionTime: WKUserScriptInjectionTime.atDocumentEnd,
+            forMainFrameOnly: true
+        )
+        contentController.addUserScript(userScript)
+        contentController.add(
+            self,
+            name: "callbackHandler"
+        )
+        let config = WKWebViewConfiguration()
+        config.userContentController = contentController
+        self.webView = WKWebView(frame: self.containerView.frame, configuration: config)
+        self.containerView.addSubview(self.webView!)
+//        self.containerView.clipsToBounds = true
+//        self.webView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//        self.webView?.scrollView.delegate = self
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        webPageUrl = "http://www.ftchinese.com/"
+        if let url = URL(string:webPageUrl) {
+            let req = URLRequest(url:url)
+            self.webView?.load(req)
+        }
+    }
+    
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        if(message.name == "callbackHandler") {
+            if let infoForShare = message.body as? String{
+                print(infoForShare)
+                let toArray = infoForShare.components(separatedBy: "|")
+                webPageDescription = toArray[2]
+                webPageImage = toArray[0]
+                webPageImageIcon = toArray[1]
+                print("get image icon from web page: \(webPageImageIcon)")
+            }
+        }
     }
     
     private func parseAudioMessage() {
