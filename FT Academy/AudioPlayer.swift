@@ -11,6 +11,8 @@ import AVKit
 import AVFoundation
 import MediaPlayer
 import WebKit
+import SafariServices
+
 
 
 // MARK: - Use singleton pattern to pass speech data between view controllers. It's better in in term of code style than prepare segue.
@@ -19,7 +21,7 @@ class AudioContent {
     var body = [String: String]()
 }
 
-class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate {
+class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,SFSafariViewControllerDelegate,WKNavigationDelegate {
     
     private var audioTitle = ""
     private var audioUrlString = ""
@@ -78,8 +80,9 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate 
         let contentController = WKUserContentController();
         //get page information if it follows opengraph
         let jsCode = "function getContentByMetaTagName(c) {for (var b = document.getElementsByTagName('meta'), a = 0; a < b.length; a++) {if (c == b[a].name || c == b[a].getAttribute('property')) { return b[a].content; }} return '';} var gCoverImage = getContentByMetaTagName('og:image') || '';var gIconImage = getContentByMetaTagName('thumbnail') || '';var gDescription = getContentByMetaTagName('og:description') || getContentByMetaTagName('description') || '';gIconImage=encodeURIComponent(gIconImage);webkit.messageHandlers.callbackHandler.postMessage(gCoverImage + '|' + gIconImage + '|' + gDescription);"
+        let jsCode2 = "var hideEles = document.querySelectorAll('audio,.site-map,.story-theme,.header-container,.overlay-container,.o-nav__placeholder,.story-action-placeholder');for (var h=0; h<hideEles.length; h++) {hideEles[h].style.display = 'none';}document.body.style.marginTop = '20px';"
         let userScript = WKUserScript(
-            source: jsCode,
+            source: jsCode + jsCode2,
             injectionTime: WKUserScriptInjectionTime.atDocumentEnd,
             forMainFrameOnly: true
         )
@@ -92,14 +95,16 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate 
         config.userContentController = contentController
         self.webView = WKWebView(frame: self.containerView.frame, configuration: config)
         self.containerView.addSubview(self.webView!)
-//        self.containerView.clipsToBounds = true
-//        self.webView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//        self.webView?.scrollView.delegate = self
+        self.containerView.clipsToBounds = true
+        self.webView?.scrollView.bounces = false
+        self.webView?.navigationDelegate = self
+        self.webView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        self.webView?.scrollView.delegate = self
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        webPageUrl = "http://www.ftchinese.com/"
+        webPageUrl = "http://www.ftchinese.com/interactive/\(audioId)"
         if let url = URL(string:webPageUrl) {
             let req = URLRequest(url:url)
             self.webView?.load(req)
@@ -119,13 +124,68 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate 
         }
     }
     
+    
+    // MARK: - When users click on a link from the web view.
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: (@escaping (WKNavigationActionPolicy) -> Void)) {
+        print ("decide policy")
+        if let url = navigationAction.request.url {
+            let urlString = url.absoluteString
+            if navigationAction.navigationType == .linkActivated{
+                if urlString.range(of: "mailto:") != nil{
+                    UIApplication.shared.openURL(url)
+                } else {
+                    openInView (urlString)
+                }
+                decisionHandler(.cancel)
+            } else {
+                decisionHandler(.allow)
+            }
+        }
+    }
+    
+    
+    // FIXME: - This is very simlar to the same func in ViewController. Consider optimize the code.
+    func openInView(_ urlString : String) {
+        webPageUrl = urlString
+        let segueId = "Audio To WKWebView"
+        if #available(iOS 9.0, *) {
+            // MARK: - Use Safariview for iOS 9 and above
+            if urlString.range(of: "www.ftchinese.com") == nil && urlString.range(of: "i.ftimg.net") == nil {
+                // MARK: - When opening an outside url which we have no control over
+                if let url = URL(string:urlString) {
+                    if let urlScheme = url.scheme?.lowercased() {
+                        if ["http", "https"].contains(urlScheme) {
+                            // MARK: - Can open with SFSafariViewController
+                            let webVC = SFSafariViewController(url: url)
+                            webVC.delegate = self
+                            self.present(webVC, animated: true, completion: nil)
+                        } else {
+                            // MARK: - When Scheme is not supported or no scheme is given, use openURL
+                            UIApplication.shared.openURL(url)
+                        }
+                    }
+                }
+            } else {
+                // MARK: Open a url on a page that we have control over
+                self.performSegue(withIdentifier: segueId, sender: nil)
+            }
+        } else {
+            // MARK: Fallback on earlier versions
+            self.performSegue(withIdentifier: segueId, sender: nil)
+        }
+    }
+    
     private func parseAudioMessage() {
         let body = AudioContent.sharedInstance.body
         if let title = body["title"], let audioFileUrl = body["audioFileUrl"], let interactiveUrl = body["interactiveUrl"] {
             print (title)
             audioTitle = title
             audioUrlString = audioFileUrl
-            audioId = interactiveUrl
+            audioId = interactiveUrl.replacingOccurrences(
+                of: "^.*interactive/([0-9]+).*$",
+                with: "$1",
+                options: .regularExpression
+            )
         }
     }
     
@@ -217,7 +277,7 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate 
     
     // TODO: Display Background Images for Radio Columns
     
-    // TODO: Display the audio text
+    // MARK: - Done: Display the audio text
     
     // MARK: - Done: Update play progress
     

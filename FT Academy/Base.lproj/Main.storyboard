@@ -187,6 +187,7 @@
                         <outlet property="containerView" destination="fPW-vk-FEr" id="eJ1-ji-Ezl"/>
                         <outlet property="progressSlider" destination="nvm-zh-ZMN" id="qxm-72-eOb"/>
                         <outlet property="toolBar" destination="g6k-Nd-TWu" id="vgR-2b-dru"/>
+                        <segue destination="zfb-r0-mCC" kind="presentation" identifier="Audio To WKWebView" id="fL3-kG-Zm4"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zH1-8b-ocF" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -363,4 +364,7 @@
         <image name="SettingsButton" width="36" height="36"/>
         <image name="closeButton" width="36" height="36"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="fL3-kG-Zm4"/>
+    </inferredMetricsTieBreakers>
 </document>
