@@ -29,24 +29,53 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     private lazy var player: AVPlayer? = nil
     private lazy var playerItem: AVPlayerItem? = nil
     private lazy var webView: WKWebView? = nil
-
+    private let nowPlayingCenter = NowPlayingCenter()
+    
     @IBOutlet weak var containerView: UIWebView!
     @IBOutlet weak var toolBar: UIToolbar!
     @IBOutlet weak var buttonPlayAndPause: UIBarButtonItem!
     @IBOutlet weak var progressSlider: UISlider!
     @IBAction func ButtonPlayPause(_ sender: UIBarButtonItem) {
         if let player = player {
-            print(player.rate)
             if (player.rate != 0) && (player.error == nil) {
-                print ("should pause audio")
                 player.pause()
                 buttonPlayAndPause.image = UIImage(named:"BigPlayButton")
             } else {
-                print ("should play audio")
+                // MARK: - Continue audio even when device is set to mute. Do this only when user is actually playing audio because users might want to read FTC news while listening to music from other apps.
+                try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+                
+                // MARK: - Continue audio when device is in background
+                try? AVAudioSession.sharedInstance().setActive(true)
                 player.play()
                 player.replaceCurrentItem(with: playerItem)
                 buttonPlayAndPause.image = UIImage(named:"BigPauseButton")
+                
+                // TODO: - Need to find a way to display media duration and current time in lock screen
+                var mediaLength: NSNumber = 0
+                if let d = self.playerItem?.duration {
+                    let duration = CMTimeGetSeconds(d)
+                    if duration.isNaN == false {
+                        mediaLength = duration as NSNumber
+                    }
+                }
+                
+                var currentTime: NSNumber = 0
+                if let c = self.playerItem?.currentTime() {
+                    let currentTime1 = CMTimeGetSeconds(c)
+                    if currentTime1.isNaN == false {
+                        currentTime = currentTime1 as NSNumber
+                    }
+                }
+                nowPlayingCenter.updateInfo(
+                    title: audioTitle,
+                    artist: "FT中文网",
+                    albumArt: UIImage(named: "cover.jpg"),
+                    currentTime: currentTime,
+                    mediaLength: mediaLength,
+                    PlaybackRate: 1.0
+                )
             }
+            nowPlayingCenter.updateTimeForPlayerItem(player)
         }
     }
     
@@ -67,10 +96,16 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
         //print ("seeking to: \(currentTime)")
     }
     
+    deinit {
+        print ("play end observer removed")
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: playerItem)
+    }
+    
     override func loadView() {
         super.loadView()
         parseAudioMessage()
         prepareAudioPlay()
+        enableBackGroundMode()
         
         webPageTitle = webPageTitle0
         webPageDescription = webPageDescription0
@@ -80,9 +115,8 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
         let contentController = WKUserContentController();
         //get page information if it follows opengraph
         let jsCode = "function getContentByMetaTagName(c) {for (var b = document.getElementsByTagName('meta'), a = 0; a < b.length; a++) {if (c == b[a].name || c == b[a].getAttribute('property')) { return b[a].content; }} return '';} var gCoverImage = getContentByMetaTagName('og:image') || '';var gIconImage = getContentByMetaTagName('thumbnail') || '';var gDescription = getContentByMetaTagName('og:description') || getContentByMetaTagName('description') || '';gIconImage=encodeURIComponent(gIconImage);webkit.messageHandlers.callbackHandler.postMessage(gCoverImage + '|' + gIconImage + '|' + gDescription);"
-        let jsCode2 = "var hideEles = document.querySelectorAll('audio,.site-map,.story-theme,.header-container,.overlay-container,.o-nav__placeholder,.story-action-placeholder');for (var h=0; h<hideEles.length; h++) {hideEles[h].style.display = 'none';}document.body.style.marginTop = '20px';"
         let userScript = WKUserScript(
-            source: jsCode + jsCode2,
+            source: jsCode,
             injectionTime: WKUserScriptInjectionTime.atDocumentEnd,
             forMainFrameOnly: true
         )
@@ -104,11 +138,17 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        webPageUrl = "http://www.ftchinese.com/interactive/\(audioId)"
+        webPageUrl = "http://www.ftchinese.com/interactive/\(audioId)?hideheader=yes"
         if let url = URL(string:webPageUrl) {
             let req = URLRequest(url:url)
-            self.webView?.load(req)
+            // FIXME: - This is to suppress Apple's complaint. Should be webView?.load(req). Try change it back after Xcode upgrade.
+            _ = webView?.load(req)
         }
+    }
+    
+    
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        print("page loaded!")
     }
     
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
@@ -127,7 +167,6 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     
     // MARK: - When users click on a link from the web view.
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: (@escaping (WKNavigationActionPolicy) -> Void)) {
-        print ("decide policy")
         if let url = navigationAction.request.url {
             let urlString = url.absoluteString
             if navigationAction.navigationType == .linkActivated{
@@ -225,9 +264,7 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
             
             // MARK: - Observe Play to the End
             NotificationCenter.default.addObserver(self,selector:#selector(AudioPlayer.playerDidFinishPlaying), name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: playerItem)
-            
-            
-            
+
             
             //player?.actionAtItemEnd = .pause
             
@@ -238,12 +275,39 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
         }
     }
     
+    
+    private func enableBackGroundMode() {
+        // MARK: Receive Messages from Lock Screen
+        UIApplication.shared.beginReceivingRemoteControlEvents();
+        MPRemoteCommandCenter.shared().playCommand.addTarget {event in
+            print("resume music")
+            self.player?.play()
+            self.buttonPlayAndPause.image = UIImage(named:"BigPauseButton")
+            return .success
+        }
+        MPRemoteCommandCenter.shared().pauseCommand.addTarget {event in
+            print ("pause speech")
+            self.player?.pause()
+            self.buttonPlayAndPause.image = UIImage(named:"BigPlayButton")
+            return .success
+        }
+        MPRemoteCommandCenter.shared().nextTrackCommand.addTarget {event in
+            print ("next audio")
+            return .success
+        }
+        MPRemoteCommandCenter.shared().previousTrackCommand.addTarget {event in
+            print ("previous audio")
+            return .success
+        }
+    }
+    
     func playerDidFinishPlaying() {
         let startTime = CMTimeMake(0, 1)
         self.playerItem?.seek(to: startTime)
         self.player?.pause()
         self.progressSlider.value = 0
         self.buttonPlayAndPause.image = UIImage(named:"BigPlayButton")
+        nowPlayingCenter.updateTimeForPlayerItem(player)
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -265,7 +329,7 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
                     break
                 }
             }
-            
+            nowPlayingCenter.updateTimeForPlayerItem(player)
         }
     }
     
@@ -277,9 +341,14 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     
     // TODO: Display Background Images for Radio Columns
     
+    // TODO: Deinit 1. remove observers 2. quit background play mode
+    
+    // MARK: - Done: Enable background play
+    
     // MARK: - Done: Display the audio text
     
     // MARK: - Done: Update play progress
+    
     
     
 }

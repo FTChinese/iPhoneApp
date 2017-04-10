@@ -189,15 +189,15 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate,UIPopoverPresent
         mySpeechSynthesizer?.delegate = self
         mySpeechSynthesizer?.speak(mySpeechUtterance)
         
-        //大标题 - 小标题  - 歌曲总时长 - 歌曲当前播放时长 - 封面
-        if let artwork = UIImage(named: "cover.jpg") {
-            let settings = [MPMediaItemPropertyTitle: audioTitle,
-                            MPMediaItemPropertyArtist: "FT中文网",
-                            //MPMediaItemPropertyPlaybackDuration: "\(audioPlayer.duration)",
-                //MPNowPlayingInfoPropertyElapsedPlaybackTime: "\(mySpeechUtterance.currentTime)",
-                MPMediaItemPropertyArtwork: MPMediaItemArtwork(image: artwork)] as [String : Any]
-            MPNowPlayingInfoCenter.default().setValue(settings, forKey: "nowPlayingInfo")
-        }
+        //MARK: - Update the Lock Screen Image
+        NowPlayingCenter().updateInfo(
+            title: audioTitle,
+            artist: "FT中文网",
+            albumArt: UIImage(named: "cover.jpg"),
+            currentTime: 0,
+            mediaLength: 0,
+            PlaybackRate: 1.0
+        )
     }
     
     private func enableBackGroundMode() {
