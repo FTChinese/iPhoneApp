@@ -21,6 +21,19 @@ class AudioContent {
     var body = [String: String]()
 }
 
+// MARK: - WKWebView causes view controller to leak. Use this to avoid leak: http://stackoverflow.com/questions/26383031/wkwebview-causes-my-view-controller-to-leak
+class LeakAvoider: NSObject, WKScriptMessageHandler {
+    weak var delegate : WKScriptMessageHandler?
+    init(delegate:WKScriptMessageHandler) {
+        self.delegate = delegate
+        super.init()
+    }
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        self.delegate?.userContentController(userContentController, didReceive: message)
+    }
+}
+
+
 class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,SFSafariViewControllerDelegate,WKNavigationDelegate {
     
     private var audioTitle = ""
@@ -30,6 +43,7 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     private lazy var playerItem: AVPlayerItem? = nil
     private lazy var webView: WKWebView? = nil
     private let nowPlayingCenter = NowPlayingCenter()
+    
     
     @IBOutlet weak var containerView: UIWebView!
     @IBOutlet weak var toolBar: UIToolbar!
@@ -83,8 +97,8 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
         if let player = player {
             player.pause()
             self.player = nil
-            self.dismiss(animated: true, completion: nil)
         }
+        self.dismiss(animated: true, completion: nil)
     }
     
     @IBAction func sliderValueChanged(_ sender: UISlider) {
@@ -97,8 +111,16 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     }
     
     deinit {
-        print ("play end observer removed")
         NotificationCenter.default.removeObserver(self, name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: playerItem)
+        playerItem?.removeObserver(self, forKeyPath: "playbackBufferEmpty")
+        playerItem?.removeObserver(self, forKeyPath: "playbackLikelyToKeepUp")
+        playerItem?.removeObserver(self, forKeyPath: "playbackBufferFull")
+        
+        // MARK: - Stop loading and remove message handlers to avoid leak
+        self.webView?.stopLoading()
+        self.webView?.configuration.userContentController.removeScriptMessageHandler(forName: "callbackHandler")
+        self.webView?.configuration.userContentController.removeAllUserScripts()
+        print ("deinit successfully and observer removed")
     }
     
     override func loadView() {
@@ -112,17 +134,17 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
         webPageImage = webPageImage0
         webPageImageIcon = webPageImageIcon0
         
-        let contentController = WKUserContentController();
-        //get page information if it follows opengraph
         let jsCode = "function getContentByMetaTagName(c) {for (var b = document.getElementsByTagName('meta'), a = 0; a < b.length; a++) {if (c == b[a].name || c == b[a].getAttribute('property')) { return b[a].content; }} return '';} var gCoverImage = getContentByMetaTagName('og:image') || '';var gIconImage = getContentByMetaTagName('thumbnail') || '';var gDescription = getContentByMetaTagName('og:description') || getContentByMetaTagName('description') || '';gIconImage=encodeURIComponent(gIconImage);webkit.messageHandlers.callbackHandler.postMessage(gCoverImage + '|' + gIconImage + '|' + gDescription);"
         let userScript = WKUserScript(
             source: jsCode,
             injectionTime: WKUserScriptInjectionTime.atDocumentEnd,
             forMainFrameOnly: true
         )
+        let contentController = WKUserContentController()
         contentController.addUserScript(userScript)
+        // MARK: - Use a LeakAvoider to avoid leak
         contentController.add(
-            self,
+            LeakAvoider(delegate:self),
             name: "callbackHandler"
         )
         let config = WKWebViewConfiguration()
@@ -145,7 +167,6 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
             _ = webView?.load(req)
         }
     }
-    
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         print("page loaded!")
@@ -240,8 +261,6 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
             let asset = AVURLAsset(url: url)
             playerItem = AVPlayerItem(asset: asset)
             player = AVPlayer()
-            //player?.rate = 1.0
-            //player?.play()
             
             // MARK: - If user is using wifi, buffer the audio immediately
             let statusType = IJReachability().connectedToNetworkOfType()
@@ -250,13 +269,13 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
             }
             
             // MARK: - Update audio play progress
-            player?.addPeriodicTimeObserver(forInterval: CMTimeMakeWithSeconds(1/30.0, Int32(NSEC_PER_SEC)), queue: nil) { time in
-                if let d = self.playerItem?.duration {
+            player?.addPeriodicTimeObserver(forInterval: CMTimeMakeWithSeconds(1/30.0, Int32(NSEC_PER_SEC)), queue: nil) { [weak self] time in
+                if let d = self?.playerItem?.duration {
                     let duration = CMTimeGetSeconds(d)
                     if duration.isNaN == false {
-                        self.progressSlider.maximumValue = Float(duration)
-                        if self.progressSlider.isHighlighted == false {
-                            self.progressSlider.value = Float((CMTimeGetSeconds(time)))
+                        self?.progressSlider.maximumValue = Float(duration)
+                        if self?.progressSlider.isHighlighted == false {
+                            self?.progressSlider.value = Float((CMTimeGetSeconds(time)))
                         }
                     }
                 }
@@ -265,9 +284,6 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
             // MARK: - Observe Play to the End
             NotificationCenter.default.addObserver(self,selector:#selector(AudioPlayer.playerDidFinishPlaying), name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: playerItem)
 
-            
-            //player?.actionAtItemEnd = .pause
-            
             // MARK: - Update buffer status
             playerItem?.addObserver(self, forKeyPath: "playbackBufferEmpty", options: .new, context: nil)
             playerItem?.addObserver(self, forKeyPath: "playbackLikelyToKeepUp", options: .new, context: nil)
@@ -279,26 +295,26 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     private func enableBackGroundMode() {
         // MARK: Receive Messages from Lock Screen
         UIApplication.shared.beginReceivingRemoteControlEvents();
-        MPRemoteCommandCenter.shared().playCommand.addTarget {event in
+        MPRemoteCommandCenter.shared().playCommand.addTarget {[weak self] event in
             print("resume music")
-            self.player?.play()
-            self.buttonPlayAndPause.image = UIImage(named:"BigPauseButton")
+            self?.player?.play()
+            self?.buttonPlayAndPause.image = UIImage(named:"BigPauseButton")
             return .success
         }
-        MPRemoteCommandCenter.shared().pauseCommand.addTarget {event in
+        MPRemoteCommandCenter.shared().pauseCommand.addTarget {[weak self] event in
             print ("pause speech")
-            self.player?.pause()
-            self.buttonPlayAndPause.image = UIImage(named:"BigPlayButton")
+            self?.player?.pause()
+            self?.buttonPlayAndPause.image = UIImage(named:"BigPlayButton")
             return .success
         }
-        MPRemoteCommandCenter.shared().nextTrackCommand.addTarget {event in
-            print ("next audio")
-            return .success
-        }
-        MPRemoteCommandCenter.shared().previousTrackCommand.addTarget {event in
-            print ("previous audio")
-            return .success
-        }
+//        MPRemoteCommandCenter.shared().nextTrackCommand.addTarget {[weak self] event in
+//            print ("next audio")
+//            return .success
+//        }
+//        MPRemoteCommandCenter.shared().previousTrackCommand.addTarget {[weak self] event in
+//            print ("previous audio")
+//            return .success
+//        }
     }
     
     func playerDidFinishPlaying() {
@@ -341,7 +357,7 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     
     // TODO: Display Background Images for Radio Columns
     
-    // TODO: Deinit 1. remove observers 2. quit background play mode
+    // MARK: - Done: Deinit 1. remove observers 2. quit background play mode
     
     // MARK: - Done: Enable background play
     
