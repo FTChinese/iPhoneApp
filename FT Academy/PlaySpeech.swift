@@ -46,7 +46,7 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate,UIPopoverPresent
     private var audioTitle = "FT中文网"
     private lazy var previouseRange: NSRange? = nil
     let speechDefaultVoice = SpeechDefaultVoice()
-
+    
     
     @IBOutlet weak var buttonPlayPause: UIBarButtonItem!
     
@@ -84,8 +84,7 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate,UIPopoverPresent
     @IBOutlet weak var bodytext: UITextView!
     
     deinit {
-        mySpeechSynthesizer = nil
-        print ("audio cleared")
+        print ("deinit PlaySpeech successfully")
     }
     
     override func loadView() {
@@ -94,24 +93,21 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate,UIPopoverPresent
         enableBackGroundMode()
         displayText()
         // MARK: - listen to notifications about preference change
-        let nc = NotificationCenter.default
-        nc.addObserver(
-            forName:Notification.Name(rawValue:"Replay Needed"),
-            object:nil,
-            queue:nil,
-            using:replay
-        )
+        NotificationCenter.default.addObserver(
+            forName: Notification.Name(rawValue:"Replay Needed"),
+            object: nil,
+            queue: nil) { [weak self] notification in
+                self?.replay(notification: notification)
+        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     
-    func replay(notification:Notification) -> Void {
-        //let userInfo = notification.userInfo
+    private func replay(notification:Notification) -> Void {
         mySpeechSynthesizer?.stopSpeaking(at: .word)
         parseAudioMessage()
-        //displayText()
         if let titleAndText = audioText?.string {
             let mySpeechUtterance:AVSpeechUtterance = AVSpeechUtterance(string: titleAndText)
             mySpeechUtterance.voice = AVSpeechSynthesisVoice(language: audioLanguage)
@@ -174,7 +170,7 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate,UIPopoverPresent
     
     
     private func textToSpeech(_ text: NSMutableAttributedString, language: String) {
-        // MARK: - Continue audio even when device is set to mute. Do this only when user is actually playing audio because users might want to read FTC news while listening to music from other apps.
+        // MARK: - Continue audio even when device is set to mute
         try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
         
         // MARK: - Continue audio when device is in background
@@ -203,24 +199,24 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate,UIPopoverPresent
     private func enableBackGroundMode() {
         // MARK: Receive Messages from Lock Screen
         UIApplication.shared.beginReceivingRemoteControlEvents();
-        MPRemoteCommandCenter.shared().playCommand.addTarget {event in
+        MPRemoteCommandCenter.shared().playCommand.addTarget {[weak self] event in
             print("resume music")
-            self.mySpeechSynthesizer?.continueSpeaking()
+            self?.mySpeechSynthesizer?.continueSpeaking()
             return .success
         }
-        MPRemoteCommandCenter.shared().pauseCommand.addTarget {event in
+        MPRemoteCommandCenter.shared().pauseCommand.addTarget {[weak self] event in
             print ("pause speech")
-            self.mySpeechSynthesizer?.pauseSpeaking(at: .word)
+            self?.mySpeechSynthesizer?.pauseSpeaking(at: .word)
             return .success
         }
-        MPRemoteCommandCenter.shared().nextTrackCommand.addTarget {event in
-            print ("next audio")
-            return .success
-        }
-        MPRemoteCommandCenter.shared().previousTrackCommand.addTarget {event in
-            print ("previous audio")
-            return .success
-        }
+        //        MPRemoteCommandCenter.shared().nextTrackCommand.addTarget {event in
+        //            print ("next audio")
+        //            return .success
+        //        }
+        //        MPRemoteCommandCenter.shared().previousTrackCommand.addTarget {event in
+        //            print ("previous audio")
+        //            return .success
+        //        }
     }
     
     private func displayText() {

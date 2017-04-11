@@ -20,10 +20,18 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
     private lazy var webView: WKWebView? = { return nil }()
     var myContext = 0
     let progressView = UIProgressView(progressViewStyle: UIProgressViewStyle.default)
+    
     deinit {
         self.webView?.removeObserver(self, forKeyPath: "estimatedProgress")
         self.webView?.removeObserver(self, forKeyPath: "canGoBack")
         self.webView?.removeObserver(self, forKeyPath: "canGoForward")
+        
+        // MARK: - Stop loading and remove message handlers to avoid leak
+        self.webView?.stopLoading()
+        self.webView?.configuration.userContentController.removeScriptMessageHandler(forName: "callbackHandler")
+        self.webView?.configuration.userContentController.removeAllUserScripts()
+        
+        print ("deinit WKWebPageController successfully")
     }
     
     override func loadView() {
@@ -43,7 +51,7 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         )
         contentController.addUserScript(userScript)
         contentController.add(
-            self,
+            LeakAvoider(delegate:self),
             name: "callbackHandler"
         )
         let config = WKWebViewConfiguration()

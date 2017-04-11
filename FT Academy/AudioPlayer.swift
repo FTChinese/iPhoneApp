@@ -21,19 +21,6 @@ class AudioContent {
     var body = [String: String]()
 }
 
-// MARK: - WKWebView causes view controller to leak. Use this to avoid leak: http://stackoverflow.com/questions/26383031/wkwebview-causes-my-view-controller-to-leak
-class LeakAvoider: NSObject, WKScriptMessageHandler {
-    weak var delegate : WKScriptMessageHandler?
-    init(delegate:WKScriptMessageHandler) {
-        self.delegate = delegate
-        super.init()
-    }
-    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        self.delegate?.userContentController(userContentController, didReceive: message)
-    }
-}
-
-
 class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,SFSafariViewControllerDelegate,WKNavigationDelegate {
     
     private var audioTitle = ""

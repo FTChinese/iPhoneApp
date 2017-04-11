@@ -50,8 +50,7 @@ class SpeechSettings: UIViewController, UIPickerViewDataSource, UIPickerViewDele
             }
         }
         if needToReplayVoice == true {
-            let nc = NotificationCenter.default
-            nc.post(
+            NotificationCenter.default.post(
                 name:Notification.Name(rawValue:"Replay Needed"),
                 object: nil,
                 userInfo: nil
@@ -60,7 +59,9 @@ class SpeechSettings: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         self.dismiss(animated: true, completion: nil)
     }
     
-    
+    deinit {
+        print ("deinit SpeechSettings successfully")
+    }
     
     override func loadView() {
         super.loadView()
@@ -71,10 +72,8 @@ class SpeechSettings: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         currentChineseVoice = speechDefaultVoice.getVoiceByLanguage("ch")
         newChineseVoice = currentChineseVoice
         
-//        if self.popoverPresentationController?.adaptivePresentationStyle == .popover {
-//            print ("this is a popover")
-//        }
-        self.popoverPresentationController?.backgroundColor = UIColor(netHex: 0xFFF1E0)
+        // TODO: - This is used for iPad to display the arrow color
+        //self.popoverPresentationController?.backgroundColor = UIColor(netHex: 0xFFF1E0)
         englishVoiceData = Array(englishVoice.keys)
         englishVoicePicker.dataSource = self
         englishVoicePicker.delegate = self
@@ -136,8 +135,5 @@ class SpeechSettings: UIViewController, UIPickerViewDataSource, UIPickerViewDele
             newChineseVoice = voice
         }
     }
-    
-    
-    
     
 }

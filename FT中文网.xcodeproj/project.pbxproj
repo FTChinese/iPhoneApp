@@ -93,6 +93,8 @@
 		602647761E97804C009D8398 /* cover.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 602647741E97804C009D8398 /* cover.jpg */; };
 		602647781E978E7E009D8398 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 602647771E978E7E009D8398 /* Images.xcassets */; };
 		602647791E978E7E009D8398 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 602647771E978E7E009D8398 /* Images.xcassets */; };
+		604056BA1E9C861C008A7701 /* LeakAvoider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604056B91E9C861C008A7701 /* LeakAvoider.swift */; };
+		604056BB1E9C861C008A7701 /* LeakAvoider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604056B91E9C861C008A7701 /* LeakAvoider.swift */; };
 		605C58FE1E8DF0B800174DF3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 605C58FD1E8DF0B800174DF3 /* Security.framework */; };
 		605C59001E8DF0EC00174DF3 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 605C58FF1E8DF0EC00174DF3 /* CFNetwork.framework */; };
 		605C59011E8DF5E500174DF3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 605C58FD1E8DF0B800174DF3 /* Security.framework */; };
@@ -176,6 +178,7 @@
 		602647711E976692009D8398 /* SpeechDefaultVoice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeechDefaultVoice.swift; sourceTree = "<group>"; };
 		602647741E97804C009D8398 /* cover.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cover.jpg; sourceTree = "<group>"; };
 		602647771E978E7E009D8398 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		604056B91E9C861C008A7701 /* LeakAvoider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeakAvoider.swift; sourceTree = "<group>"; };
 		605C58FD1E8DF0B800174DF3 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		605C58FF1E8DF0EC00174DF3 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		607480301E9B32F6009C0756 /* NowPlayingCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NowPlayingCenter.swift; sourceTree = "<group>"; };
@@ -317,6 +320,7 @@
 				50159E4A1B9B2ED900F22FFC /* OpenInSafari.swift */,
 				50982C7D1BC7A7C800907575 /* IJReachability.swift */,
 				50FCC9C01D34C1D300FC1892 /* User.swift */,
+				604056B91E9C861C008A7701 /* LeakAvoider.swift */,
 				50256CA71A4B9D0B005950B9 /* LaunchScreen.xib */,
 				602647771E978E7E009D8398 /* Images.xcassets */,
 				50B5D05D1DAF1E450052C954 /* FT中文网.entitlements */,
@@ -707,6 +711,7 @@
 				501797F51E49669400A2F2A9 /* IAPHelper.swift in Sources */,
 				50256CC31A4BFAE7005950B9 /* Globals.swift in Sources */,
 				50256CC51A4C1916005950B9 /* WKWebPageController.swift in Sources */,
+				604056BA1E9C861C008A7701 /* LeakAvoider.swift in Sources */,
 				5034356A1DBDEC8300B2F686 /* AdSchedule.swift in Sources */,
 				501797F91E49699F00A2F2A9 /* FTCProducts.swift in Sources */,
 				50159E4B1B9B2ED900F22FFC /* OpenInSafari.swift in Sources */,
@@ -742,6 +747,7 @@
 				507C7E4D1DB0BCE800A8EF50 /* Globals.swift in Sources */,
 				507C7E4F1DB0BCE800A8EF50 /* WKWebPageController.swift in Sources */,
 				5034356B1DBDEC8300B2F686 /* AdSchedule.swift in Sources */,
+				604056BB1E9C861C008A7701 /* LeakAvoider.swift in Sources */,
 				501797FC1E49711A00A2F2A9 /* FTCProducts.swift in Sources */,
 				501797FA1E49711300A2F2A9 /* IAPHelper.swift in Sources */,
 				507C7E511DB0BCE800A8EF50 /* OpenInSafari.swift in Sources */,
