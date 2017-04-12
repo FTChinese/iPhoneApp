@@ -95,6 +95,8 @@
 		602647791E978E7E009D8398 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 602647771E978E7E009D8398 /* Images.xcassets */; };
 		604056BA1E9C861C008A7701 /* LeakAvoider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604056B91E9C861C008A7701 /* LeakAvoider.swift */; };
 		604056BB1E9C861C008A7701 /* LeakAvoider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604056B91E9C861C008A7701 /* LeakAvoider.swift */; };
+		604056BD1E9DFA36008A7701 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 604056BC1E9DFA36008A7701 /* UserNotifications.framework */; };
+		604056BE1E9DFA46008A7701 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 604056BC1E9DFA36008A7701 /* UserNotifications.framework */; };
 		605C58FE1E8DF0B800174DF3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 605C58FD1E8DF0B800174DF3 /* Security.framework */; };
 		605C59001E8DF0EC00174DF3 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 605C58FF1E8DF0EC00174DF3 /* CFNetwork.framework */; };
 		605C59011E8DF5E500174DF3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 605C58FD1E8DF0B800174DF3 /* Security.framework */; };
@@ -179,6 +181,7 @@
 		602647741E97804C009D8398 /* cover.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cover.jpg; sourceTree = "<group>"; };
 		602647771E978E7E009D8398 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		604056B91E9C861C008A7701 /* LeakAvoider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeakAvoider.swift; sourceTree = "<group>"; };
+		604056BC1E9DFA36008A7701 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		605C58FD1E8DF0B800174DF3 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		605C58FF1E8DF0EC00174DF3 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		607480301E9B32F6009C0756 /* NowPlayingCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NowPlayingCenter.swift; sourceTree = "<group>"; };
@@ -194,6 +197,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				604056BD1E9DFA36008A7701 /* UserNotifications.framework in Frameworks */,
 				605C59001E8DF0EC00174DF3 /* CFNetwork.framework in Frameworks */,
 				605C58FE1E8DF0B800174DF3 /* Security.framework in Frameworks */,
 				50B49B941E7D15BB00E53C0C /* MediaPlayer.framework in Frameworks */,
@@ -224,6 +228,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				604056BE1E9DFA46008A7701 /* UserNotifications.framework in Frameworks */,
 				605C59021E8DF5EF00174DF3 /* CFNetwork.framework in Frameworks */,
 				605C59011E8DF5E500174DF3 /* Security.framework in Frameworks */,
 				507C7E5A1DB0BCE800A8EF50 /* AdSupport.framework in Frameworks */,
@@ -258,6 +263,7 @@
 		501F90161E3C72EB009EA5DD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				604056BC1E9DFA36008A7701 /* UserNotifications.framework */,
 				605C58FF1E8DF0EC00174DF3 /* CFNetwork.framework */,
 				605C58FD1E8DF0B800174DF3 /* Security.framework */,
 				50B49B931E7D15BB00E53C0C /* MediaPlayer.framework */,

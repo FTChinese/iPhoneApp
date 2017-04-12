@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
@@ -62,9 +63,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
          
          let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: categories as? Set<UIUserNotificationCategory>)
          */
-        let settings = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
-        UIApplication.shared.registerUserNotificationSettings(settings)
-        UIApplication.shared.registerForRemoteNotifications()
+        
+        
+        
+        // MARK: - Register for remote notification
+        // iOS 10 support
+        if #available(iOS 10, *) {
+            UNUserNotificationCenter.current().requestAuthorization(options:[.badge, .alert, .sound]){ (granted, error) in }
+            application.registerForRemoteNotifications()
+        }
+            // iOS 9 support
+        else if #available(iOS 9, *) {
+            UIApplication.shared.registerUserNotificationSettings(UIUserNotificationSettings(types: [.badge, .sound, .alert], categories: nil))
+            UIApplication.shared.registerForRemoteNotifications()
+        }
+            // iOS 8 support
+        else if #available(iOS 8, *) {
+            UIApplication.shared.registerUserNotificationSettings(UIUserNotificationSettings(types: [.badge, .sound, .alert], categories: nil))
+            UIApplication.shared.registerForRemoteNotifications()
+        }
+            // iOS 7 support
+        else {  
+            application.registerForRemoteNotifications(matching: [.badge, .sound, .alert])
+        }
+        
+        
+        
+        
+        
+//        let settings = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
+//        UIApplication.shared.registerUserNotificationSettings(settings)
+//        UIApplication.shared.registerForRemoteNotifications()
         
         
         // if launched from a tap on a notification
@@ -100,14 +129,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
     
     
     func application( _ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data ) {
-        deviceTokenString = ""
-        for i in 0..<deviceToken.count {
-            deviceTokenString = deviceTokenString + String(format: "%02.2hhx", arguments: [deviceToken[i]])
-        }
+//        deviceTokenString = ""
+//        for i in 0..<deviceToken.count {
+//            deviceTokenString = deviceTokenString + String(format: "%02.2hhx", arguments: [deviceToken[i]])
+//        }
+        
+        deviceTokenString = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
+
         saveDeviceInfo()
         //print(postString)
         sendDeviceToken()
-        //print("send device token: \(deviceTokenString)")
+        print("send device token: \(deviceTokenString)")
     }
     
     func saveDeviceInfo() {
@@ -135,11 +167,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
     
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        let characterSet: CharacterSet = CharacterSet( charactersIn: "<>" )
-        let errorString: String = ( error.localizedDescription as NSString )
-            .trimmingCharacters( in: characterSet )
-            .replacingOccurrences( of: " ", with: "" ) as String
-        print(errorString)
+        print("APNs registration failed: \(error)")
     }
     
     /*
