@@ -78,7 +78,18 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate,UIPopoverPresent
     }
     
     @IBAction func setSpeechOptions(_ sender: UIBarButtonItem) {
-        self.performSegue(withIdentifier: "Speech Settings", sender: sender)
+        //self.performSegue(withIdentifier: "Speech Settings", sender: sender)
+        
+        // MARK: Use story board to avoid memory leak
+        let popoverVC = storyboard?.instantiateViewController(withIdentifier: "Speech Settings")
+        if let popover = popoverVC {
+            popover.modalPresentationStyle = .popover
+            present(popover, animated: true, completion: {
+                // MARK: - Setting the iPad popover arrow to pink. Only works in a completion handler. 
+                self.popoverPresentationController?.backgroundColor = UIColor(netHex: 0xFFF1E0)
+            })
+        }
+        
     }
     
     @IBOutlet weak var bodytext: UITextView!

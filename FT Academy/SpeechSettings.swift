@@ -58,11 +58,12 @@ class SpeechSettings: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         }
         self.dismiss(animated: true, completion: nil)
     }
-    
+
     deinit {
         print ("deinit SpeechSettings successfully")
     }
     
+
     override func loadView() {
         super.loadView()
         
@@ -71,15 +72,10 @@ class SpeechSettings: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         newEnglishVoice = currentEnglishVoice
         currentChineseVoice = speechDefaultVoice.getVoiceByLanguage("ch")
         newChineseVoice = currentChineseVoice
-        
-        // TODO: - This is used for iPad to display the arrow color
-        //self.popoverPresentationController?.backgroundColor = UIColor(netHex: 0xFFF1E0)
         englishVoiceData = Array(englishVoice.keys)
         englishVoicePicker.dataSource = self
         englishVoicePicker.delegate = self
         let defaultRowForEnglish = getPickerRowByValue(englishVoice, value: currentEnglishVoice)
-        print (currentEnglishVoice)
-        print (defaultRowForEnglish)
         englishVoicePicker.selectRow(defaultRowForEnglish, inComponent: 0, animated: false)
         chineseVoiceData = Array(chineseVoice.keys)
         chineseVoicePicker.dataSource = self
@@ -128,7 +124,7 @@ class SpeechSettings: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     }
     
     func changeVoice (_ language: String, voice: String) {
-        // TODO: - Update Parent View's Accent and Save
+        // MARK: - Update Parent View's Accent and Save
         if language == "en" {
             newEnglishVoice = voice
         } else {
