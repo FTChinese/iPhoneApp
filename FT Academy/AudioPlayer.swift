@@ -97,6 +97,44 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
         //print ("seeking to: \(currentTime)")
     }
     
+    @IBAction func share(_ sender: UIBarButtonItem) {
+        let wcActivity = WeChatShare(to: "chat")
+        let wcCircle = WeChatShare(to: "moment")
+        let openInSafari = OpenInSafari()
+        if let myWebsite = self.webView?.url {
+            let shareData = DataForShare()
+            let image = ShareImageActivityProvider(placeholderItem: UIImage(named: "ftcicon.jpg")!)
+            let objectsToShare = [shareData, myWebsite, image] as [Any]
+            let activityVC: UIActivityViewController
+            if WXApi.isWXAppSupport() == true {
+                activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcCircle, openInSafari])
+            } else {
+                activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [openInSafari])
+            }
+            activityVC.excludedActivityTypes = [UIActivityType.airDrop, UIActivityType.addToReadingList]
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                //self.presentViewController(controller, animated: true, completion: nil)
+                let popup: UIPopoverController = UIPopoverController(contentViewController: activityVC)
+                popup.present(from: CGRect(x: self.view.frame.size.width / 2, y: self.view.frame.size.height / 4, width: 0, height: 0), in: self.view, permittedArrowDirections: UIPopoverArrowDirection.any, animated: true)
+            } else {
+                self.present(activityVC, animated: true, completion: nil)
+            }
+            
+            if webPageImageIcon == "" {
+                weChatShareIcon = UIImage(named: "ftcicon.jpg")
+            } else if webPageImageIcon != ""{
+                if webPageImageIcon.range(of: "https://image.webservices.ft.com") == nil {
+                    webPageImageIcon = "https://image.webservices.ft.com/v1/images/raw/\(webPageImageIcon)?source=ftchinese&width=72&height=72"
+                }
+                print("image icon is \(webPageImageIcon)")
+                if let imgUrl = URL(string: webPageImageIcon) {
+                    print("update image icon : \(webPageImageIcon)")
+                    updateWeChatShareIcon(imgUrl)
+                }
+            }
+        }
+    }
+    
     deinit {
         NotificationCenter.default.removeObserver(self, name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: playerItem)
         playerItem?.removeObserver(self, forKeyPath: "playbackBufferEmpty")
@@ -233,6 +271,7 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
                 with: "$1",
                 options: .regularExpression
             )
+            webPageTitle = title
         }
     }
     

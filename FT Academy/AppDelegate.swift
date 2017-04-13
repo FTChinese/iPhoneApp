@@ -71,25 +71,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
         if #available(iOS 10, *) {
             UNUserNotificationCenter.current().requestAuthorization(options:[.badge, .alert, .sound]){ (granted, error) in }
             application.registerForRemoteNotifications()
-        }
-            // iOS 9 support
-        else if #available(iOS 9, *) {
+        } else {
             UIApplication.shared.registerUserNotificationSettings(UIUserNotificationSettings(types: [.badge, .sound, .alert], categories: nil))
             UIApplication.shared.registerForRemoteNotifications()
         }
-            // iOS 8 support
-        else if #available(iOS 8, *) {
-            UIApplication.shared.registerUserNotificationSettings(UIUserNotificationSettings(types: [.badge, .sound, .alert], categories: nil))
-            UIApplication.shared.registerForRemoteNotifications()
-        }
-            // iOS 7 support
-        else {  
-            application.registerForRemoteNotifications(matching: [.badge, .sound, .alert])
-        }
         
-        
-        
-        
+    
         
 //        let settings = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
 //        UIApplication.shared.registerUserNotificationSettings(settings)
@@ -129,15 +116,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
     
     
     func application( _ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data ) {
-//        deviceTokenString = ""
-//        for i in 0..<deviceToken.count {
-//            deviceTokenString = deviceTokenString + String(format: "%02.2hhx", arguments: [deviceToken[i]])
-//        }
-        
         deviceTokenString = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
-
         saveDeviceInfo()
-        //print(postString)
+        print(postString)
         sendDeviceToken()
         print("send device token: \(deviceTokenString)")
     }
