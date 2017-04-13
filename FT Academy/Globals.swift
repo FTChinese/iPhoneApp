@@ -111,7 +111,11 @@ func shareToWeChat(_ originalUrlString : String) {
     if shareUrl.range(of: "story/[0-9]+$", options: .regularExpression) != nil {
         shareUrl = shareUrl + "?full=y"
     }
-    webpageObj.webpageUrl = "\(shareUrl)#ccode=\(ccode["wechat"]!)"
+    if let c = ccode["wechat"] {
+        webpageObj.webpageUrl = "\(shareUrl)#ccode=\(c)"
+    } else {
+        webpageObj.webpageUrl = shareUrl
+    }
     message.mediaObject = webpageObj
     let req = SendMessageToWXReq()
     req.bText = false

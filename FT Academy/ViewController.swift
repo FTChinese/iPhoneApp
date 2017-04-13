@@ -756,57 +756,35 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     // MARK: - Turn on the action sheet from the bottom of the screen, for sharing, saving images, etc...
     func turnOnActionSheet(_ originalUrlString : String) {
-        let originalURL = originalUrlString
-        var queryStringDictionary = ["url":""]
-        let urlComponents = originalURL.replacingOccurrences(of: "iosaction://?", with: "").components(separatedBy: "&")
-        for keyValuePair in urlComponents {
-            let stringSeparate = (keyValuePair as AnyObject).range(of: "=").location
-            if (stringSeparate>0 && stringSeparate < 100) {
-                let pairKey = (keyValuePair as NSString).substring(to: stringSeparate)
-                let pairValue = (keyValuePair as NSString).substring(from: stringSeparate+1)
-                queryStringDictionary[pairKey] = pairValue.removingPercentEncoding
-            }
-        }
-        webPageUrl = queryStringDictionary["url"]?.removingPercentEncoding ?? webPageUrl
-        webPageTitle = queryStringDictionary["title"] ?? webPageTitle
-        webPageDescription = queryStringDictionary["description"] ?? webPageDescription0
-        webPageImage = queryStringDictionary["img"] ?? webPageImageIcon0
-        webPageImageIcon = webPageImage
         
-        let wcActivity = WeChatShare(to: "chat")
-        let wcCircle = WeChatShare(to: "moment")
-        let wcFav = WeChatShareFav(to: "fav")
-        let openInSafari = OpenInSafari()
-        let ccodeInActionSheet = ccode["actionsheet"] ?? "iosaction"
-        let urlWithCCode = "\(webPageUrl)#ccode=\(ccodeInActionSheet)"
-        let url = URL(string: urlWithCCode)
-        if let myWebsite = url {
-            let shareData = DataForShare()
-            if let placeHolderImage = UIImage(named: "ftcicon.jpg") {
-                let image = ShareImageActivityProvider(placeholderItem: placeHolderImage)
-                let objectsToShare = [shareData, myWebsite, image] as [Any]
-                let activityVC: UIActivityViewController
-                if WXApi.isWXAppSupport() == true {
-                    activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcCircle, wcFav, openInSafari])
-                } else {
-                    activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [openInSafari])
-                }
-                activityVC.excludedActivityTypes = [UIActivityType.airDrop, UIActivityType.addToReadingList]
-                if UIDevice.current.userInterfaceIdiom == .pad {
-                    let popup: UIPopoverController = UIPopoverController(contentViewController: activityVC)
-                    popup.present(from: CGRect(x: self.view.frame.size.width / 2, y: self.view.frame.size.height / 4, width: 0, height: 0), in: self.view, permittedArrowDirections: UIPopoverArrowDirection.any, animated: true)
-                } else {
-                    self.present(activityVC, animated: true, completion: nil)
-                }
-            }
-        }
+        let share = ShareHelper()
+        let url = share.getUrl(originalUrlString)
         
-        if webPageImageIcon.range(of: "https://image.webservices.ft.com") == nil{
-            webPageImageIcon = "https://image.webservices.ft.com/v1/images/raw/\(webPageImageIcon)?source=ftchinese&width=72&height=72"
-        }
-        if let imgUrl = URL(string: webPageImageIcon) {
-            updateWeChatShareIcon(imgUrl)
-        }
+//        let originalURL = originalUrlString
+//        var queryStringDictionary = ["url":""]
+//        let urlComponents = originalURL.replacingOccurrences(of: "iosaction://?", with: "").components(separatedBy: "&")
+//        for keyValuePair in urlComponents {
+//            let stringSeparate = (keyValuePair as AnyObject).range(of: "=").location
+//            if (stringSeparate>0 && stringSeparate < 100) {
+//                let pairKey = (keyValuePair as NSString).substring(to: stringSeparate)
+//                let pairValue = (keyValuePair as NSString).substring(from: stringSeparate+1)
+//                queryStringDictionary[pairKey] = pairValue.removingPercentEncoding
+//            }
+//        }
+//        webPageUrl = queryStringDictionary["url"]?.removingPercentEncoding ?? webPageUrl
+//        webPageTitle = queryStringDictionary["title"] ?? webPageTitle
+//        webPageDescription = queryStringDictionary["description"] ?? webPageDescription0
+//        webPageImage = queryStringDictionary["img"] ?? webPageImageIcon0
+//        webPageImageIcon = webPageImage
+//        
+//        let ccodeInActionSheet = ccode["actionsheet"] ?? "iosaction"
+//        let urlWithCCode = "\(webPageUrl)#ccode=\(ccodeInActionSheet)"
+//        
+//
+//        let url = URL(string: urlWithCCode)
+        share.popupActionSheet(self as UIViewController, url: url)
+        
+
     }
     
     func openInView(_ urlString : String) {

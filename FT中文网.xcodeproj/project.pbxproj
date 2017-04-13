@@ -85,6 +85,8 @@
 		50FCC9C31D34C1D300FC1892 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FCC9C01D34C1D300FC1892 /* User.swift */; };
 		601BF9961E94C2230032C467 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601BF9951E94C2230032C467 /* AudioPlayer.swift */; };
 		601BF9971E94C2230032C467 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601BF9951E94C2230032C467 /* AudioPlayer.swift */; };
+		6023B6091E9F714A00AF1F8F /* ShareHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6023B6081E9F714A00AF1F8F /* ShareHelper.swift */; };
+		6023B60A1E9F714A00AF1F8F /* ShareHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6023B6081E9F714A00AF1F8F /* ShareHelper.swift */; };
 		6026476F1E973A6E009D8398 /* indexBig5.html in Resources */ = {isa = PBXBuildFile; fileRef = 6026476E1E973A6E009D8398 /* indexBig5.html */; };
 		602647701E973A6E009D8398 /* indexBig5.html in Resources */ = {isa = PBXBuildFile; fileRef = 6026476E1E973A6E009D8398 /* indexBig5.html */; };
 		602647721E976692009D8398 /* SpeechDefaultVoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 602647711E976692009D8398 /* SpeechDefaultVoice.swift */; };
@@ -176,6 +178,7 @@
 		50FC07EB1A53A589006EE23F /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		50FCC9C01D34C1D300FC1892 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		601BF9951E94C2230032C467 /* AudioPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
+		6023B6081E9F714A00AF1F8F /* ShareHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareHelper.swift; sourceTree = "<group>"; };
 		6026476E1E973A6E009D8398 /* indexBig5.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = indexBig5.html; path = supporting/indexBig5.html; sourceTree = "<group>"; };
 		602647711E976692009D8398 /* SpeechDefaultVoice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeechDefaultVoice.swift; sourceTree = "<group>"; };
 		602647741E97804C009D8398 /* cover.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cover.jpg; sourceTree = "<group>"; };
@@ -320,16 +323,13 @@
 				50256C9E1A4B9D0B005950B9 /* AppDelegate.swift */,
 				50256CC21A4BFAE7005950B9 /* Globals.swift */,
 				503435691DBDEC8200B2F686 /* AdSchedule.swift */,
-				50119E7C1DC873C6003667DE /* WeChatShare.swift */,
-				50159E461B9B147500F22FFC /* DataForShare.swift */,
-				50DF3E9E1D484B3C0054DDD2 /* ShareImageActivityProvider.swift */,
-				50159E4A1B9B2ED900F22FFC /* OpenInSafari.swift */,
 				50982C7D1BC7A7C800907575 /* IJReachability.swift */,
 				50FCC9C01D34C1D300FC1892 /* User.swift */,
 				604056B91E9C861C008A7701 /* LeakAvoider.swift */,
 				50256CA71A4B9D0B005950B9 /* LaunchScreen.xib */,
 				602647771E978E7E009D8398 /* Images.xcassets */,
 				50B5D05D1DAF1E450052C954 /* FT中文网.entitlements */,
+				6023B60B1E9F723000AF1F8F /* Share */,
 				607480331E9B40DA009C0756 /* Audio */,
 				601BF9941E94C1ED0032C467 /* Speech */,
 				505A9F071E499B460079254F /* IAP */,
@@ -427,6 +427,18 @@
 				602647711E976692009D8398 /* SpeechDefaultVoice.swift */,
 			);
 			name = Speech;
+			sourceTree = "<group>";
+		};
+		6023B60B1E9F723000AF1F8F /* Share */ = {
+			isa = PBXGroup;
+			children = (
+				6023B6081E9F714A00AF1F8F /* ShareHelper.swift */,
+				50119E7C1DC873C6003667DE /* WeChatShare.swift */,
+				50159E461B9B147500F22FFC /* DataForShare.swift */,
+				50DF3E9E1D484B3C0054DDD2 /* ShareImageActivityProvider.swift */,
+				50159E4A1B9B2ED900F22FFC /* OpenInSafari.swift */,
+			);
+			name = Share;
 			sourceTree = "<group>";
 		};
 		607480331E9B40DA009C0756 /* Audio */ = {
@@ -715,6 +727,7 @@
 				60D26FDC1E8F58D80047C6AB /* SpeechSettings.swift in Sources */,
 				50119E7D1DC873C6003667DE /* WeChatShare.swift in Sources */,
 				501797F51E49669400A2F2A9 /* IAPHelper.swift in Sources */,
+				6023B6091E9F714A00AF1F8F /* ShareHelper.swift in Sources */,
 				50256CC31A4BFAE7005950B9 /* Globals.swift in Sources */,
 				50256CC51A4C1916005950B9 /* WKWebPageController.swift in Sources */,
 				604056BA1E9C861C008A7701 /* LeakAvoider.swift in Sources */,
@@ -751,6 +764,7 @@
 				60D26FDD1E8F58D80047C6AB /* SpeechSettings.swift in Sources */,
 				50119E7E1DC873C6003667DE /* WeChatShare.swift in Sources */,
 				507C7E4D1DB0BCE800A8EF50 /* Globals.swift in Sources */,
+				6023B60A1E9F714A00AF1F8F /* ShareHelper.swift in Sources */,
 				507C7E4F1DB0BCE800A8EF50 /* WKWebPageController.swift in Sources */,
 				5034356B1DBDEC8300B2F686 /* AdSchedule.swift in Sources */,
 				604056BB1E9C861C008A7701 /* LeakAvoider.swift in Sources */,

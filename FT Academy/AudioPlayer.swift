@@ -21,6 +21,8 @@ class AudioContent {
     var body = [String: String]()
 }
 
+
+
 class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,SFSafariViewControllerDelegate,WKNavigationDelegate {
     
     private var audioTitle = ""
@@ -90,49 +92,15 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     
     @IBAction func sliderValueChanged(_ sender: UISlider) {
         let currentValue = sender.value
-        //let maxTime = sender.maximumValue
         let currentTime = CMTimeMake(Int64(currentValue), 1)
         playerItem?.seek(to: currentTime)
-        
-        //print ("seeking to: \(currentTime)")
     }
     
     @IBAction func share(_ sender: UIBarButtonItem) {
-        let wcActivity = WeChatShare(to: "chat")
-        let wcCircle = WeChatShare(to: "moment")
-        let openInSafari = OpenInSafari()
-        if let myWebsite = self.webView?.url {
-            let shareData = DataForShare()
-            let image = ShareImageActivityProvider(placeholderItem: UIImage(named: "ftcicon.jpg")!)
-            let objectsToShare = [shareData, myWebsite, image] as [Any]
-            let activityVC: UIActivityViewController
-            if WXApi.isWXAppSupport() == true {
-                activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [wcActivity, wcCircle, openInSafari])
-            } else {
-                activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: [openInSafari])
-            }
-            activityVC.excludedActivityTypes = [UIActivityType.airDrop, UIActivityType.addToReadingList]
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                //self.presentViewController(controller, animated: true, completion: nil)
-                let popup: UIPopoverController = UIPopoverController(contentViewController: activityVC)
-                popup.present(from: CGRect(x: self.view.frame.size.width / 2, y: self.view.frame.size.height / 4, width: 0, height: 0), in: self.view, permittedArrowDirections: UIPopoverArrowDirection.any, animated: true)
-            } else {
-                self.present(activityVC, animated: true, completion: nil)
-            }
-            
-            if webPageImageIcon == "" {
-                weChatShareIcon = UIImage(named: "ftcicon.jpg")
-            } else if webPageImageIcon != ""{
-                if webPageImageIcon.range(of: "https://image.webservices.ft.com") == nil {
-                    webPageImageIcon = "https://image.webservices.ft.com/v1/images/raw/\(webPageImageIcon)?source=ftchinese&width=72&height=72"
-                }
-                print("image icon is \(webPageImageIcon)")
-                if let imgUrl = URL(string: webPageImageIcon) {
-                    print("update image icon : \(webPageImageIcon)")
-                    updateWeChatShareIcon(imgUrl)
-                }
-            }
-        }
+        let share = ShareHelper()
+        let ccodeInActionSheet = ccode["actionsheet"] ?? "iosaction"
+        let url = URL(string: "http://www.ftchinese.com/interactive/\(audioId)#ccode=\(ccodeInActionSheet)")
+        share.popupActionSheet(self as UIViewController, url: url)
     }
     
     deinit {
@@ -150,15 +118,13 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     
     override func loadView() {
         super.loadView()
-        parseAudioMessage()
-        prepareAudioPlay()
-        enableBackGroundMode()
-        
         webPageTitle = webPageTitle0
         webPageDescription = webPageDescription0
         webPageImage = webPageImage0
         webPageImageIcon = webPageImageIcon0
-        
+        parseAudioMessage()
+        prepareAudioPlay()
+        enableBackGroundMode()
         let jsCode = "function getContentByMetaTagName(c) {for (var b = document.getElementsByTagName('meta'), a = 0; a < b.length; a++) {if (c == b[a].name || c == b[a].getAttribute('property')) { return b[a].content; }} return '';} var gCoverImage = getContentByMetaTagName('og:image') || '';var gIconImage = getContentByMetaTagName('thumbnail') || '';var gDescription = getContentByMetaTagName('og:description') || getContentByMetaTagName('description') || '';gIconImage=encodeURIComponent(gIconImage);webkit.messageHandlers.callbackHandler.postMessage(gCoverImage + '|' + gIconImage + '|' + gDescription);"
         let userScript = WKUserScript(
             source: jsCode,
@@ -185,11 +151,11 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        webPageUrl = "http://www.ftchinese.com/interactive/\(audioId)?hideheader=yes"
-        if let url = URL(string:webPageUrl) {
+        webPageUrl = "http://www.ftchinese.com/interactive/\(audioId)"
+        let url = "\(webPageUrl)?hideheader=yes"
+        if let url = URL(string:url) {
             let req = URLRequest(url:url)
-            // FIXME: - This is to suppress Apple's complaint. Should be webView?.load(req). Try change it back after Xcode upgrade.
-            _ = webView?.load(req)
+            webView?.load(req)
         }
     }
     
