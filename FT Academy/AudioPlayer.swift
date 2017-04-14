@@ -32,12 +32,13 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     private lazy var playerItem: AVPlayerItem? = nil
     private lazy var webView: WKWebView? = nil
     private let nowPlayingCenter = NowPlayingCenter()
-    
+    private let download = DownloadHelper(directory: "audio")
     
     @IBOutlet weak var containerView: UIWebView!
     @IBOutlet weak var toolBar: UIToolbar!
     @IBOutlet weak var buttonPlayAndPause: UIBarButtonItem!
     @IBOutlet weak var progressSlider: UISlider!
+    @IBOutlet weak var downloadButton: UIBarButtonItem!
     @IBAction func ButtonPlayPause(_ sender: UIBarButtonItem) {
         if let player = player {
             if (player.rate != 0) && (player.error == nil) {
@@ -103,11 +104,16 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
         share.popupActionSheet(self as UIViewController, url: url)
     }
     
+    @IBAction func download(_ sender: Any) {
+        if audioUrlString != "" {
+            download.startDownload(audioUrlString)
+        }
+    }
+    
+    
+    
     deinit {
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: playerItem)
-        playerItem?.removeObserver(self, forKeyPath: "playbackBufferEmpty")
-        playerItem?.removeObserver(self, forKeyPath: "playbackLikelyToKeepUp")
-        playerItem?.removeObserver(self, forKeyPath: "playbackBufferFull")
+        removePlayerItemObservers()
         
         // MARK: - Stop loading and remove message handlers to avoid leak
         self.webView?.stopLoading()
@@ -241,6 +247,39 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
         }
     }
     
+    private func updateAVPlayerWithLocalUrl() {
+        if let localAudioFile = download.checkDownloadedFileInDirectory(audioUrlString) {
+            let currentSliderValue = self.progressSlider.value
+            let audioUrl = URL(fileURLWithPath: localAudioFile)
+            let asset = AVURLAsset(url: audioUrl)
+            removePlayerItemObservers()
+            playerItem = AVPlayerItem(asset: asset)
+            player?.replaceCurrentItem(with: playerItem)
+            addPlayerItemObservers()
+            let currentTime = CMTimeMake(Int64(currentSliderValue), 1)
+            playerItem?.seek(to: currentTime)
+            nowPlayingCenter.updateTimeForPlayerItem(player)
+            print ("now use local file to play at \(currentTime)")
+        }
+    }
+    
+    private func removePlayerItemObservers() {
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: playerItem)
+        playerItem?.removeObserver(self, forKeyPath: "playbackBufferEmpty")
+        playerItem?.removeObserver(self, forKeyPath: "playbackLikelyToKeepUp")
+        playerItem?.removeObserver(self, forKeyPath: "playbackBufferFull")
+    }
+    
+    private func addPlayerItemObservers() {
+        // MARK: - Observe Play to the End
+        NotificationCenter.default.addObserver(self,selector:#selector(AudioPlayer.playerDidFinishPlaying), name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: playerItem)
+        
+        // MARK: - Update buffer status
+        playerItem?.addObserver(self, forKeyPath: "playbackBufferEmpty", options: .new, context: nil)
+        playerItem?.addObserver(self, forKeyPath: "playbackLikelyToKeepUp", options: .new, context: nil)
+        playerItem?.addObserver(self, forKeyPath: "playbackBufferFull", options: .new, context: nil)
+    }
+    
     private func prepareAudioPlay() {
         
         // MARK: - Use https url so that the audio can be buffered properly on actual devices
@@ -250,7 +289,16 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
         toolBar.clipsToBounds = true
         
         if let url = URL(string: audioUrlString) {
-            let asset = AVURLAsset(url: url)
+            // MARK: - Check if the file already exists locally
+            var audioUrl = url
+            if let localAudioFile = download.checkDownloadedFileInDirectory(audioUrlString) {
+                print ("The Audio is already downloaded")
+                audioUrl = URL(fileURLWithPath: localAudioFile)
+                downloadButton.image = UIImage(named:"DeleteButton")
+            }
+            
+            let asset = AVURLAsset(url: audioUrl)
+            
             playerItem = AVPlayerItem(asset: asset)
             player = AVPlayer()
             
@@ -273,13 +321,17 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
                 }
             }
             
-            // MARK: - Observe Play to the End
-            NotificationCenter.default.addObserver(self,selector:#selector(AudioPlayer.playerDidFinishPlaying), name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: playerItem)
-
-            // MARK: - Update buffer status
-            playerItem?.addObserver(self, forKeyPath: "playbackBufferEmpty", options: .new, context: nil)
-            playerItem?.addObserver(self, forKeyPath: "playbackLikelyToKeepUp", options: .new, context: nil)
-            playerItem?.addObserver(self, forKeyPath: "playbackBufferFull", options: .new, context: nil)
+            
+            
+            // MARK: - Observe download status change
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(AudioPlayer.handleDownloadStatusChange(_:)),
+                name: NSNotification.Name(rawValue: download.downloadStatusNotificationName),
+                object: nil
+            )
+            
+            addPlayerItemObservers()
         }
     }
     
@@ -299,14 +351,14 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
             self?.buttonPlayAndPause.image = UIImage(named:"BigPlayButton")
             return .success
         }
-//        MPRemoteCommandCenter.shared().nextTrackCommand.addTarget {[weak self] event in
-//            print ("next audio")
-//            return .success
-//        }
-//        MPRemoteCommandCenter.shared().previousTrackCommand.addTarget {[weak self] event in
-//            print ("previous audio")
-//            return .success
-//        }
+        //        MPRemoteCommandCenter.shared().nextTrackCommand.addTarget {[weak self] event in
+        //            print ("next audio")
+        //            return .success
+        //        }
+        //        MPRemoteCommandCenter.shared().previousTrackCommand.addTarget {[weak self] event in
+        //            print ("previous audio")
+        //            return .success
+        //        }
     }
     
     func playerDidFinishPlaying() {
@@ -341,6 +393,36 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
         }
     }
     
+    
+    public func handleDownloadStatusChange(_ notification: Notification) {
+        DispatchQueue.main.async() {
+            if let object = notification.object as? [String: String] {
+                if let status = object["status"], let id = object["id"] {
+                    // MARK: The Player Need to verify that the current file matches status change
+                    print ("\(self.audioUrlString) =? \(id)")
+                    if self.audioUrlString.contains(id) == true {
+                        print ("it's a match")
+                        var newButtonName = "DownloadButton"
+                        switch status {
+                        case "remote":
+                            newButtonName = "DownloadButton"
+                        case "downloading":
+                            newButtonName = "PauseButton"
+                        case "success":
+                            newButtonName = "DeleteButton"
+                            // MARK: if a file is downloaded, prepare the audio asset again
+                            self.updateAVPlayerWithLocalUrl()
+                        default:
+                            break
+                        }
+                        self.downloadButton.image = UIImage(named:newButtonName)
+                    } else {
+                        print ("not a match")
+                    }
+                }
+            }
+        }
+    }
     // MARK: - Done: Share
     
     // TODO: Download Management: Download or Delete
