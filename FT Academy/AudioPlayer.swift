@@ -331,6 +331,14 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
                 object: nil
             )
             
+            // MARK: - Observe download progress change
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(AudioPlayer.handleDownloadProgressChange(_:)),
+                name: NSNotification.Name(rawValue: download.downloadProgressNotificationName),
+                object: nil
+            )
+            
             addPlayerItemObservers()
         }
     }
@@ -401,7 +409,6 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
                     // MARK: The Player Need to verify that the current file matches status change
                     print ("\(self.audioUrlString) =? \(id)")
                     if self.audioUrlString.contains(id) == true {
-                        print ("it's a match")
                         var newButtonName = "DownloadButton"
                         switch status {
                         case "remote":
@@ -416,13 +423,29 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
                             break
                         }
                         self.downloadButton.image = UIImage(named:newButtonName)
-                    } else {
-                        print ("not a match")
                     }
                 }
             }
         }
     }
+    
+    public func handleDownloadProgressChange(_ notification: Notification) {
+        DispatchQueue.main.async() {
+            if let object = notification.object as? [String: Any] {
+                if let id = object["id"] as? String,
+                    let percentage = object["percentage"] as? Float,
+                    let downloaded = object["downloaded"] as? String,
+                    let total = object["total"] as? String {
+                    // MARK: The Player Need to verify that the current file matches status change
+                    if self.audioUrlString.contains(id) == true {
+                        print ("\(id) is \(percentage)% complete (\(downloaded)/\(total)). ")
+                    }
+                }
+            }
+        }
+    }
+    
+    
     // MARK: - Done: Share
     
     // TODO: Download Management: Download or Delete

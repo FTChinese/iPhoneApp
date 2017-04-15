@@ -12,6 +12,7 @@ class DownloadHelper: NSObject,URLSessionDownloadDelegate {
     
     public var directory: String
     public let downloadStatusNotificationName = "download status change"
+    public let downloadProgressNotificationName = "download progress change"
     public var currentStatus = "remote"
     
     init(directory: String) {
@@ -132,7 +133,13 @@ class DownloadHelper: NSObject,URLSessionDownloadDelegate {
                 downloadProgresses[productId] = totalMBsWritten
                 let totalMBsExpectedToWrite = String(format: "%.1f", Float(totalBytesExpectedToWrite)/1000000)
                 // TODO: Post notification about progress change
-                print ("updateDownloadProgress('\(productId)', '\(percentageNumber)%', '\(totalMBsWritten)M / \(totalMBsExpectedToWrite)M')")
+                let progressStatus: [String: Any] = [
+                    "id": productId,
+                    "percentage": percentageNumber,
+                    "downloaded": totalMBsWritten,
+                    "total": totalMBsExpectedToWrite
+                ]
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: downloadProgressNotificationName), object: progressStatus)
             }
         }
     }
