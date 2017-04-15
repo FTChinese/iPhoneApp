@@ -145,10 +145,16 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="Acd-hP-7XO"/>
-                                    <barButtonItem image="DownloadButton" id="ust-f3-HnZ">
-                                        <connections>
-                                            <action selector="download:" destination="pJa-PQ-Cxq" id="6Hi-qZ-X1z"/>
-                                        </connections>
+                                    <barButtonItem title="Item" style="plain" id="MbZ-oU-QFt">
+                                        <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="CJh-5f-O32">
+                                            <rect key="frame" x="94" y="4" width="36" height="36"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <state key="normal" image="DownloadButton"/>
+                                            <connections>
+                                                <action selector="download:" destination="pJa-PQ-Cxq" eventType="touchUpInside" id="CBF-rq-FJ7"/>
+                                            </connections>
+                                        </button>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="trL-ol-IW3"/>
                                     <barButtonItem image="BigPlayButton" id="KbP-uA-dyS">
@@ -193,7 +199,7 @@
                     <connections>
                         <outlet property="buttonPlayAndPause" destination="KbP-uA-dyS" id="I4R-Va-yOM"/>
                         <outlet property="containerView" destination="fPW-vk-FEr" id="eJ1-ji-Ezl"/>
-                        <outlet property="downloadButton" destination="ust-f3-HnZ" id="rVj-q7-apE"/>
+                        <outlet property="downloadButton" destination="CJh-5f-O32" id="qdS-cA-Dgh"/>
                         <outlet property="progressSlider" destination="nvm-zh-ZMN" id="qxm-72-eOb"/>
                         <outlet property="toolBar" destination="g6k-Nd-TWu" id="vgR-2b-dru"/>
                         <segue destination="zfb-r0-mCC" kind="presentation" identifier="Audio To WKWebView" id="fL3-kG-Zm4"/>
@@ -201,7 +207,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zH1-8b-ocF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="997.60000000000002" y="880.20989505247383"/>
+            <point key="canvasLocation" x="997.10144927536237" y="879.61956521739137"/>
         </scene>
         <!--Speech Settings-->
         <scene sceneID="5tE-TL-N6k">

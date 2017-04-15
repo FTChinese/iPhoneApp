@@ -38,7 +38,7 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     @IBOutlet weak var toolBar: UIToolbar!
     @IBOutlet weak var buttonPlayAndPause: UIBarButtonItem!
     @IBOutlet weak var progressSlider: UISlider!
-    @IBOutlet weak var downloadButton: UIBarButtonItem!
+    @IBOutlet weak var downloadButton: UIButton!
     @IBAction func ButtonPlayPause(_ sender: UIBarButtonItem) {
         if let player = player {
             if (player.rate != 0) && (player.error == nil) {
@@ -294,7 +294,7 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
             if let localAudioFile = download.checkDownloadedFileInDirectory(audioUrlString) {
                 print ("The Audio is already downloaded")
                 audioUrl = URL(fileURLWithPath: localAudioFile)
-                downloadButton.image = UIImage(named:"DeleteButton")
+                downloadButton.setImage(UIImage(named:"DeleteButton"), for: .normal)
             }
             
             let asset = AVURLAsset(url: audioUrl)
@@ -422,7 +422,8 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
                         default:
                             break
                         }
-                        self.downloadButton.image = UIImage(named:newButtonName)
+                        self.downloadButton.setTitle(nil, for: .normal)
+                        self.downloadButton.setImage(UIImage(named:newButtonName), for: .normal)
                     }
                 }
             }
@@ -438,7 +439,9 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
                     let total = object["total"] as? String {
                     // MARK: The Player Need to verify that the current file matches status change
                     if self.audioUrlString.contains(id) == true {
-                        print ("\(id) is \(percentage)% complete (\(downloaded)/\(total)). ")
+                        print ("\(id) is \(Int(percentage))% complete (\(downloaded)/\(total)). ")
+                        self.downloadButton.setImage(nil, for: .normal)
+                        self.downloadButton.setTitle("\(Int(percentage))%", for: .normal)
                     }
                 }
             }
