@@ -38,7 +38,7 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     @IBOutlet weak var toolBar: UIToolbar!
     @IBOutlet weak var buttonPlayAndPause: UIBarButtonItem!
     @IBOutlet weak var progressSlider: UISlider!
-    @IBOutlet weak var downloadButton: UIButton!
+    @IBOutlet weak var downloadButton: UIButtonEnhanced!
     @IBAction func ButtonPlayPause(_ sender: UIBarButtonItem) {
         if let player = player {
             if (player.rate != 0) && (player.error == nil) {
@@ -415,6 +415,9 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
                             newButtonName = "DownloadButton"
                         case "downloading":
                             newButtonName = "PauseButton"
+                            if let d = self.downloadButton as? UIButtonEnhanced {
+                                d.drawCircle()
+                            }
                         case "success":
                             newButtonName = "DeleteButton"
                             // MARK: if a file is downloaded, prepare the audio asset again
@@ -442,6 +445,11 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
                         print ("\(id) is \(Int(percentage))% complete (\(downloaded)/\(total)). ")
                         self.downloadButton.setImage(nil, for: .normal)
                         self.downloadButton.setTitle("\(Int(percentage))%", for: .normal)
+                        //self.downloadButton.progress = percentage/100
+                        if let d = self.downloadButton as? UIButtonEnhanced {
+                            print ("downcast success")
+                            d.progress = percentage/100
+                        }
                     }
                 }
             }
@@ -449,6 +457,7 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     }
     
     
+
     // MARK: - Done: Share
     
     // TODO: Download Management: Download or Delete
@@ -467,4 +476,29 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     
     
     
+}
+
+// TODO: extension is not ideal, a better solution should be a subclass of UIButton
+class UIButtonEnhanced: UIButton {
+    var progress: Float {
+        get {
+            return 0
+        }
+        set (newProgress){
+            circleShape.strokeEnd = CGFloat(newProgress)
+        }
+    }
+    var circleShape = CAShapeLayer()
+    func drawCircle() {
+        let x: CGFloat = 0.0
+        let y: CGFloat = 0.0
+        let circlePath = UIBezierPath(roundedRect: CGRect(x: x, y: y, width: self.frame.height, height: self.frame.height), cornerRadius: self.frame.height / 2).cgPath
+        circleShape.path = circlePath
+        circleShape.lineWidth = 3
+        circleShape.strokeColor = UIColor.white.cgColor
+        circleShape.strokeStart = 0
+        circleShape.strokeEnd = 0
+        circleShape.fillColor = UIColor.clear.cgColor
+        self.layer.addSublayer(circleShape)
+    }
 }
