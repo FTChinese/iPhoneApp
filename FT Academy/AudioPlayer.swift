@@ -284,8 +284,6 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     }
     
     
-    
-    
     private func prepareAudioPlay() {
         
         // MARK: - Use https url so that the audio can be buffered properly on actual devices
@@ -308,9 +306,14 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
             downloadButton.drawCircle()
             
             // MARK: - Change the size of progressSlider
-            let progressThumbImage = UIImage(color: .white, size: CGSize(width: 1, height: 4))
-            progressSlider.setThumbImage(progressThumbImage, for: [.normal])
-            progressSlider.setThumbImage(progressThumbImage, for: [.highlighted])
+            let ftPink = UIColor(netHex: 0xFFF1E0)
+            let ftRed = UIColor(netHex: 0x9E2F50)
+            let progressThumbImage = UIImage(color: ftPink, size: CGSize(width: 1, height: 4))
+            let progressThumbImageForHighted = UIImage(color: ftRed, size: CGSize(width: 2, height: 8))
+            
+            // FIXME: - Putting the two lines into one doesn't work for now. Try again when SWIFT upgrades.
+            progressSlider.setThumbImage(progressThumbImage, for: .normal)
+            progressSlider.setThumbImage(progressThumbImageForHighted, for: .highlighted)
             
             
             let asset = AVURLAsset(url: audioUrl)
@@ -461,38 +464,22 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     
     
     
-    // MARK: - Done: Share
-    
-    // MARK: - Done: Download Management: Download or Delete
-    
-    // TODO: Subscribe
-    
-    // TODO: Display Background Images for Radio Columns
-    
-    // MARK: - Done: Deinit 1. remove observers 2. quit background play mode
-    
-    // MARK: - Done: Enable background play
-    
-    // MARK: - Done: Display the audio text
-    
-    // MARK: - Done: Update play progress
-    
-    
-    
 }
 
+// MARK: - Done: Share
 
-public extension UIImage {
-    public convenience init?(color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) {
-        let rect = CGRect(origin: .zero, size: size)
-        UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
-        color.setFill()
-        UIRectFill(rect)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        guard let cgImage = image?.cgImage else { return nil }
-        self.init(cgImage: cgImage)
-    }
-}
+// MARK: - Done: Download Management: Download or Delete
+
+// TODO: Subscribe
+
+// TODO: Display Background Images for Radio Columns
+
+// MARK: - Done: Deinit 1. remove observers 2. quit background play mode
+
+// MARK: - Done: Enable background play
+
+// MARK: - Done: Display the audio text
+
+// MARK: - Done: Update play progress
+
 

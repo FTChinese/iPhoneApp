@@ -235,16 +235,7 @@ class DownloadHelper: NSObject,URLSessionDownloadDelegate {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: downloadStatusNotificationName), object: status)
     }
     
-    // MARK: - Done:  Post and Receive Status Change Notifications
-    // MARK: - Done:  Update UI Based on Status Change
-    // MARK: - Done:  Update UI Based on Download Progress
-    // MARK: - Done:  Choose streaming or local file to play based on availability of audio files
-    // TODO: Allow users to clean files with one tap
-    // TODO: Let users easily find downloaded file to play
-    // TODO: Display current status so that users/reviewers know what it is going on
-    // TODO: If a user is trying to download while not on wifi, pop out an alert with friendly suggestions
-    
-    // https://www.raywenderlich.com/94302/implement-circular-image-loader-animation-cashapelayer
+
 }
 
 
@@ -290,3 +281,15 @@ class UIButtonEnhanced: UIButton {
         }
     }
 }
+
+// MARK: - Done:  Update progressSlider thumb image with customized ones
+// MARK: - Done:  Post and Receive Status Change Notifications
+// MARK: - Done:  Update UI Based on Status Change
+// MARK: - Done:  Update UI Based on Download Progress
+// MARK: - Done:  Choose streaming or local file to play based on availability of audio files
+// TODO: Allow users to clean files with one tap
+// TODO: Let users easily find downloaded file to play
+// TODO: Display current status so that users/reviewers know what it is going on
+// TODO: If a user is trying to download while not on wifi, pop out an alert with friendly suggestions
+
+// https://www.raywenderlich.com/94302/implement-circular-image-loader-animation-cashapelayer
