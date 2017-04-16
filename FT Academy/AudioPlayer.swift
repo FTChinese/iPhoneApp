@@ -283,6 +283,9 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
         playerItem?.addObserver(self, forKeyPath: "playbackBufferFull", options: .new, context: nil)
     }
     
+    
+    
+    
     private func prepareAudioPlay() {
         
         // MARK: - Use https url so that the audio can be buffered properly on actual devices
@@ -301,8 +304,14 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
                 //                downloadButton.setImage(UIImage(named:"DeleteButton"), for: .normal)
             }
             
-            // MARK: - draw a circle around the downloadButton
+            // MARK: - Draw a circle around the downloadButton
             downloadButton.drawCircle()
+            
+            // MARK: - Change the size of progressSlider
+            let progressThumbImage = UIImage(color: .white, size: CGSize(width: 1, height: 4))
+            progressSlider.setThumbImage(progressThumbImage, for: [.normal])
+            progressSlider.setThumbImage(progressThumbImage, for: [.highlighted])
+            
             
             let asset = AVURLAsset(url: audioUrl)
             
@@ -470,5 +479,20 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     
     
     
+}
+
+
+public extension UIImage {
+    public convenience init?(color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) {
+        let rect = CGRect(origin: .zero, size: size)
+        UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
+        color.setFill()
+        UIRectFill(rect)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        guard let cgImage = image?.cgImage else { return nil }
+        self.init(cgImage: cgImage)
+    }
 }
 

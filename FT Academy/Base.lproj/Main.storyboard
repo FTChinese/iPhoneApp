@@ -132,6 +132,7 @@
                                     <constraint firstAttribute="height" constant="30" id="tYP-bj-aVM"/>
                                 </constraints>
                                 <color key="minimumTrackTintColor" red="1" green="0.94509803920000002" blue="0.87843137250000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color key="thumbTintColor" red="1" green="0.94509803920000002" blue="0.87898763020000004" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
                                     <action selector="sliderValueChanged:" destination="pJa-PQ-Cxq" eventType="valueChanged" id="72q-mJ-0uO"/>
                                 </connections>

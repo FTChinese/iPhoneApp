@@ -8,55 +8,13 @@
 
 import Foundation
 
+
 enum DownloadStatus {
     case remote
     case downloading
     case paused
     case resumed
     case success
-}
-
-// TODO: extension is not ideal, a better solution should be a subclass of UIButton
-class UIButtonEnhanced: UIButton {
-    var progress: Float {
-        get {
-            return 0
-        }
-        set (newProgress){
-            circleShape.strokeEnd = CGFloat(newProgress)
-        }
-    }
-    var status: DownloadStatus = .remote {
-        didSet{
-            var buttonImageName = ""
-            switch self.status {
-            case .remote:
-                buttonImageName = "DownloadButton"
-            case .downloading:
-                buttonImageName = "PauseButton"
-            case .success:
-                buttonImageName = "DeleteButton"
-            case .paused:
-                buttonImageName = "DownloadButton"
-            case .resumed:
-                buttonImageName = "PauseButton"
-            }
-            self.setImage(UIImage(named: buttonImageName), for: .normal)
-        }
-    }
-    var circleShape = CAShapeLayer()
-    func drawCircle() {
-        let x: CGFloat = 0.0
-        let y: CGFloat = 0.0
-        let circlePath = UIBezierPath(roundedRect: CGRect(x: x, y: y, width: self.frame.height, height: self.frame.height), cornerRadius: self.frame.height / 2).cgPath
-        circleShape.path = circlePath
-        circleShape.lineWidth = 3
-        circleShape.strokeColor = UIColor.white.cgColor
-        circleShape.strokeStart = 0
-        circleShape.strokeEnd = 0
-        circleShape.fillColor = UIColor.clear.cgColor
-        self.layer.addSublayer(circleShape)
-    }
 }
 
 class DownloadHelper: NSObject,URLSessionDownloadDelegate {
@@ -287,4 +245,48 @@ class DownloadHelper: NSObject,URLSessionDownloadDelegate {
     // TODO: If a user is trying to download while not on wifi, pop out an alert with friendly suggestions
     
     // https://www.raywenderlich.com/94302/implement-circular-image-loader-animation-cashapelayer
+}
+
+
+// MARK: extension is not ideal, a better solution should be a subclass of UIButton
+class UIButtonEnhanced: UIButton {
+    var progress: Float = 0 {
+        didSet {
+            circleShape.strokeEnd = CGFloat(self.progress)
+        }
+    }
+    
+    var circleShape = CAShapeLayer()
+    public func drawCircle() {
+        let x: CGFloat = 0.0
+        let y: CGFloat = 0.0
+        let circlePath = UIBezierPath(roundedRect: CGRect(x: x, y: y, width: self.frame.height, height: self.frame.height), cornerRadius: self.frame.height / 2).cgPath
+        circleShape.path = circlePath
+        circleShape.lineWidth = 3
+        circleShape.strokeColor = UIColor.white.cgColor
+        circleShape.strokeStart = 0
+        circleShape.strokeEnd = 0
+        circleShape.fillColor = UIColor.clear.cgColor
+        self.layer.addSublayer(circleShape)
+    }
+    
+    // MARK: - Update the download status
+    var status: DownloadStatus = .remote {
+        didSet{
+            var buttonImageName = ""
+            switch self.status {
+            case .remote:
+                buttonImageName = "DownloadButton"
+            case .downloading:
+                buttonImageName = "PauseButton"
+            case .success:
+                buttonImageName = "DeleteButton"
+            case .paused:
+                buttonImageName = "DownloadButton"
+            case .resumed:
+                buttonImageName = "PauseButton"
+            }
+            self.setImage(UIImage(named: buttonImageName), for: .normal)
+        }
+    }
 }
