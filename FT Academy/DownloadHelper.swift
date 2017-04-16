@@ -56,7 +56,6 @@ class DownloadHelper: NSObject,URLSessionDownloadDelegate {
 //    }
     
     public func startDownload(_ url: String) {
-        var message = [String: Any]()
         if let u = URL(string: url) {
             let fileName = u.lastPathComponent
             if checkDownloadedFileInDirectory(url) == nil {
@@ -67,18 +66,17 @@ class DownloadHelper: NSObject,URLSessionDownloadDelegate {
                 let request = URLRequest(url: u)
                 downloadTasks[url] = backgroundSession.downloadTask(with: request)
                 downloadTasks[url]?.resume()
-                message = ["id": fileName, "status": DownloadStatus.downloading]
+                postStatusChange(fileName, status: .downloading)
 
                 // TODO: track the action of download
             } else {
                 print ("file already exists. No need to download. ")
-                message = ["id": fileName, "status": DownloadStatus.success]
+                postStatusChange(fileName, status: .success)
             }
-            postStatusChange(message)
         } else {
             // TODO: the url is not the right format, do some error handling
             print ("the file is already downloaded, update the ui to reflect that")
-            postStatusChange(["id": "unknown", "status":DownloadStatus.remote])
+            postStatusChange("unknown", status: .remote)
         }
     }
     
@@ -102,8 +100,7 @@ class DownloadHelper: NSObject,URLSessionDownloadDelegate {
             if let localFileLocation = checkDownloadedFileInDirectory(url) {
                 // TODO: the file is already downloaded, delete it
                 removeDownloadedFile(localFileLocation)
-                let message: [String: Any] = ["id": fileName, "status": DownloadStatus.remote]
-                postStatusChange(message)
+                postStatusChange(fileName, status: .remote)
             }
         }
     }
@@ -112,8 +109,7 @@ class DownloadHelper: NSObject,URLSessionDownloadDelegate {
         if let u = URL(string: url) {
             let fileName = u.lastPathComponent
             downloadTasks[url]?.suspend()
-            let message: [String: Any] = ["id": fileName, "status": DownloadStatus.paused]
-            postStatusChange(message)
+            postStatusChange(fileName, status: .paused)
         }
     }
     
@@ -121,8 +117,7 @@ class DownloadHelper: NSObject,URLSessionDownloadDelegate {
         if let u = URL(string: url) {
             let fileName = u.lastPathComponent
             downloadTasks[url]?.resume()
-            let message: [String: Any] = ["id": fileName, "status": DownloadStatus.resumed]
-            postStatusChange(message)
+            postStatusChange(fileName, status: .resumed)
         }
     }
     
@@ -157,29 +152,25 @@ class DownloadHelper: NSObject,URLSessionDownloadDelegate {
     }
     
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-        if let productId = session.configuration.identifier {
+        if let id = session.configuration.identifier {
             let path = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
             let documentDirectoryPath:String = path[0]
             let fileManager = FileManager()
-            let destinationURLForFile = URL(fileURLWithPath: documentDirectoryPath.appendingFormat("/\(productId)"))
-            var message = [String: Any]()
-            print ("\(productId) file downloaded to: \(location.absoluteURL)")
+            let destinationURLForFile = URL(fileURLWithPath: documentDirectoryPath.appendingFormat("/\(id)"))
+            print ("\(id) file downloaded to: \(location.absoluteURL)")
             if fileManager.fileExists(atPath: destinationURLForFile.path){
                 print ("the file exists, you can open it. ")
-                message = ["id": productId, "status":DownloadStatus.success]
-                postStatusChange(message)
+                postStatusChange(id, status: .success)
             } else {
                 do {
                     try fileManager.moveItem(at: location, to: destinationURLForFile)
                     // MARK: - Update UI and track download success
                     print("download success")
-                    message = ["id": productId, "status":DownloadStatus.success]
-                    postStatusChange(message)
+                    postStatusChange(id, status: .success)
                 }catch{
                     print("An error occurred while moving file to destination url")
                     // MARK: - Update UI and track saving failure
-                    message = ["id": productId, "status":DownloadStatus.remote]
-                    postStatusChange(message)
+                    postStatusChange(id, status: .resumed)
                 }
             }
         }
@@ -204,13 +195,13 @@ class DownloadHelper: NSObject,URLSessionDownloadDelegate {
             }
             downloadProgresses[productId] = totalMBsWritten
             let totalMBsExpectedToWrite = String(format: "%.1f", Float(totalBytesExpectedToWrite)/1000000)
-            // TODO: Post notification about progress change
-            let progressStatus: [String: Any] = [
-                "id": productId,
-                "percentage": percentageNumber,
-                "downloaded": totalMBsWritten,
-                "total": totalMBsExpectedToWrite
-            ]
+            // MARK: - Post notification about progress change
+            let progressStatus = (
+                id: productId,
+                percentage: percentageNumber,
+                downloaded: totalMBsWritten,
+                total: totalMBsExpectedToWrite
+            )
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: downloadProgressNotificationName), object: progressStatus)
             
         }
@@ -224,15 +215,15 @@ class DownloadHelper: NSObject,URLSessionDownloadDelegate {
             print(error!.localizedDescription)
             if let productId = session.configuration.identifier {
                 // TODO: Update UI about Download Failure
-                let message: [String: Any] = ["id": productId, "status":DownloadStatus.remote]
-                postStatusChange(message)
+                postStatusChange(productId, status:DownloadStatus.remote)
             }
         }
     }
     
     
-    private func postStatusChange(_ status: [String: Any]) {
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: downloadStatusNotificationName), object: status)
+    private func postStatusChange(_ id: String, status: DownloadStatus ) {
+        let message = (id: id, status: status)
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: downloadStatusNotificationName), object: message)
     }
     
 

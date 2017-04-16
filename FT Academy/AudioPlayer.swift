@@ -424,25 +424,25 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     
     public func handleDownloadStatusChange(_ notification: Notification) {
         DispatchQueue.main.async() {
-            if let object = notification.object as? [String: Any] {
-                if let status = object["status"] as? DownloadStatus, let id = object["id"] as? String {
-                    // MARK: The Player Need to verify that the current file matches status change
-                    print ("\(self.audioUrlString) =? \(id)")
-                    if self.audioUrlString.contains(id) == true {
-                        switch status {
-                        case .downloading, .remote:
-                            self.downloadButton.progress = 0
-                        case .paused, .resumed:
-                            break
-                        case .success:
-                            // MARK: if a file is downloaded, prepare the audio asset again
-                            self.updateAVPlayerWithLocalUrl()
-                            self.downloadButton.progress = 0
-                        }
-                        print ("notification received for \(status)")
-                        self.downloadButton.status = status
-                        //self.downloadButton.progress = 0
+            if let object = notification.object as? (id: String, status: DownloadStatus) {
+                let status = object.status
+                let id = object.id
+                // MARK: The Player Need to verify that the current file matches status change
+                print ("\(self.audioUrlString) =? \(id)")
+                if self.audioUrlString.contains(id) == true {
+                    switch status {
+                    case .downloading, .remote:
+                        self.downloadButton.progress = 0
+                    case .paused, .resumed:
+                        break
+                    case .success:
+                        // MARK: if a file is downloaded, prepare the audio asset again
+                        self.updateAVPlayerWithLocalUrl()
+                        self.downloadButton.progress = 0
                     }
+                    print ("notification received for \(status)")
+                    self.downloadButton.status = status
+                    //self.downloadButton.progress = 0
                 }
             }
         }
@@ -450,19 +450,16 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     
     public func handleDownloadProgressChange(_ notification: Notification) {
         DispatchQueue.main.async() {
-            if let object = notification.object as? [String: Any] {
-                if let id = object["id"] as? String,
-                    let percentage = object["percentage"] as? Float {
-                    // MARK: The Player Need to verify that the current file matches status change
-                    if self.audioUrlString.contains(id) == true {
-                        self.downloadButton.progress = percentage/100
-                    }
+            if let object = notification.object as? (id: String, percentage: Float, downloaded: String, total: String) {
+                let id = object.id
+                let percentage = object.percentage
+                // MARK: The Player Need to verify that the current file matches status change
+                if self.audioUrlString.contains(id) == true {
+                    self.downloadButton.progress = percentage/100
                 }
             }
         }
     }
-    
-    
     
 }
 
