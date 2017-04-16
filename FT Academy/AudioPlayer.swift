@@ -311,7 +311,7 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
             let progressThumbImage = UIImage(color: ftPink, size: CGSize(width: 1, height: 4))
             let progressThumbImageForHighted = UIImage(color: ftRed, size: CGSize(width: 2, height: 8))
             
-            // FIXME: - Putting the two lines into one doesn't work for now. Try again when SWIFT upgrades.
+            // MARK: - Apple: "The control state whose thumb image you want to use. Specify a single control state value for this parameter. "
             progressSlider.setThumbImage(progressThumbImage, for: .normal)
             progressSlider.setThumbImage(progressThumbImageForHighted, for: .highlighted)
             
