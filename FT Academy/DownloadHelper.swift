@@ -8,12 +8,63 @@
 
 import Foundation
 
+enum DownloadStatus {
+    case remote
+    case downloading
+    case paused
+    case resumed
+    case success
+}
+
+// TODO: extension is not ideal, a better solution should be a subclass of UIButton
+class UIButtonEnhanced: UIButton {
+    var progress: Float {
+        get {
+            return 0
+        }
+        set (newProgress){
+            circleShape.strokeEnd = CGFloat(newProgress)
+        }
+    }
+    var status: DownloadStatus = .remote {
+        didSet{
+            var buttonImageName = ""
+            switch self.status {
+            case .remote:
+                buttonImageName = "DownloadButton"
+            case .downloading:
+                buttonImageName = "PauseButton"
+            case .success:
+                buttonImageName = "DeleteButton"
+            case .paused:
+                buttonImageName = "DownloadButton"
+            case .resumed:
+                buttonImageName = "PauseButton"
+            }
+            self.setImage(UIImage(named: buttonImageName), for: .normal)
+        }
+    }
+    var circleShape = CAShapeLayer()
+    func drawCircle() {
+        let x: CGFloat = 0.0
+        let y: CGFloat = 0.0
+        let circlePath = UIBezierPath(roundedRect: CGRect(x: x, y: y, width: self.frame.height, height: self.frame.height), cornerRadius: self.frame.height / 2).cgPath
+        circleShape.path = circlePath
+        circleShape.lineWidth = 3
+        circleShape.strokeColor = UIColor.white.cgColor
+        circleShape.strokeStart = 0
+        circleShape.strokeEnd = 0
+        circleShape.fillColor = UIColor.clear.cgColor
+        self.layer.addSublayer(circleShape)
+    }
+}
+
 class DownloadHelper: NSObject,URLSessionDownloadDelegate {
     
     public var directory: String
     public let downloadStatusNotificationName = "download status change"
     public let downloadProgressNotificationName = "download progress change"
-    public var currentStatus = "remote"
+    public var currentStatus: DownloadStatus = .remote
     
     init(directory: String) {
         self.directory = directory
@@ -30,14 +81,27 @@ class DownloadHelper: NSObject,URLSessionDownloadDelegate {
     // MARK: keep a reference of all the Download Tasks
     private var downloadTasks = [String: URLSessionDownloadTask]()
     
+//    public func checkDownloadStatus(_ url: String) {
+//        var message = [String: Any]()
+//        if let u = URL(string: url) {
+//            let fileName = u.lastPathComponent
+//            if checkDownloadedFileInDirectory(url) == nil {
+//                // MARK: - Should Download the file through the internet
+//                print ("The file does not exist. Download from \(url)")
+//                message = ["id": fileName, "status": DownloadStatus.remote]
+//            } else {
+//                print ("file already exists. No need to download. ")
+//                message = ["id": fileName, "status": DownloadStatus.success]
+//            }
+//            postStatusChange(message)
+//        }
+//    }
+    
     public func startDownload(_ url: String) {
+        var message = [String: Any]()
         if let u = URL(string: url) {
             let fileName = u.lastPathComponent
-            if let localFileLocation = checkDownloadedFileInDirectory(url) {
-                // TODO: the file is already downloaded, delete it
-                removeDownloadedFile(localFileLocation)
-                postStatusChange(["id": fileName, "status":"remote"])
-            } else {
+            if checkDownloadedFileInDirectory(url) == nil {
                 // MARK: - Download the file through the internet
                 print ("The file does not exist. Download from \(url)")
                 let backgroundSessionConfiguration = URLSessionConfiguration.background(withIdentifier: fileName)
@@ -45,14 +109,62 @@ class DownloadHelper: NSObject,URLSessionDownloadDelegate {
                 let request = URLRequest(url: u)
                 downloadTasks[url] = backgroundSession.downloadTask(with: request)
                 downloadTasks[url]?.resume()
-                print ("downloading")
-                postStatusChange(["id": fileName, "status":"downloading"])
+                message = ["id": fileName, "status": DownloadStatus.downloading]
+
                 // TODO: track the action of download
+            } else {
+                print ("file already exists. No need to download. ")
+                message = ["id": fileName, "status": DownloadStatus.success]
             }
+            postStatusChange(message)
         } else {
             // TODO: the url is not the right format, do some error handling
             print ("the file is already downloaded, update the ui to reflect that")
-            postStatusChange(["id": "unknown", "status":"error"])
+            postStatusChange(["id": "unknown", "status":DownloadStatus.remote])
+        }
+    }
+    
+    public func takeActions(_ url: String, currentStatus: DownloadStatus) {
+        print (currentStatus)
+        switch currentStatus {
+        case .remote:
+            startDownload(url)
+        case .success:
+            removeDownload(url)
+        case .downloading, .resumed:
+            pauseDownload(url)
+        case .paused:
+            resumeDownload(url)
+        }
+    }
+    
+    public func removeDownload(_ url: String) {
+        if let u = URL(string: url) {
+            let fileName = u.lastPathComponent
+            if let localFileLocation = checkDownloadedFileInDirectory(url) {
+                // TODO: the file is already downloaded, delete it
+                removeDownloadedFile(localFileLocation)
+                let message: [String: Any] = ["id": fileName, "status": DownloadStatus.remote]
+                postStatusChange(message)
+            }
+        }
+    }
+    
+    public func pauseDownload(_ url: String) {
+        if let u = URL(string: url) {
+            let fileName = u.lastPathComponent
+            downloadTasks[url]?.suspend()
+            let message: [String: Any] = ["id": fileName, "status": DownloadStatus.paused]
+            postStatusChange(message)
+        }
+    }
+    
+    public func resumeDownload(_ url: String) {
+        if let u = URL(string: url) {
+            let fileName = u.lastPathComponent
+            downloadTasks[url]?.resume()
+            let message: [String: Any] = ["id": fileName, "status": DownloadStatus.resumed]
+            postStatusChange(message)
         }
     }
     
@@ -66,14 +178,14 @@ class DownloadHelper: NSObject,URLSessionDownloadDelegate {
                 if FileManager().fileExists(atPath: templatepathInDocument.path) {
                     templatePath = templatepathInDocument.path
                 }
-                currentStatus = "success"
+                currentStatus = .success
                 return templatePath
             } catch {
-                currentStatus = "remote"
+                currentStatus = .remote
                 return nil
             }
         }
-        currentStatus = "remote"
+        currentStatus = .remote
         return nil
     }
     
@@ -92,21 +204,24 @@ class DownloadHelper: NSObject,URLSessionDownloadDelegate {
             let documentDirectoryPath:String = path[0]
             let fileManager = FileManager()
             let destinationURLForFile = URL(fileURLWithPath: documentDirectoryPath.appendingFormat("/\(productId)"))
-            
+            var message = [String: Any]()
             print ("\(productId) file downloaded to: \(location.absoluteURL)")
             if fileManager.fileExists(atPath: destinationURLForFile.path){
                 print ("the file exists, you can open it. ")
-                postStatusChange(["id": productId, "status":"success"])
+                message = ["id": productId, "status":DownloadStatus.success]
+                postStatusChange(message)
             } else {
                 do {
                     try fileManager.moveItem(at: location, to: destinationURLForFile)
                     // MARK: - Update UI and track download success
                     print("download success")
-                    postStatusChange(["id": productId, "status":"success"])
+                    message = ["id": productId, "status":DownloadStatus.success]
+                    postStatusChange(message)
                 }catch{
                     print("An error occurred while moving file to destination url")
                     // MARK: - Update UI and track saving failure
-                    postStatusChange(["id": productId, "status":"failure"])
+                    message = ["id": productId, "status":DownloadStatus.remote]
+                    postStatusChange(message)
                 }
             }
         }
@@ -129,18 +244,17 @@ class DownloadHelper: NSObject,URLSessionDownloadDelegate {
             if totalMBsWritten == "0.0" {
                 downloadProgresses[productId] = "0.0"
             }
-            if downloadProgresses[productId] != totalMBsWritten {
-                downloadProgresses[productId] = totalMBsWritten
-                let totalMBsExpectedToWrite = String(format: "%.1f", Float(totalBytesExpectedToWrite)/1000000)
-                // TODO: Post notification about progress change
-                let progressStatus: [String: Any] = [
-                    "id": productId,
-                    "percentage": percentageNumber,
-                    "downloaded": totalMBsWritten,
-                    "total": totalMBsExpectedToWrite
-                ]
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: downloadProgressNotificationName), object: progressStatus)
-            }
+            downloadProgresses[productId] = totalMBsWritten
+            let totalMBsExpectedToWrite = String(format: "%.1f", Float(totalBytesExpectedToWrite)/1000000)
+            // TODO: Post notification about progress change
+            let progressStatus: [String: Any] = [
+                "id": productId,
+                "percentage": percentageNumber,
+                "downloaded": totalMBsWritten,
+                "total": totalMBsExpectedToWrite
+            ]
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: downloadProgressNotificationName), object: progressStatus)
+            
         }
     }
     
@@ -152,24 +266,25 @@ class DownloadHelper: NSObject,URLSessionDownloadDelegate {
             print(error!.localizedDescription)
             if let productId = session.configuration.identifier {
                 // TODO: Update UI about Download Failure
-                print ("iapActions('\(productId)', 'pendingdownload');")
+                let message: [String: Any] = ["id": productId, "status":DownloadStatus.remote]
+                postStatusChange(message)
             }
         }
     }
     
     
-    private func postStatusChange(_ status: [String: String]) {
+    private func postStatusChange(_ status: [String: Any]) {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: downloadStatusNotificationName), object: status)
     }
     
     // MARK: - Done:  Post and Receive Status Change Notifications
-    // TODO: Update UI Based on Status Change
-    // TODO: Update UI Based on Download Progress
+    // MARK: - Done:  Update UI Based on Status Change
+    // MARK: - Done:  Update UI Based on Download Progress
     // MARK: - Done:  Choose streaming or local file to play based on availability of audio files
     // TODO: Allow users to clean files with one tap
     // TODO: Let users easily find downloaded file to play
-
+    // TODO: Display current status so that users/reviewers know what it is going on
+    // TODO: If a user is trying to download while not on wifi, pop out an alert with friendly suggestions
     
     // https://www.raywenderlich.com/94302/implement-circular-image-loader-animation-cashapelayer
-    // 
 }

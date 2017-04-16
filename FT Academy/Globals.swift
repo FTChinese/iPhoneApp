@@ -48,6 +48,8 @@ enum WebViewStatus {
     case webViewWarned
 }
 
+
+
 enum AppError : Error {
     case invalidResource(String, String)
 }

@@ -106,7 +106,10 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     
     @IBAction func download(_ sender: Any) {
         if audioUrlString != "" {
-            download.startDownload(audioUrlString)
+            if let button = sender as? UIButtonEnhanced {
+                // FIXME: should handle all the status and actions to the download helper
+                download.takeActions(audioUrlString, currentStatus: button.status)
+            }
         }
     }
     
@@ -294,8 +297,12 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
             if let localAudioFile = download.checkDownloadedFileInDirectory(audioUrlString) {
                 print ("The Audio is already downloaded")
                 audioUrl = URL(fileURLWithPath: localAudioFile)
-                downloadButton.setImage(UIImage(named:"DeleteButton"), for: .normal)
+                downloadButton.status = .success
+                //                downloadButton.setImage(UIImage(named:"DeleteButton"), for: .normal)
             }
+            
+            // MARK: - draw a circle around the downloadButton
+            downloadButton.drawCircle()
             
             let asset = AVURLAsset(url: audioUrl)
             
@@ -330,6 +337,7 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
                 name: NSNotification.Name(rawValue: download.downloadStatusNotificationName),
                 object: nil
             )
+            
             
             // MARK: - Observe download progress change
             NotificationCenter.default.addObserver(
@@ -404,29 +412,24 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     
     public func handleDownloadStatusChange(_ notification: Notification) {
         DispatchQueue.main.async() {
-            if let object = notification.object as? [String: String] {
-                if let status = object["status"], let id = object["id"] {
+            if let object = notification.object as? [String: Any] {
+                if let status = object["status"] as? DownloadStatus, let id = object["id"] as? String {
                     // MARK: The Player Need to verify that the current file matches status change
                     print ("\(self.audioUrlString) =? \(id)")
                     if self.audioUrlString.contains(id) == true {
-                        var newButtonName = "DownloadButton"
                         switch status {
-                        case "remote":
-                            newButtonName = "DownloadButton"
-                        case "downloading":
-                            newButtonName = "PauseButton"
-                            if let d = self.downloadButton as? UIButtonEnhanced {
-                                d.drawCircle()
-                            }
-                        case "success":
-                            newButtonName = "DeleteButton"
+                        case .downloading, .remote:
+                            self.downloadButton.progress = 0
+                        case .paused, .resumed:
+                            break
+                        case .success:
                             // MARK: if a file is downloaded, prepare the audio asset again
                             self.updateAVPlayerWithLocalUrl()
-                        default:
-                            break
+                            self.downloadButton.progress = 0
                         }
-                        self.downloadButton.setTitle(nil, for: .normal)
-                        self.downloadButton.setImage(UIImage(named:newButtonName), for: .normal)
+                        print ("notification received for \(status)")
+                        self.downloadButton.status = status
+                        //self.downloadButton.progress = 0
                     }
                 }
             }
@@ -437,19 +440,10 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
         DispatchQueue.main.async() {
             if let object = notification.object as? [String: Any] {
                 if let id = object["id"] as? String,
-                    let percentage = object["percentage"] as? Float,
-                    let downloaded = object["downloaded"] as? String,
-                    let total = object["total"] as? String {
+                    let percentage = object["percentage"] as? Float {
                     // MARK: The Player Need to verify that the current file matches status change
                     if self.audioUrlString.contains(id) == true {
-                        print ("\(id) is \(Int(percentage))% complete (\(downloaded)/\(total)). ")
-                        self.downloadButton.setImage(nil, for: .normal)
-                        self.downloadButton.setTitle("\(Int(percentage))%", for: .normal)
-                        //self.downloadButton.progress = percentage/100
-                        if let d = self.downloadButton as? UIButtonEnhanced {
-                            print ("downcast success")
-                            d.progress = percentage/100
-                        }
+                        self.downloadButton.progress = percentage/100
                     }
                 }
             }
@@ -457,10 +451,10 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     }
     
     
-
+    
     // MARK: - Done: Share
     
-    // TODO: Download Management: Download or Delete
+    // MARK: - Done: Download Management: Download or Delete
     
     // TODO: Subscribe
     
@@ -478,27 +472,3 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     
 }
 
-// TODO: extension is not ideal, a better solution should be a subclass of UIButton
-class UIButtonEnhanced: UIButton {
-    var progress: Float {
-        get {
-            return 0
-        }
-        set (newProgress){
-            circleShape.strokeEnd = CGFloat(newProgress)
-        }
-    }
-    var circleShape = CAShapeLayer()
-    func drawCircle() {
-        let x: CGFloat = 0.0
-        let y: CGFloat = 0.0
-        let circlePath = UIBezierPath(roundedRect: CGRect(x: x, y: y, width: self.frame.height, height: self.frame.height), cornerRadius: self.frame.height / 2).cgPath
-        circleShape.path = circlePath
-        circleShape.lineWidth = 3
-        circleShape.strokeColor = UIColor.white.cgColor
-        circleShape.strokeStart = 0
-        circleShape.strokeEnd = 0
-        circleShape.fillColor = UIColor.clear.cgColor
-        self.layer.addSublayer(circleShape)
-    }
-}
