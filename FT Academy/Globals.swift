@@ -205,6 +205,22 @@ public extension UIImage {
     }
 }
 
+// MARK: Method for UIApplication which will return your topViewController. Useful when you want to pop an alert from a customized class like the DownloadHelper.
+public extension UIApplication {
+    static func topViewController(base: UIViewController? = UIApplication.shared.delegate?.window??.rootViewController) -> UIViewController? {
+        if let nav = base as? UINavigationController {
+            return topViewController(base: nav.visibleViewController)
+        }
+        if let tab = base as? UITabBarController, let selected = tab.selectedViewController {
+            return topViewController(base: selected)
+        }
+        if let presented = base?.presentedViewController {
+            return topViewController(base: presented)
+        }
+        return base
+    }
+}
+
 //extension IntervalType {
 //    public func random() -> Bound {
 //        let range = (self.end as! Double) - (self.start as! Double)

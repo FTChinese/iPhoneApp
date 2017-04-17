@@ -23,6 +23,7 @@ class DownloadHelper: NSObject,URLSessionDownloadDelegate {
     public let downloadStatusNotificationName = "download status change"
     public let downloadProgressNotificationName = "download progress change"
     public var currentStatus: DownloadStatus = .remote
+    //public var sourceVC: UIViewController?
     
     init(directory: String) {
         self.directory = directory
@@ -84,7 +85,26 @@ class DownloadHelper: NSObject,URLSessionDownloadDelegate {
         print (currentStatus)
         switch currentStatus {
         case .remote:
-            startDownload(url)
+            // MARK: - If a user is trying to download while not on wifi, pop out an alert with friendly suggestions
+            let connectionType = IJReachability().connectedToNetworkOfType()
+            if connectionType == IJReachabilityType.wwan {
+                // MARK: Let the user know that this could cost data/money
+                let alert = UIAlertController(title: "要用流量下载吗？", message: "您现在是用的数据，下载文件可能会产生流量费，您可以先连接Wi-Fi再下载", preferredStyle: UIAlertControllerStyle.alert)
+                alert.addAction(UIAlertAction(title: "立即下载",
+                                              style: UIAlertActionStyle.default,
+                                              handler: {_ in self.startDownload(url)}
+                ))
+                alert.addAction(UIAlertAction(title: "暂时不下载", style: UIAlertActionStyle.default, handler: nil))
+                UIApplication.topViewController()?.present(alert, animated: true, completion: nil)
+            } else if connectionType == IJReachabilityType.notConnected {
+                // MARK: Let the user know that download is not available
+                let alert = UIAlertController(title: "没有网络连接", message: "现在您没有连接到互联网，因此无法下载，请联网之后重试", preferredStyle: UIAlertControllerStyle.alert)
+                alert.addAction(UIAlertAction(title: "知道了", style: UIAlertActionStyle.default, handler: nil))
+                UIApplication.topViewController()?.present(alert, animated: true, completion: nil)
+            } else {
+                startDownload(url)
+            }
+            
         case .success:
             removeDownload(url)
         case .downloading, .resumed:
@@ -273,6 +293,9 @@ class UIButtonEnhanced: UIButton {
     }
 }
 
+
+
+
 // MARK: - Done:  Update progressSlider thumb image with customized ones
 // MARK: - Done:  Post and Receive Status Change Notifications
 // MARK: - Done:  Update UI Based on Status Change
@@ -281,6 +304,6 @@ class UIButtonEnhanced: UIButton {
 // TODO: Allow users to clean files with one tap
 // TODO: Let users easily find downloaded file to play
 // TODO: Display current status so that users/reviewers know what it is going on
-// TODO: If a user is trying to download while not on wifi, pop out an alert with friendly suggestions
+// MARK: - Done: If a user is trying to download while not on wifi, pop out an alert with friendly suggestions
 
 // https://www.raywenderlich.com/94302/implement-circular-image-loader-animation-cashapelayer

@@ -305,6 +305,9 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
             // MARK: - Draw a circle around the downloadButton
             downloadButton.drawCircle()
             
+            // MARK: - Set sourceVC as self so that the alert can be popped out
+            // download.sourceVC = self
+            
             // MARK: - Change the size of progressSlider
             let ftPink = UIColor(netHex: 0xFFF1E0)
             let ftRed = UIColor(netHex: 0x9E2F50)
