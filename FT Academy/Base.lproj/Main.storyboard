@@ -115,14 +115,52 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nse-G3-6DJ">
-                                <rect key="frame" x="0.0" y="650" width="414" height="86"/>
+                                <rect key="frame" x="0.0" y="636" width="414" height="100"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="xDB-s2-bV0">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="86"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="100"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zrt-x7-ZPN">
+                                            <rect key="frame" x="8" y="13.333333333333371" width="60" height="15.666666666666629"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="60" id="Qki-Y5-pSV"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                            <color key="textColor" red="1" green="0.94509803920000002" blue="0.87843137250000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0:00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="geu-O7-WMq">
+                                            <rect key="frame" x="346" y="13.333333333333371" width="60" height="15.666666666666629"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="60" id="9Ft-C0-uD5"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                            <color key="textColor" red="1" green="0.94509803920000002" blue="0.87843137250000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="加载中..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SMD-zl-E4V">
+                                            <rect key="frame" x="76" y="13.333333333333371" width="262" height="15.666666666666629"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                            <color key="textColor" red="1" green="0.94509803920000002" blue="0.87843137250000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
                                     <color key="backgroundColor" red="0.14901960780000001" green="0.4549019608" blue="0.47843137250000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="geu-O7-WMq" secondAttribute="trailing" constant="8" id="B8T-z1-8de"/>
+                                        <constraint firstItem="geu-O7-WMq" firstAttribute="leading" secondItem="SMD-zl-E4V" secondAttribute="trailing" constant="8" symbolic="YES" id="F81-rH-XzW"/>
+                                        <constraint firstAttribute="bottom" secondItem="Zrt-x7-ZPN" secondAttribute="bottom" constant="71" id="Gsb-qU-08d"/>
+                                        <constraint firstAttribute="bottom" secondItem="geu-O7-WMq" secondAttribute="bottom" constant="71" id="I98-Lx-MCb"/>
+                                        <constraint firstItem="Zrt-x7-ZPN" firstAttribute="leading" secondItem="xDB-s2-bV0" secondAttribute="leading" constant="8" id="nO2-vG-jJ6"/>
+                                        <constraint firstAttribute="bottom" secondItem="SMD-zl-E4V" secondAttribute="bottom" constant="71" id="t64-wD-dPL"/>
+                                        <constraint firstItem="SMD-zl-E4V" firstAttribute="leading" secondItem="Zrt-x7-ZPN" secondAttribute="trailing" constant="8" symbolic="YES" id="uxM-jU-hhU"/>
+                                    </constraints>
                                 </view>
+                                <color key="backgroundColor" red="0.14901960780000001" green="0.4549019608" blue="0.47843137250000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color key="tintColor" red="0.14901960780000001" green="0.4549019608" blue="0.47843137250000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="86" id="YrP-X3-Klq"/>
+                                    <constraint firstAttribute="height" constant="100" id="YrP-X3-Klq"/>
+                                    <constraint firstItem="SMD-zl-E4V" firstAttribute="centerX" secondItem="nse-G3-6DJ" secondAttribute="centerX" id="uj1-mf-onc"/>
                                 </constraints>
                                 <blurEffect style="light"/>
                             </visualEffectView>
@@ -132,7 +170,7 @@
                                     <constraint firstAttribute="height" constant="30" id="tYP-bj-aVM"/>
                                 </constraints>
                                 <color key="minimumTrackTintColor" red="1" green="0.94509803920000002" blue="0.87843137250000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <color key="thumbTintColor" red="1" green="0.94509803920000002" blue="0.87898763020000004" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="thumbTintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <connections>
                                     <action selector="sliderValueChanged:" destination="pJa-PQ-Cxq" eventType="valueChanged" id="72q-mJ-0uO"/>
                                 </connections>
@@ -176,7 +214,7 @@
                                 <color key="barTintColor" red="0.14901960780000001" green="0.4549019608" blue="0.47843137250000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             </toolbar>
                             <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fPW-vk-FEr">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="654"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="636"/>
                                 <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </webView>
                         </subviews>
@@ -193,7 +231,7 @@
                             <constraint firstItem="fPW-vk-FEr" firstAttribute="leading" secondItem="UHc-We-Iak" secondAttribute="leading" id="fq5-BI-wgV"/>
                             <constraint firstItem="7yv-dI-Rn1" firstAttribute="top" secondItem="nse-G3-6DJ" secondAttribute="bottom" id="lUn-sh-3UQ"/>
                             <constraint firstItem="fPW-vk-FEr" firstAttribute="top" secondItem="UHc-We-Iak" secondAttribute="top" id="mCT-5I-TDK"/>
-                            <constraint firstAttribute="bottom" secondItem="fPW-vk-FEr" secondAttribute="bottom" constant="82" id="rgA-X8-1GY"/>
+                            <constraint firstAttribute="bottom" secondItem="fPW-vk-FEr" secondAttribute="bottom" constant="100" id="rgA-X8-1GY"/>
                             <constraint firstAttribute="trailingMargin" secondItem="nvm-zh-ZMN" secondAttribute="trailing" id="uzP-ZE-UpO"/>
                         </constraints>
                     </view>
@@ -201,6 +239,9 @@
                         <outlet property="buttonPlayAndPause" destination="KbP-uA-dyS" id="I4R-Va-yOM"/>
                         <outlet property="containerView" destination="fPW-vk-FEr" id="eJ1-ji-Ezl"/>
                         <outlet property="downloadButton" destination="CJh-5f-O32" id="qdS-cA-Dgh"/>
+                        <outlet property="playDuration" destination="geu-O7-WMq" id="NTY-ED-j9K"/>
+                        <outlet property="playStatus" destination="SMD-zl-E4V" id="o6v-Tn-kRd"/>
+                        <outlet property="playTime" destination="Zrt-x7-ZPN" id="bv7-0C-HhY"/>
                         <outlet property="progressSlider" destination="nvm-zh-ZMN" id="qxm-72-eOb"/>
                         <outlet property="toolBar" destination="g6k-Nd-TWu" id="vgR-2b-dru"/>
                         <segue destination="zfb-r0-mCC" kind="presentation" identifier="Audio To WKWebView" id="fL3-kG-Zm4"/>

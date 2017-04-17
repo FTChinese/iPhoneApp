@@ -303,7 +303,7 @@ class UIButtonEnhanced: UIButton {
 // MARK: - Done:  Choose streaming or local file to play based on availability of audio files
 // TODO: Allow users to clean files with one tap
 // TODO: Let users easily find downloaded file to play
-// TODO: Display current status so that users/reviewers know what it is going on
+// TODO: Display current status so that users/reviewers know what it is going on. 1. Buffering. 2. Playtime and Duration.
 // MARK: - Done: If a user is trying to download while not on wifi, pop out an alert with friendly suggestions
 
 // https://www.raywenderlich.com/94302/implement-circular-image-loader-animation-cashapelayer
