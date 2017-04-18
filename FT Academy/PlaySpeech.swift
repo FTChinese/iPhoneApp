@@ -159,8 +159,15 @@ class PlaySpeech: UIViewController, AVSpeechSynthesizerDelegate,UIPopoverPresent
                 NSForegroundColorAttributeName: UIColor(netHex:0xFFF1E0),
                 NSFontAttributeName: UIFont.systemFont(ofSize: 0)
             ]
+            // MARK: - If it's Chinese, use "。", otherwise use ". "
+            let delimitorPeriodString: String
+            if language == "ch" {
+                delimitorPeriodString = "。"
+            } else {
+                delimitorPeriodString = ". "
+            }
             let deliminatorAttrString = NSMutableAttributedString(
-                string: ". \r\n",
+                string: "\(delimitorPeriodString)\r\n",
                 attributes: deliminatorAttributes
             )
             let textFromHTML = text
