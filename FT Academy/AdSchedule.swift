@@ -293,30 +293,30 @@ class AdSchedule {
                 
                 
                 // Get the document directory url
-                let documentsUrl =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-                
-                do {
-                    // Get the directory contents urls (including subfolders urls)
-                    let directoryContents = try FileManager.default.contentsOfDirectory(at: documentsUrl, includingPropertiesForKeys: nil, options: [])
-                    // print(directoryContents)
-                    
-                    // if you want to filter the directory contents you can do like this:
-                    let creativeTypes = videoTypes + htmlTypes + imageTypes
-                    let creativeFiles = directoryContents.filter{ creativeTypes.contains($0.pathExtension) }
-                    
-                    for creativeFile in creativeFiles {
-                        // print(creativeFile.lastPathComponent)
-                        let creativeFileString = creativeFile.lastPathComponent
-                        if !creativesNeededInFuture.contains(creativeFileString) {
-                            try FileManager.default.removeItem(at: creativeFile)
-                            print("remove file from documents folder: \(creativeFileString)")
+                if let documentsUrl =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+                    do {
+                        // Get the directory contents urls (including subfolders urls)
+                        let directoryContents = try FileManager.default.contentsOfDirectory(at: documentsUrl, includingPropertiesForKeys: nil, options: [])
+                        // print(directoryContents)
+                        
+                        // if you want to filter the directory contents you can do like this:
+                        let creativeTypes = videoTypes + htmlTypes + imageTypes
+                        let creativeFiles = directoryContents.filter{ creativeTypes.contains($0.pathExtension) }
+                        
+                        for creativeFile in creativeFiles {
+                            // print(creativeFile.lastPathComponent)
+                            let creativeFileString = creativeFile.lastPathComponent
+                            if !creativesNeededInFuture.contains(creativeFileString) {
+                                try FileManager.default.removeItem(at: creativeFile)
+                                print("remove file from documents folder: \(creativeFileString)")
+                            }
                         }
+                        // print("creatives:",creativeFiles)
+                        //                let mp3FileNames = mp3Files.map{ $0.deletingPathExtension().lastPathComponent }
+                        //                print("mp3 list:", mp3FileNames)
+                    } catch let error as NSError {
+                        print(error.localizedDescription)
                     }
-                    // print("creatives:",creativeFiles)
-                    //                let mp3FileNames = mp3Files.map{ $0.deletingPathExtension().lastPathComponent }
-                    //                print("mp3 list:", mp3FileNames)
-                } catch let error as NSError {
-                    print(error.localizedDescription)
                 }
             } catch let JSONError as NSError {
                 print("\(JSONError)")
@@ -382,7 +382,7 @@ class AdSchedule {
         return scheduleDataFinal
     }
     
-
+    
     
     private func readFile(_ fileName: String, fileLocation: String) -> Data? {
         if fileLocation == "download" {

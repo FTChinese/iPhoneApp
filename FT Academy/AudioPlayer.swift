@@ -14,15 +14,11 @@ import WebKit
 import SafariServices
 
 
-
-
 // MARK: - Use singleton pattern to pass speech data between view controllers. It's better in in term of code style than prepare segue.
 class AudioContent {
     static let sharedInstance = AudioContent()
     var body = [String: String]()
 }
-
-
 
 class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,SFSafariViewControllerDelegate,WKNavigationDelegate {
     
@@ -43,6 +39,7 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     @IBOutlet weak var playTime: UILabel!
     @IBOutlet weak var playDuration: UILabel!
     @IBOutlet weak var playStatus: UILabel!
+    
     @IBAction func ButtonPlayPause(_ sender: UIBarButtonItem) {
         if let player = player {
             if (player.rate != 0) && (player.error == nil) {
@@ -118,6 +115,16 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     }
     
     
+    @IBAction func settings(_ sender: Any) {
+        let alert = UIAlertController(title: "请选择您的操作设置", message: nil, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(
+            title: "清除所有音频",
+            style: UIAlertActionStyle.default,
+            handler: {_ in self.removeAllAudios() }
+        ))
+        alert.addAction(UIAlertAction(title: "取消", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
     
     deinit {
         removePlayerItemObservers()
@@ -189,6 +196,11 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
         }
     }
     
+    func removeAllAudios() {
+        FileManagerHelper().removeFiles(["mp3"])
+        downloadButton.status = .remote
+    }
+    
     
     // MARK: - When users click on a link from the web view.
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: (@escaping (WKNavigationActionPolicy) -> Void)) {
@@ -206,6 +218,8 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
             }
         }
     }
+    
+    
     
     
     // FIXME: - This is very simlar to the same func in ViewController. Consider optimize the code.
@@ -287,6 +301,10 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
         playerItem?.addObserver(self, forKeyPath: "playbackBufferFull", options: .new, context: nil)
     }
     
+    private func updatePlayTime(current time: CMTime, duration: CMTime) {
+        playDuration.text = "-\((duration-time).durationText)"
+        playTime.text = time.durationText
+    }
     
     private func prepareAudioPlay() {
         
@@ -343,35 +361,48 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
                         if self?.progressSlider.isHighlighted == false {
                             self?.progressSlider.value = Float((CMTimeGetSeconds(time)))
                         }
-                        self?.playDuration.text = "-\((d-time).durationText)"
-                        self?.playTime.text = time.durationText
+                        self?.updatePlayTime(current: time, duration: d)
                     }
                 }
             }
-            
-            
             
             // MARK: - Observe download status change
             NotificationCenter.default.addObserver(
                 self,
                 selector: #selector(AudioPlayer.handleDownloadStatusChange(_:)),
-                name: NSNotification.Name(rawValue: download.downloadStatusNotificationName),
+                name: Notification.Name(rawValue: download.downloadStatusNotificationName),
                 object: nil
             )
-            
             
             // MARK: - Observe download progress change
             NotificationCenter.default.addObserver(
                 self,
                 selector: #selector(AudioPlayer.handleDownloadProgressChange(_:)),
-                name: NSNotification.Name(rawValue: download.downloadProgressNotificationName),
+                name: Notification.Name(rawValue: download.downloadProgressNotificationName),
                 object: nil
             )
             
+            // MARK: - Observe Audio Route Change and Update UI accordingly
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(AudioPlayer.updatePlayButtonUI),
+                // MARK: - It has to be NSNotification, not Notification
+                name: NSNotification.Name.AVAudioSessionRouteChange,
+                object: nil
+            )
             addPlayerItemObservers()
         }
     }
     
+    public func updatePlayButtonUI() {
+        if let player = player {
+            if (player.rate != 0) && (player.error == nil) {
+                buttonPlayAndPause.image = UIImage(named:"BigPauseButton")
+            } else {
+                buttonPlayAndPause.image = UIImage(named:"BigPlayButton")
+            }
+        }
+    }
     
     private func enableBackGroundMode() {
         // MARK: Receive Messages from Lock Screen
@@ -418,7 +449,7 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
                     
                 case "playbackLikelyToKeepUp":
                     // Hide loader
-                    print ("should be playing")
+                    print ("should be playing. Duration is \(String(describing: playerItem?.duration))")
                     playStatus.text = audioTitle
                 case "playbackBufferFull":
                     // Hide loader
@@ -428,6 +459,9 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
                     playStatus.text = audioTitle
                     break
                 }
+            }
+            if let time = playerItem?.currentTime(), let duration = playerItem?.duration {
+                updatePlayTime(current: time, duration: duration)
             }
             nowPlayingCenter.updateTimeForPlayerItem(player)
         }
@@ -468,6 +502,7 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
                 // MARK: The Player Need to verify that the current file matches status change
                 if self.audioUrlString.contains(id) == true {
                     self.downloadButton.progress = percentage/100
+                    self.downloadButton.status = .resumed
                 }
             }
         }
@@ -476,34 +511,26 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
 }
 
 
-extension CMTime {
-    var durationText:String {
-        let totalSeconds = CMTimeGetSeconds(self)
-        let hours:Int = Int(totalSeconds / 3600)
-        let minutes:Int = Int(totalSeconds.truncatingRemainder(dividingBy: 3600)  / 60)
-        let seconds:Int = Int(totalSeconds.truncatingRemainder(dividingBy: 60))
-        if hours > 0 {
-            return String(format: "%i:%02i:%02i", hours, minutes, seconds)
-        } else {
-            return String(format: "%02i:%02i", minutes, seconds)
-        }
-    }
-}
+
 
 // MARK: - Done: Share
-
 // MARK: - Done: Download Management: Download or Delete
-
+// MARK: - Done: When unplug earphone, pause button should be updated
 // TODO: Subscribe
-
 // TODO: Display Background Images for Radio Columns
-
 // MARK: - Done: Deinit 1. remove observers 2. quit background play mode
-
 // MARK: - Done: Enable background play
-
 // MARK: - Done: Display the audio text
-
 // MARK: - Done: Update play progress
+// MARK: - Done: Update progressSlider thumb image with customized ones
+// MARK: - Done: Post and Receive Status Change Notifications
+// MARK: - Done: Update UI Based on Status Change
+// MARK: - Done: Update UI Based on Download Progress
+// MARK: - Done: Choose streaming or local file to play based on availability of audio files
+// MARK: - Done: Allow users to clean files with one tap
+// TODO: Let users easily find downloaded file to play
+// MARK: - Done: Display current status so that users/reviewers know what it is going on. 1. Buffering. 2. Playtime and Duration.
+// MARK: - Done: If a user is trying to download while not on wifi, pop out an alert with friendly suggestions
+// MARK: - https://www.raywenderlich.com/94302/implement-circular-image-loader-animation-cashapelayer
 
 

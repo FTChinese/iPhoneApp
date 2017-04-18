@@ -202,7 +202,11 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="1tq-07-jFB"/>
-                                    <barButtonItem image="SettingsButton" id="g9v-ZQ-6QH"/>
+                                    <barButtonItem image="SettingsButton" id="g9v-ZQ-6QH">
+                                        <connections>
+                                            <action selector="settings:" destination="pJa-PQ-Cxq" id="yNb-ag-OaV"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="d6q-2z-q4i"/>
                                     <barButtonItem systemItem="stop" id="rOo-Yk-jWt">
                                         <connections>
