@@ -22,3 +22,13 @@ Notes:
 1. The WeChat SDK is too old and doesn't support BitCode. We need to get the latest one that support BitCode so that the project can support BitCode. 
 2. We intentionally didn't enable the web app to be upgraded automatically in order to have some reason to submit an update every two weeks. Updating web app codes through our own server might cause other problems when, for example, there is not enough space on the device. 
 3. Local notification codes are commented out as this is a news app. If we have other types of apps, for example, education apps, local notifications would come in handy. 
+
+# Install Cocoapod
+sudo gem install cocoapods
+or
+sudo gem install -n /usr/local/bin cocoapods
+
+# Install Pods
+pod install
+
+# Click the workspace file to open
