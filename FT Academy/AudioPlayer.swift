@@ -128,6 +128,30 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
     
     deinit {
         removePlayerItemObservers()
+
+        // MARK: - Remove Observe download status change
+        NotificationCenter.default.removeObserver(
+            self,
+            name: Notification.Name(rawValue: download.downloadStatusNotificationName),
+            object: nil
+        )
+        
+        // MARK: - Remove Observe download progress change
+        NotificationCenter.default.removeObserver(
+            self,
+            name: Notification.Name(rawValue: download.downloadProgressNotificationName),
+            object: nil
+        )
+        
+        // MARK: - Remove Observe Audio Route Change and Update UI accordingly
+        NotificationCenter.default.removeObserver(
+            self,
+            // MARK: - It has to be NSNotification, not Notification
+            name: NSNotification.Name.AVAudioSessionRouteChange,
+            object: nil
+        )
+        
+        NotificationCenter.default.removeObserver(self)
         
         // MARK: - Stop loading and remove message handlers to avoid leak
         self.webView?.stopLoading()
