@@ -51,7 +51,7 @@ class AdSchedule {
                     print("Not a Dictionary")
                     return
                 }
-                guard let creatives = JSONDictionary["sections"] as? NSArray else {
+                guard let creatives = JSONDictionary["sections"] as? [[String: String]] else {
                     print("creatives Not an Array")
                     return
                 }
@@ -60,14 +60,8 @@ class AdSchedule {
                 
                 // MARK: - Filter all that are scheduled for today
                 for (index, creative) in creatives.enumerated() {
-                    guard let currentCreative = creative as? NSDictionary else {
-                        print("creative Not a dictionary")
-                        continue
-                    }
-                    guard var datesString = currentCreative["dates"] as? String else {
-                        print("creative dates Not a string")
-                        continue
-                    }
+                    let currentCreative = creative
+                    var datesString = currentCreative["dates"] ?? ""
                     // convert dates string into NSArray for later parsing
                     datesString = datesString.trimmingCharacters(in: .whitespaces)
                         .replacingOccurrences(of: "/", with: "")
@@ -76,12 +70,12 @@ class AdSchedule {
                     let dates = datesStringArray.map{ Int($0) ?? 0}
                     
                     var platforms: [String] = []
-                    if let supportiPhone = currentCreative["iphone"] as? String {
+                    if let supportiPhone = currentCreative["iphone"] {
                         if supportiPhone == "yes" {
                             platforms.append("iphone")
                         }
                     }
-                    if let supportiPad = currentCreative["ipad"] as? String {
+                    if let supportiPad = currentCreative["ipad"] {
                         if supportiPad == "yes" {
                             platforms.append("ipad")
                         }
@@ -89,14 +83,14 @@ class AdSchedule {
                     
                     // MARK: - if this creaive is scheduled for today and for this type of device(platform)
                     if dates.contains(dateInInt) && platforms.contains(self.currentPlatform){
-                        guard var currentFileName = currentCreative["fileName"] as? String else {
+                        guard var currentFileName = currentCreative["fileName"] else {
                             print("cannot find file name of creative")
                             continue
                         }
                         
                         // MARK: - On iPad landscape mode, use the landscapeFileName
                         if currentPlatform == "ipad" && UIScreen.main.bounds.width > UIScreen.main.bounds.height {
-                            if let landscapeFileName = currentCreative["landscapeFileName"] as? String {
+                            if let landscapeFileName = currentCreative["landscapeFileName"] {
                                 if landscapeFileName != "" {
                                     // check if the landscape file is valid and exists locally
                                     let url = NSURL(string:currentFileName)
@@ -119,7 +113,7 @@ class AdSchedule {
                         if templatePath != nil && pathExtention != nil{
                             // MARK: - Use weight to distribute share of voice
                             let weightLimit = 5
-                            let weightOriginal = currentCreative["weight"] as? String ?? "1"
+                            let weightOriginal = currentCreative["weight"] ?? "1"
                             let weightOriginalInt = Int(weightOriginal) ?? 1
                             let weight: Int
                             if weightOriginalInt >= weightLimit {
@@ -127,7 +121,7 @@ class AdSchedule {
                             } else {
                                 weight = weightOriginalInt
                             }
-
+                            
                             for _ in 1...weight {
                                 creativesForToday.append(index)
                             }
@@ -144,129 +138,106 @@ class AdSchedule {
                 print (creativesForToday)
                 print ("\(randomIndex): \(currentCreativeIndex)")
                 
-                guard let currentCreative = creatives[currentCreativeIndex] as? NSDictionary else {
-                    print("creative Not a dictionary")
-                    return
-                }
-                guard var datesString = currentCreative["dates"] as? String else {
-                    print("creative dates Not a string")
-                    return
-                }
-                // convert dates string into NSArray for later parsing
-                datesString = datesString.trimmingCharacters(in: .whitespaces)
-                    .replacingOccurrences(of: "/", with: "")
-                    .replacingOccurrences(of: "-", with: "")
-                let datesStringArray = datesString.components(separatedBy: ",")
-                let dates = datesStringArray.map{ Int($0) ?? 0}
+                let currentCreative = creatives[currentCreativeIndex]
                 
-                var platforms: [String] = []
-                if let supportiPhone = currentCreative["iphone"] as? String {
-                    if supportiPhone == "yes" {
-                        platforms.append("iphone")
-                    }
-                }
-                if let supportiPad = currentCreative["ipad"] as? String {
-                    if supportiPad == "yes" {
-                        platforms.append("ipad")
-                    }
-                }
+                
                 
                 // MARK: - if this creaive is scheduled for today and for this type of device(platform)
-                if dates.contains(dateInInt) && platforms.contains(self.currentPlatform){
-                    guard var currentFileName = currentCreative["fileName"] as? String else {
-                        print("cannot find file name of creative")
-                        return
-                    }
-                    
-                    // MARK: - On iPad landscape mode, use the landscapeFileName
-                    if currentPlatform == "ipad" && UIScreen.main.bounds.width > UIScreen.main.bounds.height {
-                        if let landscapeFileName = currentCreative["landscapeFileName"] as? String {
-                            if landscapeFileName != "" {
-                                // check if the landscape file is valid and exists locally
-                                let url = NSURL(string:currentFileName)
-                                let pathExtention = url?.pathExtension
-                                let templatePath = checkFilePath(fileUrl: currentFileName)
-                                if templatePath != nil && pathExtention != nil{
-                                    currentFileName = landscapeFileName
-                                }
-                            }
-                        }
-                    }
-                    
-                    // MARK: - Extract the file name to figure out the adType
-                    let url = NSURL(string:currentFileName)
-                    let pathExtention = url?.pathExtension
-                    
-                    // MARK: - If the file exists locally, return its path, otherwise return nil
-                    let templatePath = checkFilePath(fileUrl: currentFileName)
-                    // MARK: - If the file exits, put it into an array
-                    if templatePath != nil && pathExtention != nil{
-
-                        // common properties like htmlBase, impressions and links
-                        print("found the file in \(String(describing: templatePath)) \(String(describing: pathExtention))")
-                        self.htmlBase = currentFileName
-                        self.adLink = currentCreative["click"] as? String ?? ""
-                        // background color
-                        if let backgroundColorString = currentCreative["backgroundColor"] as? String {
-                            if backgroundColorString.range(of: "^#[0-9a-zA-Z]{6}$", options: .regularExpression) != nil {
-                                self.backgroundColor = hexStringToUIColor (hex: backgroundColorString)
-                            }
-                        }
-                        self.impression = []
-                        if let impression_1 = currentCreative["impression_1"] as? String {
-                            if impression_1 != "" {
-                                self.impression.append(impression_1)
-                            }
-                        }
-                        
-                        if let impression_2 = currentCreative["impression_2"] as? String {
-                            if impression_2 != "" {
-                                self.impression.append(impression_2)
-                            }
-                        }
-                        if let impression_3 = currentCreative["impression_3"] as? String {
-                            if impression_3 != "" {
-                                self.impression.append(impression_3)
-                            }
-                        }
-                        if let durationInString = currentCreative["durationInSeconds"] as? String {
-                            if let durationInDouble = Double(durationInString) {
-                                self.durationInSeconds = durationInDouble
-                            }
-                        }
-                        
-                        
-                        
-                        // MARK: - Specific properties like image file, video file, backup image file
-                        if imageTypes.contains(pathExtention!.lowercased()) {
-                            self.adType = "image"
-                            self.image = UIImage(contentsOfFile: templatePath!)
-                        } else if htmlTypes.contains(pathExtention!.lowercased()) {
-                            self.adType = "page"
-                            do {
-                                self.htmlFile = try NSString(contentsOfFile:templatePath!, encoding:String.Encoding.utf8.rawValue)
-                            } catch {
-                                self.htmlFile = ""
-                            }
-                        } else if videoTypes.contains(pathExtention!.lowercased()) {
-                            self.adType = "video"
-                            self.videoFilePath = templatePath!
-                            if let backupImageString = currentCreative["backupImage"] as? String {
-                                if let templatePath = checkFilePath(fileUrl: backupImageString) {
-                                    self.backupImage = UIImage(contentsOfFile: templatePath)
-                                }
-                            }
-                            if let showSoundButtonBool = currentCreative["showSoundButton"] as? String {
-                                if showSoundButtonBool == "yes" {
-                                    self.showSoundButton = true
-                                } else {
-                                    self.showSoundButton = false
-                                }
+                
+                guard var currentFileName = currentCreative["fileName"] else {
+                    print("cannot find file name of creative")
+                    return
+                }
+                
+                // MARK: - On iPad landscape mode, use the landscapeFileName
+                if currentPlatform == "ipad" && UIScreen.main.bounds.width > UIScreen.main.bounds.height {
+                    if let landscapeFileName = currentCreative["landscapeFileName"] {
+                        if landscapeFileName != "" {
+                            // check if the landscape file is valid and exists locally
+                            let url = NSURL(string:currentFileName)
+                            let pathExtention = url?.pathExtension
+                            let templatePath = checkFilePath(fileUrl: currentFileName)
+                            if templatePath != nil && pathExtention != nil{
+                                currentFileName = landscapeFileName
                             }
                         }
                     }
                 }
-
+                
+                // MARK: - Extract the file name to figure out the adType
+                let url = NSURL(string:currentFileName)
+                let pathExtention = url?.pathExtension
+                
+                // MARK: - If the file exists locally, return its path, otherwise return nil
+                let templatePath = checkFilePath(fileUrl: currentFileName)
+                // MARK: - If the file exits, put it into an array
+                if templatePath != nil && pathExtention != nil{
+                    
+                    // common properties like htmlBase, impressions and links
+                    print("found the file in \(String(describing: templatePath)) \(String(describing: pathExtention))")
+                    self.htmlBase = currentFileName
+                    self.adLink = currentCreative["click"] ?? ""
+                    // background color
+                    if let backgroundColorString = currentCreative["backgroundColor"] {
+                        if backgroundColorString.range(of: "^#[0-9a-zA-Z]{6}$", options: .regularExpression) != nil {
+                            self.backgroundColor = hexStringToUIColor (hex: backgroundColorString)
+                        }
+                    }
+                    self.impression = []
+                    if let impression_1 = currentCreative["impression_1"]  {
+                        if impression_1 != "" {
+                            self.impression.append(impression_1)
+                        }
+                    }
+                    
+                    if let impression_2 = currentCreative["impression_2"] {
+                        if impression_2 != "" {
+                            self.impression.append(impression_2)
+                        }
+                    }
+                    if let impression_3 = currentCreative["impression_3"] {
+                        if impression_3 != "" {
+                            self.impression.append(impression_3)
+                        }
+                    }
+                    if let durationInString = currentCreative["durationInSeconds"] {
+                        if let durationInDouble = Double(durationInString) {
+                            self.durationInSeconds = durationInDouble
+                        }
+                    }
+                    
+                    
+                    
+                    // MARK: - Specific properties like image file, video file, backup image file
+                    if imageTypes.contains(pathExtention!.lowercased()) {
+                        self.adType = "image"
+                        self.image = UIImage(contentsOfFile: templatePath!)
+                    } else if htmlTypes.contains(pathExtention!.lowercased()) {
+                        self.adType = "page"
+                        do {
+                            self.htmlFile = try NSString(contentsOfFile:templatePath!, encoding:String.Encoding.utf8.rawValue)
+                        } catch {
+                            self.htmlFile = ""
+                        }
+                    } else if videoTypes.contains(pathExtention!.lowercased()) {
+                        self.adType = "video"
+                        self.videoFilePath = templatePath!
+                        if let backupImageString = currentCreative["backupImage"] {
+                            if let templatePath = checkFilePath(fileUrl: backupImageString) {
+                                self.backupImage = UIImage(contentsOfFile: templatePath)
+                            }
+                        }
+                        if let showSoundButtonBool = currentCreative["showSoundButton"] {
+                            if showSoundButtonBool == "yes" {
+                                self.showSoundButton = true
+                            } else {
+                                self.showSoundButton = false
+                            }
+                        }
+                    }
+                }
+                
+                
             } catch let JSONError as NSError {
                 print("\(JSONError)")
             }
