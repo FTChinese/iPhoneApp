@@ -170,8 +170,8 @@ class AdSchedule {
                 
                 // MARK: - If the file exists locally, return its path, otherwise return nil
                 let templatePath = checkFilePath(fileUrl: currentFileName)
-                // MARK: - If the file exits, put it into an array
-                if templatePath != nil && pathExtention != nil{
+                // MARK: - If the file exits
+                if let templatePath = templatePath, let pathExtention = pathExtention {
                     
                     // common properties like htmlBase, impressions and links
                     print("found the file in \(String(describing: templatePath)) \(String(describing: pathExtention))")
@@ -209,19 +209,19 @@ class AdSchedule {
                     
                     
                     // MARK: - Specific properties like image file, video file, backup image file
-                    if imageTypes.contains(pathExtention!.lowercased()) {
+                    if imageTypes.contains(pathExtention.lowercased()) {
                         self.adType = "image"
-                        self.image = UIImage(contentsOfFile: templatePath!)
-                    } else if htmlTypes.contains(pathExtention!.lowercased()) {
+                        self.image = UIImage(contentsOfFile: templatePath)
+                    } else if htmlTypes.contains(pathExtention.lowercased()) {
                         self.adType = "page"
                         do {
-                            self.htmlFile = try NSString(contentsOfFile:templatePath!, encoding:String.Encoding.utf8.rawValue)
+                            self.htmlFile = try NSString(contentsOfFile:templatePath, encoding:String.Encoding.utf8.rawValue)
                         } catch {
                             self.htmlFile = ""
                         }
-                    } else if videoTypes.contains(pathExtention!.lowercased()) {
+                    } else if videoTypes.contains(pathExtention.lowercased()) {
                         self.adType = "video"
-                        self.videoFilePath = templatePath!
+                        self.videoFilePath = templatePath
                         if let backupImageString = currentCreative["backupImage"] {
                             if let templatePath = checkFilePath(fileUrl: backupImageString) {
                                 self.backupImage = UIImage(contentsOfFile: templatePath)
