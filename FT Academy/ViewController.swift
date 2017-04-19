@@ -1415,7 +1415,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             .replacingOccurrences(of: "[,", with: "[")
             .replacingOccurrences(of: "\n", with: "<br>", options: .regularExpression)
         
-        print (productsString)
+        // print (productsString)
         
         self.webView.evaluateJavaScript(productsString) { (result, error) in
         }
