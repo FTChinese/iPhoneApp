@@ -206,8 +206,6 @@ class AdSchedule {
                         }
                     }
                     
-                    
-                    
                     // MARK: - Specific properties like image file, video file, backup image file
                     if imageTypes.contains(pathExtention.lowercased()) {
                         self.adType = "image"
@@ -236,8 +234,6 @@ class AdSchedule {
                         }
                     }
                 }
-                
-                
             } catch let JSONError as NSError {
                 print("\(JSONError)")
             }
