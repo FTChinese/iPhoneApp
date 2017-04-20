@@ -31,7 +31,7 @@ class AdSchedule {
     private let htmlTypes = ["html"]
     private var currentPlatform = "iphone"
     
-    // FIXME: - The code here is not elegant but works. Should find a time to rewrite.
+    // MARK: - Get the most recent JSON file of Launch Ad schedule and try to pick one for this launch
     func parseSchedule() {
         if let scheduleDataFinal = getLatestScheduleData() {
             // MARK: - Get Current Date in String format of YYYYMMDD
@@ -130,7 +130,6 @@ class AdSchedule {
                     let templatePath = checkFilePath(fileUrl: currentFileName)
                     // MARK: - If the file exits
                     if let templatePath = templatePath, let pathExtention = pathExtention {
-                        
                         // MARK: - Common properties like htmlBase, impressions and links
                         // print("found the file in \(String(describing: templatePath)) \(String(describing: pathExtention))")
                         self.htmlBase = currentFileName
@@ -188,9 +187,6 @@ class AdSchedule {
             }
         }
     }
-    
-    
-    
     
     private func parseScheduleForDownloading() {
         if let scheduleDataFinal = getLatestScheduleData() {
