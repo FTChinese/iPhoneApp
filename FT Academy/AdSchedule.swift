@@ -9,25 +9,26 @@
 import Foundation
 class AdSchedule {
     // MARK: - Common properties for all types of creatives
-    var adType = "none"
-    var htmlBase = ""
-    var adLink = ""
+    public var adType = "none"
+    public var htmlBase = ""
+    public var adLink = ""
     
-    // specific properties for each type of creative
-    lazy var image: UIImage? = nil
-    var htmlFile: NSString = ""
-    var videoFilePath = ""
-    lazy var backupImage: UIImage? = nil
-    lazy var backgroundColor: UIColor? = nil
-    lazy var durationInSeconds: Double? = nil
-    var showSoundButton = true
-    lazy var impression: [String] = []
+    // MARK: - Specific properties for each type of creative
+    public lazy var image: UIImage? = nil
+    public var htmlFile: NSString = ""
+    public var videoFilePath = ""
+    public lazy var backupImage: UIImage? = nil
+    public lazy var backgroundColor: UIColor? = nil
+    public lazy var durationInSeconds: Double? = nil
+    public var showSoundButton = true
+    public lazy var impression: [String] = []
+    
+    
     private let adScheduleFileName = "schedule.json"
     private let lauchAdSchedule = "https://m.ftimg.net/index.php/jsapi/applaunchschedule"
     private let imageTypes = ["png","jpg","gif"]
     private let videoTypes = ["mov","mp4"]
     private let htmlTypes = ["html"]
-    
     private var currentPlatform = "iphone"
     
     // FIXME: - The code here is not elegant but works. Should find a time to rewrite.
@@ -55,52 +56,33 @@ class AdSchedule {
                     print("creatives Not an Array")
                     return
                 }
-                
+                // MARK: - Filter all creatives that are scheduled for today
                 var creativesForToday = [Int]()
-                
-                // MARK: - Filter all that are scheduled for today
                 for (index, creative) in creatives.enumerated() {
-                    let currentCreative = creative
-                    var datesString = currentCreative["dates"] ?? ""
-                    // convert dates string into NSArray for later parsing
+                    var datesString = creative["dates"] ?? ""
+                    // MARK: - Convert datesString to Array for later parsing
                     datesString = datesString.trimmingCharacters(in: .whitespaces)
                         .replacingOccurrences(of: "/", with: "")
                         .replacingOccurrences(of: "-", with: "")
                     let datesStringArray = datesString.components(separatedBy: ",")
                     let dates = datesStringArray.map{ Int($0) ?? 0}
+                    var platforms = [String]()
+                    if creative["iphone"] == "yes" {
+                        platforms.append("iphone")
+                    }
                     
-                    var platforms: [String] = []
-                    if let supportiPhone = currentCreative["iphone"] {
-                        if supportiPhone == "yes" {
-                            platforms.append("iphone")
-                        }
+                    if creative["ipad"] == "yes" {
+                        platforms.append("ipad")
                     }
-                    if let supportiPad = currentCreative["ipad"] {
-                        if supportiPad == "yes" {
-                            platforms.append("ipad")
-                        }
-                    }
+                    
                     
                     // MARK: - if this creaive is scheduled for today and for this type of device(platform)
                     if dates.contains(dateInInt) && platforms.contains(self.currentPlatform){
-                        guard var currentFileName = currentCreative["fileName"] else {
-                            print("cannot find file name of creative")
-                            continue
-                        }
                         
-                        // MARK: - On iPad landscape mode, use the landscapeFileName
-                        if currentPlatform == "ipad" && UIScreen.main.bounds.width > UIScreen.main.bounds.height {
-                            if let landscapeFileName = currentCreative["landscapeFileName"] {
-                                if landscapeFileName != "" {
-                                    // check if the landscape file is valid and exists locally
-                                    let url = NSURL(string:currentFileName)
-                                    let pathExtention = url?.pathExtension
-                                    let templatePath = checkFilePath(fileUrl: currentFileName)
-                                    if templatePath != nil && pathExtention != nil{
-                                        currentFileName = landscapeFileName
-                                    }
-                                }
-                            }
+                        
+                        guard let currentFileName = getFileNameToPlay(creative) else {
+                            print("cannot find file name of creative")
+                            return
                         }
                         
                         // MARK: - Extract the file name to figure out the adType
@@ -109,19 +91,17 @@ class AdSchedule {
                         
                         // MARK: - If the file exists locally, return its path, otherwise return nil
                         let templatePath = checkFilePath(fileUrl: currentFileName)
-                        // MARK: - If the file exits, put it into an array
+                        // MARK: - If the file exits, put it into an array and use weight to distribute share of voice
                         if templatePath != nil && pathExtention != nil{
-                            // MARK: - Use weight to distribute share of voice
-                            let weightLimit = 5
-                            let weightOriginal = currentCreative["weight"] ?? "1"
+                            let weightUpLimit = 5
+                            let weightOriginal = creative["weight"] ?? "1"
                             let weightOriginalInt = Int(weightOriginal) ?? 1
                             let weight: Int
-                            if weightOriginalInt >= weightLimit {
-                                weight = weightLimit
+                            if weightOriginalInt >= weightUpLimit {
+                                weight = weightUpLimit
                             } else {
                                 weight = weightOriginalInt
                             }
-                            
                             for _ in 1...weight {
                                 creativesForToday.append(index)
                             }
@@ -130,109 +110,80 @@ class AdSchedule {
                 }
                 
                 
-                
                 // MARK: Pick one creative from all creatives that are scheduled for today
                 let randomIndex = Int(arc4random_uniform(UInt32(creativesForToday.count)))
-                // MARK: Use the randomIndex to get the index of the creative that is picked for this launch
-                let currentCreativeIndex = creativesForToday[randomIndex]
-                print (creativesForToday)
-                print ("\(randomIndex): \(currentCreativeIndex)")
                 
-                let currentCreative = creatives[currentCreativeIndex]
-                
-                
-                
-                // MARK: - if this creaive is scheduled for today and for this type of device(platform)
-                
-                guard var currentFileName = currentCreative["fileName"] else {
-                    print("cannot find file name of creative")
-                    return
-                }
-                
-                // MARK: - On iPad landscape mode, use the landscapeFileName
-                if currentPlatform == "ipad" && UIScreen.main.bounds.width > UIScreen.main.bounds.height {
-                    if let landscapeFileName = currentCreative["landscapeFileName"] {
-                        if landscapeFileName != "" {
-                            // check if the landscape file is valid and exists locally
-                            let url = NSURL(string:currentFileName)
-                            let pathExtention = url?.pathExtension
-                            let templatePath = checkFilePath(fileUrl: currentFileName)
-                            if templatePath != nil && pathExtention != nil{
-                                currentFileName = landscapeFileName
+                // MARK: - Important: Make sure the index is not out of range!
+                if (randomIndex >= 0 && creativesForToday.count > randomIndex) {
+                    // MARK: Use the randomIndex to get the index of the creative that is picked for this launch
+                    let currentCreativeIndex = creativesForToday[randomIndex]
+                    print (creativesForToday)
+                    print ("\(randomIndex): \(currentCreativeIndex)")
+                    let currentCreative = creatives[currentCreativeIndex]
+                    guard let currentFileName = getFileNameToPlay(currentCreative) else {
+                        print("cannot find file name of creative")
+                        return
+                    }
+                    // MARK: - Extract the file name to figure out the adType
+                    let url = NSURL(string:currentFileName)
+                    let pathExtention = url?.pathExtension
+                    
+                    // MARK: - If the file exists locally, return its path, otherwise return nil
+                    let templatePath = checkFilePath(fileUrl: currentFileName)
+                    // MARK: - If the file exits
+                    if let templatePath = templatePath, let pathExtention = pathExtention {
+                        
+                        // MARK: - Common properties like htmlBase, impressions and links
+                        // print("found the file in \(String(describing: templatePath)) \(String(describing: pathExtention))")
+                        self.htmlBase = currentFileName
+                        self.adLink = currentCreative["click"] ?? ""
+                        // MARK: - Background color
+                        if let backgroundColorString = currentCreative["backgroundColor"] {
+                            if backgroundColorString.range(of: "^#[0-9a-zA-Z]{6}$", options: .regularExpression) != nil {
+                                self.backgroundColor = hexStringToUIColor (hex: backgroundColorString)
+                            }
+                        }
+                        self.impression = []
+                        let impressionTrackers = ["impression_1","impression_2","impression_3"]
+                        for impressionKey in impressionTrackers {
+                            if let impressionString = currentCreative[impressionKey]  {
+                                if impressionString != "" {
+                                    self.impression.append(impressionString)
+                                }
+                            }
+                        }
+                        self.durationInSeconds = Double(currentCreative["durationInSeconds"] ?? "")
+                        
+                        // MARK: - Specific properties like image file, video file, backup image file
+                        if imageTypes.contains(pathExtention.lowercased()) {
+                            self.adType = "image"
+                            self.image = UIImage(contentsOfFile: templatePath)
+                        } else if htmlTypes.contains(pathExtention.lowercased()) {
+                            self.adType = "page"
+                            do {
+                                self.htmlFile = try NSString(contentsOfFile:templatePath, encoding:String.Encoding.utf8.rawValue)
+                            } catch {
+                                self.htmlFile = ""
+                            }
+                        } else if videoTypes.contains(pathExtention.lowercased()) {
+                            self.adType = "video"
+                            self.videoFilePath = templatePath
+                            if let backupImageString = currentCreative["backupImage"] {
+                                if let templatePath = checkFilePath(fileUrl: backupImageString) {
+                                    self.backupImage = UIImage(contentsOfFile: templatePath)
+                                }
+                            }
+                            if let showSoundButtonBool = currentCreative["showSoundButton"] {
+                                if showSoundButtonBool == "yes" {
+                                    self.showSoundButton = true
+                                } else {
+                                    self.showSoundButton = false
+                                }
                             }
                         }
                     }
-                }
-                
-                // MARK: - Extract the file name to figure out the adType
-                let url = NSURL(string:currentFileName)
-                let pathExtention = url?.pathExtension
-                
-                // MARK: - If the file exists locally, return its path, otherwise return nil
-                let templatePath = checkFilePath(fileUrl: currentFileName)
-                // MARK: - If the file exits
-                if let templatePath = templatePath, let pathExtention = pathExtention {
-                    
-                    // common properties like htmlBase, impressions and links
-                    print("found the file in \(String(describing: templatePath)) \(String(describing: pathExtention))")
-                    self.htmlBase = currentFileName
-                    self.adLink = currentCreative["click"] ?? ""
-                    // background color
-                    if let backgroundColorString = currentCreative["backgroundColor"] {
-                        if backgroundColorString.range(of: "^#[0-9a-zA-Z]{6}$", options: .regularExpression) != nil {
-                            self.backgroundColor = hexStringToUIColor (hex: backgroundColorString)
-                        }
-                    }
-                    self.impression = []
-                    if let impression_1 = currentCreative["impression_1"]  {
-                        if impression_1 != "" {
-                            self.impression.append(impression_1)
-                        }
-                    }
-                    
-                    if let impression_2 = currentCreative["impression_2"] {
-                        if impression_2 != "" {
-                            self.impression.append(impression_2)
-                        }
-                    }
-                    if let impression_3 = currentCreative["impression_3"] {
-                        if impression_3 != "" {
-                            self.impression.append(impression_3)
-                        }
-                    }
-                    if let durationInString = currentCreative["durationInSeconds"] {
-                        if let durationInDouble = Double(durationInString) {
-                            self.durationInSeconds = durationInDouble
-                        }
-                    }
-                    
-                    // MARK: - Specific properties like image file, video file, backup image file
-                    if imageTypes.contains(pathExtention.lowercased()) {
-                        self.adType = "image"
-                        self.image = UIImage(contentsOfFile: templatePath)
-                    } else if htmlTypes.contains(pathExtention.lowercased()) {
-                        self.adType = "page"
-                        do {
-                            self.htmlFile = try NSString(contentsOfFile:templatePath, encoding:String.Encoding.utf8.rawValue)
-                        } catch {
-                            self.htmlFile = ""
-                        }
-                    } else if videoTypes.contains(pathExtention.lowercased()) {
-                        self.adType = "video"
-                        self.videoFilePath = templatePath
-                        if let backupImageString = currentCreative["backupImage"] {
-                            if let templatePath = checkFilePath(fileUrl: backupImageString) {
-                                self.backupImage = UIImage(contentsOfFile: templatePath)
-                            }
-                        }
-                        if let showSoundButtonBool = currentCreative["showSoundButton"] {
-                            if showSoundButtonBool == "yes" {
-                                self.showSoundButton = true
-                            } else {
-                                self.showSoundButton = false
-                            }
-                        }
-                    }
+                } else {
+                    print ("there is no creative to play this time! ")
                 }
             } catch let JSONError as NSError {
                 print("\(JSONError)")
@@ -240,34 +191,17 @@ class AdSchedule {
         }
     }
     
-    // MARK: - convert a hex string into UIColor
-    private func hexStringToUIColor (hex:String) -> UIColor {
-        var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-        
-        if (cString.hasPrefix("#")) {
-            cString.remove(at: cString.startIndex)
-        }
-        
-        if ((cString.characters.count) != 6) {
-            return UIColor.gray
-        }
-        
-        var rgbValue:UInt32 = 0
-        Scanner(string: cString).scanHexInt32(&rgbValue)
-        
-        return UIColor(
-            red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
-            green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
-            blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
-            alpha: CGFloat(1.0)
-        )
-    }
+    
+    
     
     private func parseScheduleForDownloading() {
         if let scheduleDataFinal = getLatestScheduleData() {
             //Get Current Date in String format of YYYYMMDD
             let dateInString = getCurrentDateString(dateFormat: "yyyyMMdd")
-            let dateInInt = Int(dateInString)!
+            guard let dateInInt = Int(dateInString) else {
+                print("date can not be converted to int")
+                return
+            }
             do {
                 let JSON = try JSONSerialization.jsonObject(with: scheduleDataFinal, options:JSONSerialization.ReadingOptions(rawValue: 0))
                 guard let JSONDictionary: NSDictionary = JSON as? NSDictionary else {
@@ -389,13 +323,16 @@ class AdSchedule {
         let templatePath = checkFilePath(fileUrl: currentFileName)
         
         // if the file does not exit, download it
+        
         if let lastComponent = url?.lastPathComponent {
-            if templatePath == nil && pathExtention != nil{
-                // download only when user is using wifi
-                let statusType = IJReachability().connectedToNetworkOfType()
-                if statusType == .wiFi || !videoTypes.contains(pathExtention!.lowercased()){
-                    print("\(currentFileName) about to be downloaded")
-                    grabFileFromWeb(url: url as URL?, fileName: lastComponent, parseScheduleForDownload: false)
+            if templatePath == nil{
+                // MARK: - Download videos only when user is using wifi
+                if let pathExtention = pathExtention {
+                    let statusType = IJReachability().connectedToNetworkOfType()
+                    if statusType == .wiFi || !videoTypes.contains(pathExtention.lowercased()){
+                        print("\(currentFileName) about to be downloaded")
+                        grabFileFromWeb(url: url as URL?, fileName: lastComponent, parseScheduleForDownload: false)
+                    }
                 }
             }
             return lastComponent
@@ -411,13 +348,13 @@ class AdSchedule {
         let scheduleDataBundle = readFile(adScheduleFileName, fileLocation: "bundle")
         
         
-        if scheduleData != nil {
-            jsonFileTime = getJSONFileTime(scheduleData!)
+        if let scheduleData = scheduleData {
+            jsonFileTime = getJSONFileTime(scheduleData)
         } else {
             jsonFileTime = 0
         }
-        if scheduleDataBundle != nil {
-            jsonFileTimeBundle = getJSONFileTime(scheduleDataBundle!)
+        if let scheduleDataBundle = scheduleDataBundle {
+            jsonFileTimeBundle = getJSONFileTime(scheduleDataBundle)
         } else {
             jsonFileTimeBundle = 0
         }
@@ -435,7 +372,47 @@ class AdSchedule {
         return scheduleDataFinal
     }
     
+    // MARK: - return a different file name for iPad landscape
+    private func getFileNameToPlay(_ creative: [String: String]) -> String? {
+        var currentFileName = creative["fileName"]
+        if currentPlatform == "ipad" && UIScreen.main.bounds.width > UIScreen.main.bounds.height {
+            if let landscapeFileName = creative["landscapeFileName"] {
+                if landscapeFileName != "" {
+                    // check if the landscape file is valid and exists locally
+                    let url = NSURL(string:landscapeFileName)
+                    let pathExtention = url?.pathExtension
+                    let templatePath = checkFilePath(fileUrl: landscapeFileName)
+                    if templatePath != nil && pathExtention != nil{
+                        currentFileName = landscapeFileName
+                    }
+                }
+            }
+        }
+        return currentFileName
+    }
     
+    // MARK: - convert a hex string into UIColor
+    private func hexStringToUIColor (hex:String) -> UIColor {
+        var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        
+        if (cString.hasPrefix("#")) {
+            cString.remove(at: cString.startIndex)
+        }
+        
+        if ((cString.characters.count) != 6) {
+            return UIColor.gray
+        }
+        
+        var rgbValue:UInt32 = 0
+        Scanner(string: cString).scanHexInt32(&rgbValue)
+        
+        return UIColor(
+            red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
+            green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
+            blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
+            alpha: CGFloat(1.0)
+        )
+    }
     
     private func readFile(_ fileName: String, fileLocation: String) -> Data? {
         if fileLocation == "download" {
@@ -513,23 +490,25 @@ class AdSchedule {
     }
     
     private func saveFile(_ data: Data, filename: String) {
-        let documentsDirectoryPathString = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
-        let documentsDirectoryPath = URL(string: documentsDirectoryPathString)!
-        let jsonFilePath = documentsDirectoryPath.appendingPathComponent(filename)
-        let fileManager = FileManager.default
-        let created = fileManager.createFile(atPath: jsonFilePath.absoluteString, contents: nil, attributes: nil)
-        if created {
-            //print("File created ")
-        } else {
-            //print("Couldn't create file for some reason")
-        }
-        // Write that JSON to the file created earlier
-        do {
-            let file = try FileHandle(forWritingTo: jsonFilePath)
-            file.write(data)
-            //print("JSON data was written to the file successfully!")
-        } catch let error as NSError {
-            print("Couldn't write to file: \(error.localizedDescription)")
+        if let documentsDirectoryPathString = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first {
+            if let documentsDirectoryPath = URL(string: documentsDirectoryPathString) {
+                let jsonFilePath = documentsDirectoryPath.appendingPathComponent(filename)
+                let fileManager = FileManager.default
+                let created = fileManager.createFile(atPath: jsonFilePath.absoluteString, contents: nil, attributes: nil)
+                if created {
+                    //print("File created ")
+                } else {
+                    //print("Couldn't create file for some reason")
+                }
+                // Write that JSON to the file created earlier
+                do {
+                    let file = try FileHandle(forWritingTo: jsonFilePath)
+                    file.write(data)
+                    //print("JSON data was written to the file successfully!")
+                } catch let error as NSError {
+                    print("Couldn't write to file: \(error.localizedDescription)")
+                }
+            }
         }
     }
     

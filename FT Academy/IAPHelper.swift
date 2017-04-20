@@ -106,14 +106,14 @@ extension IAPHelper {
 // MARK: - SKProductsRequestDelegate: Handle requests' responses
 extension IAPHelper: SKProductsRequestDelegate {
     public func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        print("Loaded list of products...")
+        //print("Loaded list of products...")
         let products = response.products
         productsRequestCompletionHandler?(true, products)
         clearRequestAndHandler()
         
-        for p in products {
-            print("Found product: \(p.productIdentifier) \(p.localizedTitle) \(p.price.floatValue)")
-        }
+//        for p in products {
+//            print("Found product: \(p.productIdentifier) \(p.localizedTitle) \(p.price.floatValue)")
+//        }
     }
     
     public func request(_ request: SKRequest, didFailWithError error: Error) {
