@@ -78,8 +78,6 @@ class AdSchedule {
                     
                     // MARK: - if this creaive is scheduled for today and for this type of device(platform)
                     if dates.contains(dateInInt) && platforms.contains(self.currentPlatform){
-                        
-                        
                         guard let currentFileName = getFileNameToPlay(creative) else {
                             print("cannot find file name of creative")
                             return
@@ -93,7 +91,7 @@ class AdSchedule {
                         let templatePath = checkFilePath(fileUrl: currentFileName)
                         // MARK: - If the file exits, put it into an array and use weight to distribute share of voice
                         if templatePath != nil && pathExtention != nil{
-                            let weightUpLimit = 5
+                            let weightUpLimit = 20
                             let weightOriginal = creative["weight"] ?? "1"
                             let weightOriginalInt = Int(weightOriginal) ?? 1
                             let weight: Int
@@ -256,20 +254,16 @@ class AdSchedule {
                     
                     // and for this type of device(platform)
                     if creativeIsNeededForFuture == true && platforms.contains(self.currentPlatform){
-                        // check to download three types of files
-                        if let currentFileName = currentCreative["fileName"] as? String {
-                            if let lastComponent = checkCreativeForFuture(currentFileName: currentFileName) {
-                                creativesNeededInFuture.append(lastComponent)
-                            }
-                        }
-                        if let currentFileName = currentCreative["landscapeFileName"] as? String {
-                            if let lastComponent = checkCreativeForFuture(currentFileName: currentFileName) {
-                                creativesNeededInFuture.append(lastComponent)
-                            }
-                        }
-                        if let currentFileName = currentCreative["backupImage"] as? String {
-                            if let lastComponent = checkCreativeForFuture(currentFileName: currentFileName) {
-                                creativesNeededInFuture.append(lastComponent)
+                        // MARK: - Check to download three types of files
+                        
+                        let creativeFields = ["fileName", "landscapeFileName", "backupImage"]
+                        for creativeFieldName in creativeFields {
+                            if let currentFileName = currentCreative[creativeFieldName] as? String {
+                                if let lastComponent = checkCreativeForFuture(currentFileName: currentFileName) {
+                                    if !creativesNeededInFuture.contains(lastComponent) {
+                                        creativesNeededInFuture.append(lastComponent)
+                                    }
+                                }
                             }
                         }
                     }
@@ -310,6 +304,8 @@ class AdSchedule {
             }
         }
     }
+    
+    
     
     // check if the creative is needed in the future
     // if it is return true

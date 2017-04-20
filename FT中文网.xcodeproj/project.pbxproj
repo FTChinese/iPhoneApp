@@ -111,6 +111,7 @@
 		607480321E9B32F6009C0756 /* NowPlayingCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607480301E9B32F6009C0756 /* NowPlayingCenter.swift */; };
 		6074A4C31EA067E300230937 /* DownloadHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6074A4C21EA067E300230937 /* DownloadHelper.swift */; };
 		6074A4C41EA067E300230937 /* DownloadHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6074A4C21EA067E300230937 /* DownloadHelper.swift */; };
+		60CB31C51EA8A49B005BFEA1 /* openap0420.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 60CB31C41EA8A49B005BFEA1 /* openap0420.jpg */; };
 		60D26FDC1E8F58D80047C6AB /* SpeechSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D26FDB1E8F58D80047C6AB /* SpeechSettings.swift */; };
 		60D26FDD1E8F58D80047C6AB /* SpeechSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D26FDB1E8F58D80047C6AB /* SpeechSettings.swift */; };
 		CD6C7E714D02A4C7ED3C3236 /* Pods_FT___.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF896B870CE411A5E6A3044D /* Pods_FT___.framework */; };
@@ -197,6 +198,7 @@
 		605C58FF1E8DF0EC00174DF3 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		607480301E9B32F6009C0756 /* NowPlayingCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NowPlayingCenter.swift; sourceTree = "<group>"; };
 		6074A4C21EA067E300230937 /* DownloadHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadHelper.swift; sourceTree = "<group>"; };
+		60CB31C41EA8A49B005BFEA1 /* openap0420.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = openap0420.jpg; sourceTree = "<group>"; };
 		60D26FDB1E8F58D80047C6AB /* SpeechSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeechSettings.swift; sourceTree = "<group>"; };
 		976359DE7C996269A56DA9C6 /* Pods-FT中文网.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FT中文网.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FT中文网/Pods-FT中文网.debug.xcconfig"; sourceTree = "<group>"; };
 		B1B0C223055A04C366CDF337 /* Pods-FT中文网-iPad.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FT中文网-iPad.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FT中文网-iPad/Pods-FT中文网-iPad.debug.xcconfig"; sourceTree = "<group>"; };
@@ -363,6 +365,7 @@
 				50159E5C1BA05EBD00F22FFC /* ftcicon.jpg */,
 				50256C9D1A4B9D0B005950B9 /* Info.plist */,
 				50604A621A5552F1003803E6 /* webview.html */,
+				60CB31C41EA8A49B005BFEA1 /* openap0420.jpg */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -602,6 +605,7 @@
 			files = (
 				6026476F1E973A6E009D8398 /* indexBig5.html in Resources */,
 				50E577D71DB754880016A73F /* close.png in Resources */,
+				60CB31C51EA8A49B005BFEA1 /* openap0420.jpg in Resources */,
 				50256CA41A4B9D0B005950B9 /* Main.storyboard in Resources */,
 				602647781E978E7E009D8398 /* Images.xcassets in Resources */,
 				50604A631A5552F2003803E6 /* webview.html in Resources */,
