@@ -80,9 +80,9 @@ func sendDeviceToken() {
     }
 }
 
-func ltzAbbrev() -> String {
-    return NSTimeZone.local.abbreviation()!
-}
+//func ltzAbbrev() -> String {
+//    return TimeZone.current.abbreviation() ?? ""
+//}
 
 
 func shareToWeChat(_ originalUrlString : String) {

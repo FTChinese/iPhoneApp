@@ -133,7 +133,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
         } else {
             appNumber = "0"
         }
-        let timeZone = ltzAbbrev()
+        let timeZone = TimeZone.current.abbreviation() ?? ""
         let status = "start"
         let preference = ""
         let deviceType: String

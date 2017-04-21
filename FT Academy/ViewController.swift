@@ -50,7 +50,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         print ("notification removed")
     }
     
-
+    
     // MARK: - start to load the webview as soon as possible and cover the whole view with an overlayview of either advertisement or launchscreen
     override func loadView() {
         super.loadView()
@@ -483,20 +483,30 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             deviceType = "iPad"
         }
         for impressionUrlString in impressions {
-            if let url = URL(string: impressionUrlString) {
-                getDataFromUrl(url) { (data, response, error)  in
-                    DispatchQueue.main.async { () -> Void in
-                        guard let _ = data , error == nil else {
-                            let jsCode = "try{ga('send','event', '\(deviceType) Launch Ad', 'Fail', '\(impressionUrlString)', {'nonInteraction':1});}catch(ignore){}"
+            if var urlComponents = URLComponents(string: impressionUrlString) {
+                let unixDateStamp = Date().timeIntervalSince1970
+                let timeStamp = String(unixDateStamp).replacingOccurrences(of: ".", with: "")
+                let newQuery = URLQueryItem(name: "fttime", value: timeStamp)
+                if urlComponents.queryItems != nil {
+                    urlComponents.queryItems?.append(newQuery)
+                } else {
+                    urlComponents.queryItems = [newQuery]
+                }
+                if let url = urlComponents.url {
+                    getDataFromUrl(url) { (data, response, error)  in
+                        DispatchQueue.main.async { () -> Void in
+                            guard let _ = data , error == nil else {
+                                let jsCode = "try{ga('send','event', '\(deviceType) Launch Ad', 'Fail', '\(impressionUrlString)', {'nonInteraction':1});}catch(ignore){}"
+                                self.webView.evaluateJavaScript(jsCode) { (result, error) in
+                                }
+                                print ("Fail to send impression to \(url.absoluteString)")
+                                return
+                            }
+                            let jsCode = "try{ga('send','event', '\(deviceType) Launch Ad', 'Sent', '\(impressionUrlString)', {'nonInteraction':1});}catch(ignore){}"
                             self.webView.evaluateJavaScript(jsCode) { (result, error) in
                             }
-                            print ("Fail to send impression to \(url.absoluteString)")
-                            return
+                            print("sent impression to \(url.absoluteString)")
                         }
-                        let jsCode = "try{ga('send','event', '\(deviceType) Launch Ad', 'Sent', '\(impressionUrlString)', {'nonInteraction':1});}catch(ignore){}"
-                        self.webView.evaluateJavaScript(jsCode) { (result, error) in
-                        }
-                        print("sent impression to \(url.absoluteString)")
                     }
                 }
             }
@@ -760,31 +770,31 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         let share = ShareHelper()
         let url = share.getUrl(originalUrlString)
         
-//        let originalURL = originalUrlString
-//        var queryStringDictionary = ["url":""]
-//        let urlComponents = originalURL.replacingOccurrences(of: "iosaction://?", with: "").components(separatedBy: "&")
-//        for keyValuePair in urlComponents {
-//            let stringSeparate = (keyValuePair as AnyObject).range(of: "=").location
-//            if (stringSeparate>0 && stringSeparate < 100) {
-//                let pairKey = (keyValuePair as NSString).substring(to: stringSeparate)
-//                let pairValue = (keyValuePair as NSString).substring(from: stringSeparate+1)
-//                queryStringDictionary[pairKey] = pairValue.removingPercentEncoding
-//            }
-//        }
-//        webPageUrl = queryStringDictionary["url"]?.removingPercentEncoding ?? webPageUrl
-//        webPageTitle = queryStringDictionary["title"] ?? webPageTitle
-//        webPageDescription = queryStringDictionary["description"] ?? webPageDescription0
-//        webPageImage = queryStringDictionary["img"] ?? webPageImageIcon0
-//        webPageImageIcon = webPageImage
-//        
-//        let ccodeInActionSheet = ccode["actionsheet"] ?? "iosaction"
-//        let urlWithCCode = "\(webPageUrl)#ccode=\(ccodeInActionSheet)"
-//        
-//
-//        let url = URL(string: urlWithCCode)
+        //        let originalURL = originalUrlString
+        //        var queryStringDictionary = ["url":""]
+        //        let urlComponents = originalURL.replacingOccurrences(of: "iosaction://?", with: "").components(separatedBy: "&")
+        //        for keyValuePair in urlComponents {
+        //            let stringSeparate = (keyValuePair as AnyObject).range(of: "=").location
+        //            if (stringSeparate>0 && stringSeparate < 100) {
+        //                let pairKey = (keyValuePair as NSString).substring(to: stringSeparate)
+        //                let pairValue = (keyValuePair as NSString).substring(from: stringSeparate+1)
+        //                queryStringDictionary[pairKey] = pairValue.removingPercentEncoding
+        //            }
+        //        }
+        //        webPageUrl = queryStringDictionary["url"]?.removingPercentEncoding ?? webPageUrl
+        //        webPageTitle = queryStringDictionary["title"] ?? webPageTitle
+        //        webPageDescription = queryStringDictionary["description"] ?? webPageDescription0
+        //        webPageImage = queryStringDictionary["img"] ?? webPageImageIcon0
+        //        webPageImageIcon = webPageImage
+        //
+        //        let ccodeInActionSheet = ccode["actionsheet"] ?? "iosaction"
+        //        let urlWithCCode = "\(webPageUrl)#ccode=\(ccodeInActionSheet)"
+        //
+        //
+        //        let url = URL(string: urlWithCCode)
         share.popupActionSheet(self as UIViewController, url: url)
         
-
+        
     }
     
     func openInView(_ urlString : String) {
