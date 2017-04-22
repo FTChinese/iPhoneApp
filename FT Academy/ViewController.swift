@@ -496,9 +496,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                     getDataFromUrl(url) { (data, response, error)  in
                         DispatchQueue.main.async { () -> Void in
                             guard let _ = data , error == nil else {
+                                // MARK: Use the original impressionUrlString for Google Analytics
                                 let jsCode = "try{ga('send','event', '\(deviceType) Launch Ad', 'Fail', '\(impressionUrlString)', {'nonInteraction':1});}catch(ignore){}"
                                 self.webView.evaluateJavaScript(jsCode) { (result, error) in
                                 }
+                                // MARK: The string should have the parameter
                                 print ("Fail to send impression to \(url.absoluteString)")
                                 return
                             }
