@@ -94,12 +94,7 @@ class AdSchedule {
                             let weightUpLimit = 20
                             let weightOriginal = creative["weight"] ?? "1"
                             let weightOriginalInt = Int(weightOriginal) ?? 1
-                            let weight: Int
-                            if weightOriginalInt >= weightUpLimit {
-                                weight = weightUpLimit
-                            } else {
-                                weight = weightOriginalInt
-                            }
+                            let weight = max(min(weightOriginalInt, weightUpLimit), 1)
                             for _ in 1...weight {
                                 creativesForToday.append(index)
                             }
