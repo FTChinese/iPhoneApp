@@ -475,17 +475,18 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         return nil
     }
     
-    
     // MARK: report ad impressions
     private func reportImpressionToWeb(impressions: [String]) {
         var deviceType = "iPhone"
         if UIDevice.current.userInterfaceIdiom == .pad {
             deviceType = "iPad"
         }
+        let unixDateStamp = Date().timeIntervalSince1970
+        let timeStamp = String(unixDateStamp).replacingOccurrences(of: ".", with: "")
         for impressionUrlString in impressions {
-            if var urlComponents = URLComponents(string: impressionUrlString) {
-                let unixDateStamp = Date().timeIntervalSince1970
-                let timeStamp = String(unixDateStamp).replacingOccurrences(of: ".", with: "")
+            let impressionUrlStringWithTimestamp = impressionUrlString.replacingOccurrences(of: "[timestamp]", with: timeStamp)
+            print ("send to \(impressionUrlStringWithTimestamp)")
+            if var urlComponents = URLComponents(string: impressionUrlStringWithTimestamp) {
                 let newQuery = URLQueryItem(name: "fttime", value: timeStamp)
                 if urlComponents.queryItems != nil {
                     urlComponents.queryItems?.append(newQuery)
