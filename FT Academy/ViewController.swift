@@ -597,6 +597,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     }
     
     private func checkConnectionType() {
+        updateConnectionToWeb(getConnectionType())
+    }
+    
+    private func getConnectionType() -> String {
         let statusType = IJReachability().connectedToNetworkOfType()
         var connectionType = "unknown"
         switch statusType {
@@ -607,7 +611,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         case .notConnected:
             connectionType =  "no"
         }
-        updateConnectionToWeb(connectionType)
+        return connectionType
     }
     
     private func updateConnectionToWeb(_ connectionType: String) {
@@ -676,6 +680,34 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             enableAudioPlay()
             enableLanguageSetting()
             player = nil
+        }
+        // MARK: - Check connection type and ask user to enable internet connection
+        prompUserToEnableInternet()
+    }
+    
+    private func prompUserToEnableInternet() {
+        // print ("Connection Type: \(getConnectionType())")
+        if getConnectionType() == "no" {
+            // print ("there is no internet connection")
+            let alert = UIAlertController(title: "请授权FT中文网连接互联网", message: "1. 点击“开始设置” \r\n2. 下拉至“使用无线局域网与蜂窝移动的应用” \r\n3. 找到“FT中文网”进行设置", preferredStyle: UIAlertControllerStyle.actionSheet)
+            alert.addAction(UIAlertAction(
+                title: "开始设置",
+                style: UIAlertActionStyle.default,
+                handler: {_ in
+                    let urlSchemeString: String
+                    if #available(iOS 9.0, *) {
+                        urlSchemeString = "App-Prefs:root=WIFI"
+                    } else {
+                        urlSchemeString = "prefs:root=WIFI"
+                    }
+                    if let url = URL(string:urlSchemeString) {
+                        UIApplication.shared.openURL(url)
+                    }
+            }
+                )
+            )
+            alert.addAction(UIAlertAction(title: "不连接", style: UIAlertActionStyle.destructive, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         }
     }
     
