@@ -23,6 +23,7 @@ DEPENDENCIES:
   - FolioReaderKit
   - Realm
   - SSZipArchive
+  - ZFDragableModalTransition
 
 SPEC CHECKSUMS:
   AEXML: 6fc6433aa35bdc15dd8eb8d54eb7aa4520a010eb
@@ -35,6 +36,6 @@ SPEC CHECKSUMS:
   SSZipArchive: 04547dfa448be5ed7ecbaf7eaf8a6e9eb9b42997
   ZFDragableModalTransition: 0d294eaaba6edfcb9839595de765f9ca06a4b524
 
-PODFILE CHECKSUM: 3c2b3c64816223ccf8a2855a8ea9377c27cef316
+PODFILE CHECKSUM: be7db83e618f387333c4e3c9d89affb1335143fa
 
 COCOAPODS: 1.2.1

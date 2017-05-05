@@ -107,8 +107,7 @@
 		605C59001E8DF0EC00174DF3 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 605C58FF1E8DF0EC00174DF3 /* CFNetwork.framework */; };
 		605C59011E8DF5E500174DF3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 605C58FD1E8DF0B800174DF3 /* Security.framework */; };
 		605C59021E8DF5EF00174DF3 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 605C58FF1E8DF0EC00174DF3 /* CFNetwork.framework */; };
-		606C0CEB1EB1F48E00EF0A60 /* Chaumet_Interstitiel_828x1472_V2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 606C0CEA1EB1F48E00EF0A60 /* Chaumet_Interstitiel_828x1472_V2.jpg */; };
-		606C0CEC1EB1F48E00EF0A60 /* Chaumet_Interstitiel_828x1472_V2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 606C0CEA1EB1F48E00EF0A60 /* Chaumet_Interstitiel_828x1472_V2.jpg */; };
+		606D05071EBC28DE00957DD5 /* benz.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 606D05061EBC28DE00957DD5 /* benz.mp4 */; };
 		607480311E9B32F6009C0756 /* NowPlayingCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607480301E9B32F6009C0756 /* NowPlayingCenter.swift */; };
 		607480321E9B32F6009C0756 /* NowPlayingCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607480301E9B32F6009C0756 /* NowPlayingCenter.swift */; };
 		6074A4C31EA067E300230937 /* DownloadHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6074A4C21EA067E300230937 /* DownloadHelper.swift */; };
@@ -197,7 +196,7 @@
 		604056BC1E9DFA36008A7701 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		605C58FD1E8DF0B800174DF3 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		605C58FF1E8DF0EC00174DF3 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
-		606C0CEA1EB1F48E00EF0A60 /* Chaumet_Interstitiel_828x1472_V2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Chaumet_Interstitiel_828x1472_V2.jpg; sourceTree = "<group>"; };
+		606D05061EBC28DE00957DD5 /* benz.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = benz.mp4; sourceTree = "<group>"; };
 		607480301E9B32F6009C0756 /* NowPlayingCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NowPlayingCenter.swift; sourceTree = "<group>"; };
 		6074A4C21EA067E300230937 /* DownloadHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadHelper.swift; sourceTree = "<group>"; };
 		60D26FDB1E8F58D80047C6AB /* SpeechSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeechSettings.swift; sourceTree = "<group>"; };
@@ -366,7 +365,7 @@
 				50159E5C1BA05EBD00F22FFC /* ftcicon.jpg */,
 				50256C9D1A4B9D0B005950B9 /* Info.plist */,
 				50604A621A5552F1003803E6 /* webview.html */,
-				606C0CEA1EB1F48E00EF0A60 /* Chaumet_Interstitiel_828x1472_V2.jpg */,
+				606D05061EBC28DE00957DD5 /* benz.mp4 */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -613,10 +612,10 @@
 				50256CA91A4B9D0B005950B9 /* LaunchScreen.xib in Resources */,
 				50159E5D1BA05EBD00F22FFC /* ftcicon.jpg in Resources */,
 				5039A4B41C61FAD40008F2AD /* README.txt in Resources */,
-				606C0CEB1EB1F48E00EF0A60 /* Chaumet_Interstitiel_828x1472_V2.jpg in Resources */,
 				503435271DB9FDC200B2F686 /* mute.png in Resources */,
 				503435251DB9FDC200B2F686 /* sound.png in Resources */,
 				5005FB821D9D090800E2B3DC /* schedule.json in Resources */,
+				606D05071EBC28DE00957DD5 /* benz.mp4 in Resources */,
 				602647751E97804C009D8398 /* cover.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -634,7 +633,6 @@
 			files = (
 				602647701E973A6E009D8398 /* indexBig5.html in Resources */,
 				507C7E661DB0BCE800A8EF50 /* Main.storyboard in Resources */,
-				606C0CEC1EB1F48E00EF0A60 /* Chaumet_Interstitiel_828x1472_V2.jpg in Resources */,
 				507C7E671DB0BCE800A8EF50 /* webview.html in Resources */,
 				602647761E97804C009D8398 /* cover.jpg in Resources */,
 				507C7E681DB0BCE800A8EF50 /* index.html in Resources */,
