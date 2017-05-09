@@ -151,12 +151,19 @@ class AudioPlayer: UIViewController,WKScriptMessageHandler,UIScrollViewDelegate,
             object: nil
         )
         
+
+        
         NotificationCenter.default.removeObserver(self)
         
         // MARK: - Stop loading and remove message handlers to avoid leak
         self.webView?.stopLoading()
         self.webView?.configuration.userContentController.removeScriptMessageHandler(forName: "callbackHandler")
         self.webView?.configuration.userContentController.removeAllUserScripts()
+        
+        // MARK: - Remove delegate to deal with crashes on iOS 8
+        self.webView?.navigationDelegate = nil
+        self.webView?.scrollView.delegate = nil
+        
         print ("deinit successfully and observer removed")
     }
     

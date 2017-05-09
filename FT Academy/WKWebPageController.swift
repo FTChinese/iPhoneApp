@@ -31,6 +31,10 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         self.webView?.configuration.userContentController.removeScriptMessageHandler(forName: "callbackHandler")
         self.webView?.configuration.userContentController.removeAllUserScripts()
         
+        // MARK: - Remove delegate to deal with crashes on iOS 8
+        self.webView?.navigationDelegate = nil
+        self.webView?.scrollView.delegate = nil
+        
         print ("deinit WKWebPageController successfully")
     }
     
@@ -68,8 +72,8 @@ class WKWebPageController: UIViewController, UIWebViewDelegate, WKNavigationDele
         self.webView?.scrollView.delegate = self
     }
     
-    //there's a bug on iOS 9 so that you can't set decelerationRate directly on webView
-    //http://stackoverflow.com/questions/31369538/cannot-change-wkwebviews-scroll-rate-on-ios-9-beta
+    // MARK: - There's a bug on iOS 9 so that you can't set decelerationRate directly on webView
+    // MARK: - http://stackoverflow.com/questions/31369538/cannot-change-wkwebviews-scroll-rate-on-ios-9-beta
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
     }
