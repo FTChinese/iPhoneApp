@@ -15,7 +15,6 @@ import StoreKit
 import FolioReaderKit
 import MediaPlayer
 
-
 class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, WKScriptMessageHandler, WKUIDelegate,SFSafariViewControllerDelegate, URLSessionDownloadDelegate {
     
     // MARK: - Use WKWebView as our app supports iOS 8 and above
@@ -29,6 +28,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     private let gbUrl = "http://app003.ftmailbox.com/iphone-2014.html?isInSWIFT&iOSShareWechat&gShowStatusBar"
     private let languageKeyName = "prefer language"
     private var languageForJS = ""
+    
+    // MARK: - Find out whether the user is happy and prompt rating if he/she is happy
+    private let happyUser = HappyUser()
     
     // MARK: - If the app use a native launch ad, suppress the pop up one
     private let useNativeLaunchAd = "useNativeLaunchAd"
@@ -92,6 +94,10 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 }
             }
         }
+        
+        // MARK: - Count a launch
+        happyUser.launchCount()
+        
         adOverlayView()
         
         
@@ -126,6 +132,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         // MARK: - 告诉系统接受远程响应事件，并注册成为第一响应者
         UIApplication.shared.beginReceivingRemoteControlEvents()
         self.becomeFirstResponder()
+        
     }
     
     // MARK: - viewWillAppear happens when: 1) Starting the app and 2)Going back from a popover segue, like the WKWebPageController
@@ -219,11 +226,13 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             label.textColor = UIColor.white
             overlayViewNormal.addSubview(label)
             label.translatesAutoresizingMaskIntoConstraints = false
-            
             view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.centerX, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.centerX, multiplier: 1, constant: 0))
             view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.bottom, multiplier: 1, constant: -20))
             view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 441))
             view.addConstraint(NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 21))
+            
+            // MARK: Request user to review only if the app starts without the launch ad
+            happyUser.requestReview()
         }
     }
     
@@ -477,10 +486,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     // MARK: report ad impressions
     private func reportImpressionToWeb(impressions: [String]) {
-        var deviceType = "iPhone"
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            deviceType = "iPad"
-        }
+        let deviceType = checkDeviceType()
         let unixDateStamp = Date().timeIntervalSince1970
         let timeStamp = String(unixDateStamp).replacingOccurrences(of: ".", with: "")
         for impressionUrlString in impressions {
@@ -519,6 +525,20 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     // MARK: this should be public
     func clickAd() {
         openInView(adSchedule.adLink)
+        let deviceType = checkDeviceType()
+        let jsCode = "try{ga('send','event', '\(deviceType) Launch Ad', 'Click', '\(adSchedule.adLink)', {'nonInteraction':1});}catch(ignore){}"
+        self.webView.evaluateJavaScript(jsCode) { (result, error) in
+        }
+    }
+    
+    func checkDeviceType() -> String {
+        let deviceType: String
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            deviceType = "iPad"
+        } else {
+            deviceType  = "iPhone"
+        }
+        return deviceType
     }
     
     // MARK: Load HTML String from Bundle to start the App
