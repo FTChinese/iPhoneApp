@@ -412,10 +412,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         }
         
         var timeRecorded = [0]
-        var deviceType = "iPhone"
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            deviceType = "iPad"
-        }
+        let deviceType = happyUser.checkDeviceType()
         
         let lastcomponent = pathUrl.lastPathComponent
         token = player?.addPeriodicTimeObserver(forInterval: CMTimeMake(1,10), queue: DispatchQueue.main, using: { [weak self] timeInterval in
@@ -486,7 +483,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     // MARK: report ad impressions
     private func reportImpressionToWeb(impressions: [String]) {
-        let deviceType = checkDeviceType()
+        let deviceType = happyUser.checkDeviceType()
         let unixDateStamp = Date().timeIntervalSince1970
         let timeStamp = String(unixDateStamp).replacingOccurrences(of: ".", with: "")
         for impressionUrlString in impressions {
@@ -525,21 +522,12 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     // MARK: this should be public
     func clickAd() {
         openInView(adSchedule.adLink)
-        let deviceType = checkDeviceType()
+        let deviceType = happyUser.checkDeviceType()
         let jsCode = "try{ga('send','event', '\(deviceType) Launch Ad', 'Click', '\(adSchedule.adLink)', {'nonInteraction':1});}catch(ignore){}"
         self.webView.evaluateJavaScript(jsCode) { (result, error) in
         }
     }
     
-    func checkDeviceType() -> String {
-        let deviceType: String
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            deviceType = "iPad"
-        } else {
-            deviceType  = "iPhone"
-        }
-        return deviceType
-    }
     
     // MARK: Load HTML String from Bundle to start the App
     private func loadFromLocal() {
@@ -699,6 +687,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             enableAudioPlay()
             enableLanguageSetting()
             player = nil
+            
+            if let jsCode = happyUser.requestReviewTracking() {
+                self.webView.evaluateJavaScript(jsCode) { (result, error) in
+                }
+            }
         }
         // MARK: - Check connection type and ask user to enable internet connection
         prompUserToEnableInternet()
