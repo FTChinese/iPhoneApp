@@ -336,13 +336,13 @@
 				50256CC41A4C1916005950B9 /* WKWebPageController.swift */,
 				50256C9E1A4B9D0B005950B9 /* AppDelegate.swift */,
 				50256CC21A4BFAE7005950B9 /* Globals.swift */,
-				503435691DBDEC8200B2F686 /* AdSchedule.swift */,
 				50982C7D1BC7A7C800907575 /* IJReachability.swift */,
 				50FCC9C01D34C1D300FC1892 /* User.swift */,
 				604056B91E9C861C008A7701 /* LeakAvoider.swift */,
 				50256CA71A4B9D0B005950B9 /* LaunchScreen.xib */,
 				602647771E978E7E009D8398 /* Images.xcassets */,
 				50B5D05D1DAF1E450052C954 /* FT中文网.entitlements */,
+				60C2F5ED1EC5470300A30099 /* Ad */,
 				60C2F5EC1EC442EA00A30099 /* GrowthHack */,
 				6023B60B1E9F723000AF1F8F /* Share */,
 				607480331E9B40DA009C0756 /* Audio */,
@@ -483,6 +483,14 @@
 				60C2F5E91EC42F3900A30099 /* HappyUser.swift */,
 			);
 			name = GrowthHack;
+			sourceTree = "<group>";
+		};
+		60C2F5ED1EC5470300A30099 /* Ad */ = {
+			isa = PBXGroup;
+			children = (
+				503435691DBDEC8200B2F686 /* AdSchedule.swift */,
+			);
+			name = Ad;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

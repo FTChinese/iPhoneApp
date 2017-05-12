@@ -12,6 +12,7 @@ class AdSchedule {
     public var adType = "none"
     public var htmlBase = ""
     public var adLink = ""
+    public var closeButtonCustomization = "none"
     
     // MARK: - Specific properties for each type of creative
     public lazy var image: UIImage? = nil
@@ -145,6 +146,7 @@ class AdSchedule {
                             }
                         }
                         self.durationInSeconds = Double(currentCreative["durationInSeconds"] ?? "")
+                        self.closeButtonCustomization = currentCreative["closeButton"] ?? "none"
                         
                         // MARK: - Specific properties like image file, video file, backup image file
                         if imageTypes.contains(pathExtention.lowercased()) {

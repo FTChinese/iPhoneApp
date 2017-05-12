@@ -284,27 +284,71 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     // MARK: - The close button for the user to close the full screen ad when app launches
     private func addCloseButton() {
-        let image = getImageFromSupportingFile(imageFileName: "close.png")
-        let button: UIButton = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
-        button.backgroundColor = UIColor(white: 0, alpha: 0.382)
-        button.setImage(image, for: UIControlState())
+        let horizontalLayout:NSLayoutAttribute
+        let verticalLayout:NSLayoutAttribute
+        let horizontalMargin:CGFloat
+        let verticalMargin:CGFloat
+        let buttonWidth:CGFloat
+        let defaultButtonWidth:CGFloat = 40
+        let customButtonWidth:CGFloat = 80
+        var isCustomButton = true
+        switch adSchedule.closeButtonCustomization {
+        case "LeftTop":
+            horizontalLayout = .left
+            verticalLayout = .top
+            buttonWidth = customButtonWidth
+            horizontalMargin = 0
+            verticalMargin = 0
+        case "RightTop":
+            horizontalLayout = .right
+            verticalLayout = .top
+            buttonWidth = customButtonWidth
+            horizontalMargin = 0
+            verticalMargin = 0
+        case "LeftBottom":
+            horizontalLayout = .left
+            verticalLayout = .bottom
+            buttonWidth = customButtonWidth
+            horizontalMargin = 0
+            verticalMargin = 0
+        case "RightBottom":
+            horizontalLayout = .right
+            verticalLayout = .bottom
+            buttonWidth = customButtonWidth
+            horizontalMargin = 0
+            verticalMargin = 0
+        default:
+            horizontalLayout = .right
+            verticalLayout = .top
+            buttonWidth = defaultButtonWidth
+            isCustomButton = false
+            horizontalMargin = -16
+            verticalMargin = 16
+        }
         
-        button.layer.masksToBounds = true
-        button.layer.cornerRadius = 20
+        
+        let button: UIButton = UIButton(frame: CGRect(x: 0, y: 0, width: buttonWidth, height: buttonWidth))
+        if isCustomButton == false {
+            let image = getImageFromSupportingFile(imageFileName: "close.png")
+            button.backgroundColor = UIColor(white: 0, alpha: 0.382)
+            button.setImage(image, for: UIControlState())
+            button.layer.masksToBounds = true
+            button.layer.cornerRadius = buttonWidth/2
+        }
         
         if adSchedule.adType == "video" {
             self.view.viewWithTag(111)?.addSubview(button)
         } else {
             self.overlayView?.addSubview(button)
         }
-        
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(ViewController.displayWebView), for: .touchUpInside)
         
-        view.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.right, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.right, multiplier: 1, constant: -16))
-        view.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 16))
-        view.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 40))
-        view.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: 40))
+        view.addConstraint(NSLayoutConstraint(item: button, attribute: horizontalLayout, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: horizontalLayout, multiplier: 1, constant: horizontalMargin))
+        view.addConstraint(NSLayoutConstraint(item: button, attribute: verticalLayout, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: verticalLayout, multiplier: 1, constant: verticalMargin))
+        view.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: buttonWidth))
+        view.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: buttonWidth))
+        
     }
     
     // MARK: - Allow ad operation to set the background color of a full-screen ad
@@ -402,6 +446,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             playerController.view.backgroundColor = UIColor(patternImage: image)
         }
         
+        // MARK: If the advertiser put the customized close button to left bottom corner, hide the time label
+        if adSchedule.closeButtonCustomization == "LeftBottom" {
+            label.isHidden = true
+        }
+        
         
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.displayWebView), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player?.currentItem)
         if adSchedule.adLink != "" {
@@ -432,8 +481,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             }
         })
         
-        // MARK: Button for switching the mute mode on and off
-        if adSchedule.showSoundButton == true {
+        // MARK: Button for switching the mute mode on and off. Hide it if customized close button is at the left top corner
+        if adSchedule.showSoundButton == true && adSchedule.closeButtonCustomization != "LeftTop" {
             let imageForMute = getImageFromSupportingFile(imageFileName: "sound.png")
             let imageForSound = getImageFromSupportingFile(imageFileName: "mute.png")
             let button: UIButton = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
@@ -531,7 +580,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     // MARK: Load HTML String from Bundle to start the App
     private func loadFromLocal() {
-        if adSchedule.adType != "none" {
+        if adSchedule.adType != "none" || happyUser.didRequestReview == true {
             startUrl = "\(startUrl)&\(useNativeLaunchAd)"
         }
         print ("start url is \(startUrl)")

@@ -12,9 +12,10 @@ import StoreKit
 public class HappyUser {
     private let versionKey = "current version"
     private let launchCountKey = "launch count"
-    private let promptRatingFrequency = 10
+    private let requestReviewFrequency = 10
     private let ratePromptKey = "rate prompted"
     private var shouldTrackRequestReview = false
+    public var didRequestReview = false
     
     func launchCount() {
         let versionFromBundle: String = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
@@ -41,10 +42,11 @@ public class HappyUser {
         // MARK: Request user to review
         let currentLaunchCount: Int = UserDefaults.standard.integer(forKey: launchCountKey)
         let ratePrompted: Bool = UserDefaults.standard.bool(forKey: ratePromptKey)
-        if ratePrompted != true && currentLaunchCount >= promptRatingFrequency {
+        if ratePrompted != true && currentLaunchCount >= requestReviewFrequency {
             if #available(iOS 10.3, *) {
                 SKStoreReviewController.requestReview()
                 UserDefaults.standard.set(true, forKey: ratePromptKey)
+                didRequestReview = true
                 shouldTrackRequestReview = true
             }
         }
@@ -67,6 +69,7 @@ public class HappyUser {
         let jsCode = "try{ga('send','event', '\(deviceType) Request Review', '\(versionFromBundle)', '\(currentLaunchCount)', {'nonInteraction':1});}catch(ignore){}"
         if shouldTrackRequestReview == true {
             shouldTrackRequestReview = false
+            didRequestReview = true
             return jsCode
         }
         return nil
