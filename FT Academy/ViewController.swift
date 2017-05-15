@@ -417,6 +417,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         self.addChildViewController(playerController)
         playerController.showsPlaybackControls = false
         
+ 
+        try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient)
+        
         // MARK: The Video should be muted by default. The user can unmute if they want to listen.
         player?.isMuted = true
         player?.play()
@@ -429,6 +432,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 21))
         let timeLabel = String(format:"%.0f", CMTimeGetSeconds(videoDuration))
         label.textAlignment = NSTextAlignment.center
+        label.adjustsFontSizeToFitWidth = true
         label.text = timeLabel
         label.textColor = UIColor.white
         label.backgroundColor = UIColor(white: 0, alpha: 0.382)
