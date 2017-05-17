@@ -99,6 +99,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
                     return false
                 }
                 if let rootViewController = self.window?.rootViewController as? ViewController {
+                    rootViewController.happyUser.canTryRequestReview = false
                     let _ = setTimeout(5.0, block: { () -> Void in
                         rootViewController.openNotification(action as? String, id: id as? String, title: title as? String)
                     })

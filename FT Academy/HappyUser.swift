@@ -16,6 +16,7 @@ public class HappyUser {
     private let ratePromptKey = "rate prompted"
     private var shouldTrackRequestReview = false
     public var didRequestReview = false
+    public var canTryRequestReview = true
     
     func launchCount() {
         let versionFromBundle: String = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
@@ -42,7 +43,7 @@ public class HappyUser {
         // MARK: Request user to review
         let currentLaunchCount: Int = UserDefaults.standard.integer(forKey: launchCountKey)
         let ratePrompted: Bool = UserDefaults.standard.bool(forKey: ratePromptKey)
-        if ratePrompted != true && currentLaunchCount >= requestReviewFrequency {
+        if ratePrompted != true && currentLaunchCount >= requestReviewFrequency && canTryRequestReview == true {
             if #available(iOS 10.3, *) {
                 SKStoreReviewController.requestReview()
                 UserDefaults.standard.set(true, forKey: ratePromptKey)

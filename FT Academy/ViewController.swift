@@ -30,7 +30,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     private var languageForJS = ""
     
     // MARK: - Find out whether the user is happy and prompt rating if he/she is happy
-    private let happyUser = HappyUser()
+    public let happyUser = HappyUser()
     
     // MARK: - If the app use a native launch ad, suppress the pop up one
     private let useNativeLaunchAd = "useNativeLaunchAd"
