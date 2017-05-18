@@ -626,7 +626,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             var jsCode: String
             switch(action) {
             case "story":
-                jsCode = "readstory('\(id)')"
+                jsCode = "readstory('\(id)', '\(title ?? "")')"
             case "tag":
                 jsCode = "showchannel('/index.php/ft/tag/\(id)?i=2', '\(id)')"
             case "channel":
@@ -637,7 +637,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 jsCode = ""
                 openInView ("http://www.ftchinese.com/photonews/\(id)?i=3&d=landscape")
             case "gym":
-                jsCode = "showSlide('/index.php/ft/interactive/\(id)?i=2', 'FT商学院', 0)"
+                jsCode = "showSlide('/index.php/ft/interactive/\(id)?i=2', '\(title ?? "")', 0)"
             case "special":
                 jsCode = ""
                 openInView ("http://www.ftchinese.com/interactive/\(id)")

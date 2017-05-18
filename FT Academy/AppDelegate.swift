@@ -76,11 +76,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
             UIApplication.shared.registerForRemoteNotifications()
         }
         
-    
         
-//        let settings = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
-//        UIApplication.shared.registerUserNotificationSettings(settings)
-//        UIApplication.shared.registerForRemoteNotifications()
+        
+        //        let settings = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
+        //        UIApplication.shared.registerUserNotificationSettings(settings)
+        //        UIApplication.shared.registerForRemoteNotifications()
         
         
         // if launched from a tap on a notification
@@ -106,11 +106,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
                 }
             }
         }
-        
-        
-        
         //NSNotificationCenter.defaultCenter().addObserver(self, selector:"checkForReachability:", name: kReachabilityChangedNotification, object: nil);
-        
         
         return true
     }
@@ -125,13 +121,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
     }
     
     func saveDeviceInfo() {
-        let bundleID = Bundle.main.bundleIdentifier
+        let bundleID = Bundle.main.bundleIdentifier ?? ""
         let appNumber: String
-        if bundleID == "com.ft.ftchinese.ipad" {
+        switch bundleID {
+        case "com.ft.ftchinese.ipad":
             appNumber = "1"
-        } else if bundleID == "com.ft.ftchinese.mobile" {
+        case "com.ft.ftchinese.mobile":
             appNumber = "2"
-        } else {
+        default:
             appNumber = "0"
         }
         let timeZone = TimeZone.current.abbreviation() ?? ""
@@ -145,8 +142,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
         }
         postString = "d=\(deviceTokenString)&t=\(timeZone)&s=\(status)&p=\(preference)&dt=\(deviceType)&a=\(appNumber)"
     }
-    
-    
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         print("APNs registration failed: \(error)")
@@ -172,27 +167,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
      }
      */
     
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
-        UIApplication.shared.applicationIconBadgeNumber = 0
-        if let aps = userInfo["aps"] as? NSDictionary {
-            let title: String = aps["alert"] as? String ?? "为您推荐"
-            let lead: String = userInfo["lead"] as? String ?? ""
-            if let notiAction = userInfo["action"], let id = userInfo["id"] {
-                if let rootViewController = self.window?.rootViewController as? ViewController {
-                    if application.applicationState == .inactive || application.applicationState == .background{
-                        rootViewController.openNotification(notiAction as? String, id: id as? String, title: title)
-                    } else {
-                        let alert = UIAlertController(title: title, message: lead, preferredStyle: UIAlertControllerStyle.alert)
-                        alert.addAction(UIAlertAction(title: "去看看", style: .default, handler: { (action: UIAlertAction) in
-                            rootViewController.openNotification(notiAction as? String, id: id as? String, title: title)
-                        }))
-                        alert.addAction(UIAlertAction(title: "不感兴趣", style: UIAlertActionStyle.default, handler: nil))
-                        rootViewController.present(alert, animated: true, completion: nil)
-                    }
-                }
-            }
-        }
-    }
+    // TODO: - If a user is already using the app, there should be better ways to show the message, such as a scroll down from top
+//    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
+//        UIApplication.shared.applicationIconBadgeNumber = 0
+//        if let aps = userInfo["aps"] as? NSDictionary {
+//            let title: String = aps["alert"] as? String ?? "为您推荐"
+//            let lead: String = userInfo["lead"] as? String ?? ""
+//            if let notiAction = userInfo["action"], let id = userInfo["id"] {
+//                if let rootViewController = self.window?.rootViewController as? ViewController {
+//                    if application.applicationState == .inactive || application.applicationState == .background{
+//                        rootViewController.openNotification(notiAction as? String, id: id as? String, title: title)
+//                    } else {
+//                        let alert = UIAlertController(title: title, message: lead, preferredStyle: UIAlertControllerStyle.alert)
+//                        alert.addAction(UIAlertAction(title: "去看看", style: .default, handler: { (action: UIAlertAction) in
+//                            rootViewController.openNotification(notiAction as? String, id: id as? String, title: title)
+//                        }))
+//                        alert.addAction(UIAlertAction(title: "不感兴趣", style: UIAlertActionStyle.default, handler: nil))
+//                        rootViewController.present(alert, animated: true, completion: nil)
+//                    }
+//                }
+//            }
+//        }
+//    }
     
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -334,7 +330,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
         // TODO: - identifier can be used to store the file name or product id
         
         print ("handle events for background url session with the identifier \(identifier)")
-
+        
     }
     
     
