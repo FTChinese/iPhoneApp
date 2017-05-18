@@ -649,7 +649,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
                 break
             }
             if jsCode != "" {
-                jsCode = "try{ga('set', 'campaignName', '\(action)');ga('set', 'campaignSource', 'Apple Push Service');ga('set', 'campaignMedium', 'Push Notification');}catch(ignore){}\(jsCode);ga('send','event', 'Tap Notification', '\(action)', '\(id)');fa('send','event', 'Tap Notification', '\(action)', '\(id)');"
+                jsCode = "try{ga('set', 'campaignName', '\(action)');ga('set', 'campaignSource', 'Apple Push Service');ga('set', 'campaignMedium', 'Push Notification');}catch(ignore){}\(jsCode);ga('send','event', 'Tap Notification', '\(action)', '\(id): \(title ?? "")');fa('send','event', 'Tap Notification', '\(action)', '\(id): \(title ?? "")');"
                 self.webView.evaluateJavaScript(jsCode) { (result, error) in
                 }
             }
