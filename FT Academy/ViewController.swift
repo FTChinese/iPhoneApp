@@ -754,7 +754,14 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         // print ("Connection Type: \(getConnectionType())")
         if getConnectionType() == "no" {
             // print ("there is no internet connection")
-            let alert = UIAlertController(title: "请授权FT中文网连接互联网", message: "1. 点击“开始设置” \r\n2. 下拉至“使用无线局域网与蜂窝移动的应用” \r\n3. 找到“FT中文网”进行设置", preferredStyle: UIAlertControllerStyle.actionSheet)
+            let alertStyle:UIAlertControllerStyle
+            // MARK: Using .actionSheet will cause iPad to crash
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                alertStyle = .alert
+            } else {
+                alertStyle = .actionSheet
+            }
+            let alert = UIAlertController(title: "请授权FT中文网连接互联网", message: "1. 点击“开始设置” \r\n2. 下拉至“使用无线局域网与蜂窝移动的应用” \r\n3. 找到“FT中文网”进行设置", preferredStyle: alertStyle)
             alert.addAction(UIAlertAction(
                 title: "开始设置",
                 style: UIAlertActionStyle.default,
