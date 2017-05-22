@@ -17,6 +17,8 @@ import MediaPlayer
 
 class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, WKScriptMessageHandler, WKUIDelegate,SFSafariViewControllerDelegate, URLSessionDownloadDelegate {
     
+
+    
     // MARK: - Use WKWebView as our app supports iOS 8 and above
     lazy var webView = WKWebView()
     private lazy var timer: Timer? = nil
@@ -41,7 +43,11 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     private lazy var player: AVPlayer? = {return nil} ()
     private lazy var token: Any? = {return nil} ()
     private lazy var overlayView: UIView? = UIView()
+    
+    // MARK: - Hide Ad for Demo Purposes
+    private let hideAd = false
     private var adType = ""
+    
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -239,7 +245,8 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     // MARK: if there's a full screen screen ad to show
     private func adOverlayView() {
-        if self.adType == "none" {
+        // MARK: - If the developer don't want to display the ad
+        if self.adType == "none" || self.hideAd == true {
             maxAdTimeAfterLaunch = 1.0
             maxAdTimeAfterWebRequest = 1.0
             normalOverlayView()
@@ -586,6 +593,9 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     private func loadFromLocal() {
         if adSchedule.adType != "none" || happyUser.didRequestReview == true {
             startUrl = "\(startUrl)&\(useNativeLaunchAd)"
+        }
+        if hideAd == true {
+            startUrl = "\(startUrl)&hideAd=yes"
         }
         print ("start url is \(startUrl)")
         if let templatepath = Bundle.main.path(forResource: startFileName, ofType: "html") {
