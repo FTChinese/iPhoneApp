@@ -86,23 +86,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
         // if launched from a tap on a notification
         if let launchOptions = launchOptions {
             if let userInfo = launchOptions[UIApplicationLaunchOptionsKey.remoteNotification] as? NSDictionary {
-                guard let action = userInfo["action"] else {
-                    return false
-                }
-                guard let id = userInfo["id"] else {
-                    return false
-                }
+                let action = userInfo["action"] as? String
+                let id = userInfo["id"] as? String
                 guard let aps = userInfo["aps"] as? NSDictionary else {
                     return false
                 }
-                guard let title = aps["alert"] else {
-                    return false
-                }
+                let title = (aps["alert"] as? NSDictionary)?["title"] as? String
                 if let rootViewController = self.window?.rootViewController as? ViewController {
                     rootViewController.happyUser.canTryRequestReview = false
-                    let _ = setTimeout(5.0, block: { () -> Void in
-                        rootViewController.openNotification(action as? String, id: id as? String, title: title as? String)
-                    })
+                    rootViewController.openNotification(action, id: id, title: title)
                 }
             }
         }
@@ -168,27 +160,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
      */
     
     // TODO: - If a user is already using the app, there should be better ways to show the message, such as a scroll down from top
-//    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
-//        UIApplication.shared.applicationIconBadgeNumber = 0
-//        if let aps = userInfo["aps"] as? NSDictionary {
-//            let title: String = aps["alert"] as? String ?? "为您推荐"
-//            let lead: String = userInfo["lead"] as? String ?? ""
-//            if let notiAction = userInfo["action"], let id = userInfo["id"] {
-//                if let rootViewController = self.window?.rootViewController as? ViewController {
-//                    if application.applicationState == .inactive || application.applicationState == .background{
-//                        rootViewController.openNotification(notiAction as? String, id: id as? String, title: title)
-//                    } else {
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
+        UIApplication.shared.applicationIconBadgeNumber = 0
+        if let aps = userInfo["aps"] as? NSDictionary {
+            let title: String = (aps["alert"] as? [String:String])?["title"] ?? "为您推荐"
+            //let lead: String = (aps["alert"] as? [String:String])?["body"] ?? ""
+            if let notiAction = userInfo["action"], let id = userInfo["id"] {
+                if let rootViewController = self.window?.rootViewController as? ViewController {
+                    if application.applicationState == .inactive || application.applicationState == .background{
+                        rootViewController.openNotification(notiAction as? String, id: id as? String, title: title)
+                    } else {
 //                        let alert = UIAlertController(title: title, message: lead, preferredStyle: UIAlertControllerStyle.alert)
 //                        alert.addAction(UIAlertAction(title: "去看看", style: .default, handler: { (action: UIAlertAction) in
 //                            rootViewController.openNotification(notiAction as? String, id: id as? String, title: title)
 //                        }))
 //                        alert.addAction(UIAlertAction(title: "不感兴趣", style: UIAlertActionStyle.default, handler: nil))
 //                        rootViewController.present(alert, animated: true, completion: nil)
-//                    }
-//                }
-//            }
-//        }
-//    }
+                    }
+                }
+            }
+        }
+    }
     
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -328,10 +320,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
         //let session = URLSession(configuration: config, delegate: self, delegateQueue: OperationQueue.main)
         // TODO: - https://developer.apple.com/reference/uikit/uiapplicationdelegate/1622941-application?language=objc
         // TODO: - identifier can be used to store the file name or product id
-        
         print ("handle events for background url session with the identifier \(identifier)")
-        
     }
     
+    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        let action = url.host
+        let id = url.path.replacingOccurrences(of: "/", with: "")
+        let title = url.query?.replacingOccurrences(of: "title=", with: "")
+        if let rootViewController = self.window?.rootViewController as? ViewController {
+            rootViewController.happyUser.canTryRequestReview = false
+            rootViewController.openNotification(action, id: id, title: title)
+        }
+        return true
+    }
     
 }

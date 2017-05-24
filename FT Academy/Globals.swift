@@ -37,7 +37,7 @@ var deviceUserId = "no"
 //let deviceTokenUrl = "http://noti.ftacademy.cn/iphone-collect.php"
 let deviceTokenUrl = "https://noti.ftimg.net/iphone-collect.php"
 var supportedSocialPlatforms = [String]()
-
+let appGroupName = "group.com.ft.ftchinese.mobile"
 
 
 enum WebViewStatus {

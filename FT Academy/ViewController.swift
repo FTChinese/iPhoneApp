@@ -17,7 +17,7 @@ import MediaPlayer
 
 class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, WKScriptMessageHandler, WKUIDelegate,SFSafariViewControllerDelegate, URLSessionDownloadDelegate {
     
-
+    
     
     // MARK: - Use WKWebView as our app supports iOS 8 and above
     lazy var webView = WKWebView()
@@ -45,7 +45,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     private lazy var overlayView: UIView? = UIView()
     
     // MARK: - Hide Ad for Demo Purposes
-    private let hideAd = false
+    private let hideAd = true
     private var adType = ""
     
     private let screenWidth = UIScreen.main.bounds.width
@@ -424,7 +424,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
         self.addChildViewController(playerController)
         playerController.showsPlaybackControls = false
         
- 
+        
         try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient)
         
         // MARK: The Video should be muted by default. The user can unmute if they want to listen.
@@ -660,7 +660,14 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
             }
             if jsCode != "" {
                 jsCode = "try{ga('set', 'campaignName', '\(action)');ga('set', 'campaignSource', 'Apple Push Service');ga('set', 'campaignMedium', 'Push Notification');}catch(ignore){}\(jsCode);ga('send','event', 'Tap Notification', '\(action)', '\(id): \(title ?? "")');fa('send','event', 'Tap Notification', '\(action)', '\(id): \(title ?? "")');"
-                self.webView.evaluateJavaScript(jsCode) { (result, error) in
+                if pageStatus == .webViewDisplayed {
+                    self.webView.evaluateJavaScript(jsCode) { (result, error) in
+                    }
+                } else {
+                    let _ = setTimeout(5.0, block: { () -> Void in
+                        self.webView.evaluateJavaScript(jsCode) { (result, error) in
+                        }
+                    })
                 }
             }
         }
@@ -1779,13 +1786,21 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     
     private func changeLanguagePreference(_ object: [String: String]) {
         if let newLanguagePreference = object["prefer"] as String? {
+            let languageCode: String
             if newLanguagePreference == "traditional" {
-                UserDefaults.standard.set("zh-Hant", forKey: languageKeyName)
-                print("zh-Hant")
+                languageCode = "zh-Hant"
+                //                UserDefaults.standard.set("zh-Hant", forKey: languageKeyName)
+                //                print("zh-Hant")
             } else {
-                UserDefaults.standard.set("zh-Hans", forKey: languageKeyName)
-                print("zh-Hans")
+                languageCode = "zh-Hans"
+                //                UserDefaults.standard.set("zh-Hans", forKey: languageKeyName)
+                //                print("zh-Hans")
             }
+            
+            UserDefaults.standard.set(languageCode, forKey: languageKeyName)
+            // MARK: - Pass user preference to TodayWidget
+            UserDefaults.init(suiteName: appGroupName)?.set(languageCode, forKey: languageKeyName)
+            
             initLanguageSetting()
             loadFromLocal()
             pageStatus = .webViewLoading

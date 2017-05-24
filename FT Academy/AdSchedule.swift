@@ -32,6 +32,8 @@ class AdSchedule {
     private let htmlTypes = ["html"]
     private var currentPlatform = "iphone"
     
+    
+    
     // MARK: - Get the most recent JSON file of Launch Ad schedule and try to pick one for this launch
     func parseSchedule() {
         if let scheduleDataFinal = getLatestScheduleData() {
@@ -43,9 +45,7 @@ class AdSchedule {
                 return
             }
             
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                self.currentPlatform = "ipad"
-            }
+            checkCurrentPlatform()
             
             do {
                 let JSON = try JSONSerialization.jsonObject(with: scheduleDataFinal, options:JSONSerialization.ReadingOptions(rawValue: 0))
@@ -237,24 +237,27 @@ class AdSchedule {
                             platforms.append("ipad")
                         }
                     }
-                    // check if this creaive is scheduled for today or a later date
-                    var creativeIsNeededForFuture = false
-                    for dateStamp in dates {
-                        if dateStamp >= dateInInt {
-                            creativeIsNeededForFuture = true
-                        }
-                    }
+                    // MARK: - check current platform to make sure
+                    checkCurrentPlatform()
                     
-                    // and for this type of device(platform)
-                    if creativeIsNeededForFuture == true && platforms.contains(self.currentPlatform){
-                        // MARK: - Check to download three types of files
-                        
-                        let creativeFields = ["fileName", "landscapeFileName", "backupImage"]
-                        for creativeFieldName in creativeFields {
-                            if let currentFileName = currentCreative[creativeFieldName] as? String {
-                                if let lastComponent = checkCreativeForFuture(currentFileName: currentFileName) {
-                                    if !creativesNeededInFuture.contains(lastComponent) {
-                                        creativesNeededInFuture.append(lastComponent)
+                    // MARK: - check if this creative targets the current platform
+                    if platforms.contains(self.currentPlatform) {
+                        // MARK: - check if this creaive is scheduled for today or a later date
+                        var creativeIsNeededForFuture = false
+                        for dateStamp in dates {
+                            if dateStamp >= dateInInt {
+                                creativeIsNeededForFuture = true
+                            }
+                        }
+                        if creativeIsNeededForFuture == true {
+                            // MARK: - Check to download three types of files
+                            let creativeFields = ["fileName", "landscapeFileName", "backupImage"]
+                            for creativeFieldName in creativeFields {
+                                if let currentFileName = currentCreative[creativeFieldName] as? String {
+                                    if let lastComponent = checkCreativeForFuture(currentFileName: currentFileName) {
+                                        if !creativesNeededInFuture.contains(lastComponent) {
+                                            creativesNeededInFuture.append(lastComponent)
+                                        }
                                     }
                                 }
                             }
@@ -445,6 +448,12 @@ class AdSchedule {
         return 0
     }
     
+    
+    private func checkCurrentPlatform() {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            self.currentPlatform = "ipad"
+        }
+    }
     
     // download the latest ad schedule and creatives
     func updateAdSchedule() {

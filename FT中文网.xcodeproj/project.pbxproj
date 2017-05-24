@@ -112,6 +112,10 @@
 		607480321E9B32F6009C0756 /* NowPlayingCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607480301E9B32F6009C0756 /* NowPlayingCenter.swift */; };
 		6074A4C31EA067E300230937 /* DownloadHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6074A4C21EA067E300230937 /* DownloadHelper.swift */; };
 		6074A4C41EA067E300230937 /* DownloadHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6074A4C21EA067E300230937 /* DownloadHelper.swift */; };
+		60BD9C381ED3BD1F00CFAD3C /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60BD9C371ED3BD1F00CFAD3C /* NotificationCenter.framework */; };
+		60BD9C3B1ED3BD1F00CFAD3C /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60BD9C3A1ED3BD1F00CFAD3C /* TodayViewController.swift */; };
+		60BD9C3E1ED3BD1F00CFAD3C /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 60BD9C3C1ED3BD1F00CFAD3C /* MainInterface.storyboard */; };
+		60BD9C421ED3BD1F00CFAD3C /* FT今日焦点.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 60BD9C361ED3BD1F00CFAD3C /* FT今日焦点.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		60C2F5EA1EC42F3900A30099 /* HappyUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60C2F5E91EC42F3900A30099 /* HappyUser.swift */; };
 		60C2F5EB1EC42F3900A30099 /* HappyUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60C2F5E91EC42F3900A30099 /* HappyUser.swift */; };
 		60D26FDC1E8F58D80047C6AB /* SpeechSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D26FDB1E8F58D80047C6AB /* SpeechSettings.swift */; };
@@ -128,7 +132,28 @@
 			remoteGlobalIDString = 50256C981A4B9D0B005950B9;
 			remoteInfo = "FT Academy";
 		};
+		60BD9C401ED3BD1F00CFAD3C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 50256C911A4B9D0B005950B9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 60BD9C351ED3BD1F00CFAD3C;
+			remoteInfo = "FT今日焦点";
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		60BD9C461ED3BD1F00CFAD3C /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				60BD9C421ED3BD1F00CFAD3C /* FT今日焦点.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		04063C10DFA84D4B9E2DB85F /* Pods_FT____iPad.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "Pods_FT____iPad.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -201,6 +226,12 @@
 		606D05061EBC28DE00957DD5 /* benz.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = benz.mp4; sourceTree = "<group>"; };
 		607480301E9B32F6009C0756 /* NowPlayingCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NowPlayingCenter.swift; sourceTree = "<group>"; };
 		6074A4C21EA067E300230937 /* DownloadHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadHelper.swift; sourceTree = "<group>"; };
+		60BD9C361ED3BD1F00CFAD3C /* FT今日焦点.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "FT今日焦点.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		60BD9C371ED3BD1F00CFAD3C /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
+		60BD9C3A1ED3BD1F00CFAD3C /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
+		60BD9C3D1ED3BD1F00CFAD3C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		60BD9C3F1ED3BD1F00CFAD3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		60BD9C471ED3C2B900CFAD3C /* FT今日焦点.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "FT今日焦点.entitlements"; sourceTree = "<group>"; };
 		60C2F5E91EC42F3900A30099 /* HappyUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HappyUser.swift; sourceTree = "<group>"; };
 		60D26FDB1E8F58D80047C6AB /* SpeechSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeechSettings.swift; sourceTree = "<group>"; };
 		976359DE7C996269A56DA9C6 /* Pods-FT中文网.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FT中文网.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FT中文网/Pods-FT中文网.debug.xcconfig"; sourceTree = "<group>"; };
@@ -263,6 +294,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		60BD9C331ED3BD1F00CFAD3C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				60BD9C381ED3BD1F00CFAD3C /* NotificationCenter.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -287,6 +326,7 @@
 				501F90171E3C72EB009EA5DD /* StoreKit.framework */,
 				CF896B870CE411A5E6A3044D /* Pods_FT___.framework */,
 				04063C10DFA84D4B9E2DB85F /* Pods_FT____iPad.framework */,
+				60BD9C371ED3BD1F00CFAD3C /* NotificationCenter.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -310,6 +350,7 @@
 				50FC07E01A539BF3006EE23F /* WXApi.h */,
 				50FC07E11A539BF3006EE23F /* WXApiObject.h */,
 				50256CB11A4B9D0B005950B9 /* FT AcademyTests */,
+				60BD9C391ED3BD1F00CFAD3C /* FT今日焦点 */,
 				50256C9A1A4B9D0B005950B9 /* Products */,
 				50C34C361BC664AE00C8A8CB /* FT中文网HD.plist */,
 				507C7E751DB0BCE800A8EF50 /* FT中文网 copy-Info.plist */,
@@ -324,6 +365,7 @@
 				50256C991A4B9D0B005950B9 /* FT中文网.app */,
 				50256CAE1A4B9D0B005950B9 /* FT中文网.xctest */,
 				507C7E741DB0BCE800A8EF50 /* FT中文网-iPad.app */,
+				60BD9C361ED3BD1F00CFAD3C /* FT今日焦点.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -477,6 +519,17 @@
 			name = Audio;
 			sourceTree = "<group>";
 		};
+		60BD9C391ED3BD1F00CFAD3C /* FT今日焦点 */ = {
+			isa = PBXGroup;
+			children = (
+				60BD9C471ED3C2B900CFAD3C /* FT今日焦点.entitlements */,
+				60BD9C3A1ED3BD1F00CFAD3C /* TodayViewController.swift */,
+				60BD9C3C1ED3BD1F00CFAD3C /* MainInterface.storyboard */,
+				60BD9C3F1ED3BD1F00CFAD3C /* Info.plist */,
+			);
+			path = "FT今日焦点";
+			sourceTree = "<group>";
+		};
 		60C2F5EC1EC442EA00A30099 /* GrowthHack */ = {
 			isa = PBXGroup;
 			children = (
@@ -506,10 +559,12 @@
 				50256C971A4B9D0B005950B9 /* Resources */,
 				E53D8B75F9AF784689873A33 /* [CP] Embed Pods Frameworks */,
 				73EE785BE1EDA45DBFC01C8B /* [CP] Copy Pods Resources */,
+				60BD9C461ED3BD1F00CFAD3C /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				60BD9C411ED3BD1F00CFAD3C /* PBXTargetDependency */,
 			);
 			name = "FT中文网";
 			productName = "FT Academy";
@@ -554,6 +609,23 @@
 			productReference = 507C7E741DB0BCE800A8EF50 /* FT中文网-iPad.app */;
 			productType = "com.apple.product-type.application";
 		};
+		60BD9C351ED3BD1F00CFAD3C /* FT今日焦点 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 60BD9C431ED3BD1F00CFAD3C /* Build configuration list for PBXNativeTarget "FT今日焦点" */;
+			buildPhases = (
+				60BD9C321ED3BD1F00CFAD3C /* Sources */,
+				60BD9C331ED3BD1F00CFAD3C /* Frameworks */,
+				60BD9C341ED3BD1F00CFAD3C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "FT今日焦点";
+			productName = "FT今日焦点";
+			productReference = 60BD9C361ED3BD1F00CFAD3C /* FT今日焦点.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -562,7 +634,7 @@
 			attributes = {
 				CLASSPREFIX = com.ft;
 				LastSwiftMigration = 0700;
-				LastSwiftUpdateCheck = 0700;
+				LastSwiftUpdateCheck = 0830;
 				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Financial Times Ltd.";
 				TargetAttributes = {
@@ -571,6 +643,9 @@
 						DevelopmentTeam = CAEDT8EKGV;
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
@@ -596,6 +671,16 @@
 							};
 						};
 					};
+					60BD9C351ED3BD1F00CFAD3C = {
+						CreatedOnToolsVersion = 8.3.1;
+						DevelopmentTeam = CAEDT8EKGV;
+						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
+					};
 				};
 			};
 			buildConfigurationList = 50256C941A4B9D0B005950B9 /* Build configuration list for PBXProject "FT中文网" */;
@@ -614,6 +699,7 @@
 				50256C981A4B9D0B005950B9 /* FT中文网 */,
 				507C7E4B1DB0BCE800A8EF50 /* FT中文网-iPad */,
 				50256CAD1A4B9D0B005950B9 /* FT中文网Tests */,
+				60BD9C351ED3BD1F00CFAD3C /* FT今日焦点 */,
 			);
 		};
 /* End PBXProject section */
@@ -665,6 +751,14 @@
 				507C7E761DB0BCF100A8EF50 /* LaunchScreen.xib in Resources */,
 				507C7E701DB0BCE800A8EF50 /* schedule.json in Resources */,
 				50E577D81DB754880016A73F /* close.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		60BD9C341ED3BD1F00CFAD3C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				60BD9C3E1ED3BD1F00CFAD3C /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -836,6 +930,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		60BD9C321ED3BD1F00CFAD3C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				60BD9C3B1ED3BD1F00CFAD3C /* TodayViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -843,6 +945,11 @@
 			isa = PBXTargetDependency;
 			target = 50256C981A4B9D0B005950B9 /* FT中文网 */;
 			targetProxy = 50256CAF1A4B9D0B005950B9 /* PBXContainerItemProxy */;
+		};
+		60BD9C411ED3BD1F00CFAD3C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 60BD9C351ED3BD1F00CFAD3C /* FT今日焦点 */;
+			targetProxy = 60BD9C401ED3BD1F00CFAD3C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -869,6 +976,14 @@
 				50C34C381BC664B300C8A8CB /* Base */,
 			);
 			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+		60BD9C3C1ED3BD1F00CFAD3C /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				60BD9C3D1ED3BD1F00CFAD3C /* Base */,
+			);
+			name = MainInterface.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -967,6 +1082,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 976359DE7C996269A56DA9C6 /* Pods-FT中文网.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "FT中文网.entitlements";
@@ -998,6 +1114,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F23BDF4DA58F76843F7DFE97 /* Pods-FT中文网.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "FT中文网.entitlements";
@@ -1119,6 +1236,50 @@
 			};
 			name = Release;
 		};
+		60BD9C441ED3BD1F00CFAD3C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_ENTITLEMENTS = "FT今日焦点/FT今日焦点.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = CAEDT8EKGV;
+				INFOPLIST_FILE = "FT今日焦点/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ft.ftchinese.mobile.FT----";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		60BD9C451ED3BD1F00CFAD3C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_ENTITLEMENTS = "FT今日焦点/FT今日焦点.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = CAEDT8EKGV;
+				INFOPLIST_FILE = "FT今日焦点/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ft.ftchinese.mobile.FT----";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1157,6 +1318,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		60BD9C431ED3BD1F00CFAD3C /* Build configuration list for PBXNativeTarget "FT今日焦点" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				60BD9C441ED3BD1F00CFAD3C /* Debug */,
+				60BD9C451ED3BD1F00CFAD3C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
