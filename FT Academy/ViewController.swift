@@ -16,9 +16,7 @@ import FolioReaderKit
 import MediaPlayer
 
 class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate, WKScriptMessageHandler, WKUIDelegate,SFSafariViewControllerDelegate, URLSessionDownloadDelegate {
-    
-    
-    
+
     // MARK: - Use WKWebView as our app supports iOS 8 and above
     lazy var webView = WKWebView()
     private lazy var timer: Timer? = nil
@@ -45,7 +43,7 @@ class ViewController: UIViewController, UIWebViewDelegate, WKNavigationDelegate,
     private lazy var overlayView: UIView? = UIView()
     
     // MARK: - Hide Ad for Demo Purposes
-    private let hideAd = true
+    private let hideAd = false
     private var adType = ""
     
     private let screenWidth = UIScreen.main.bounds.width
