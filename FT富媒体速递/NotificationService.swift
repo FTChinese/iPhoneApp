@@ -34,11 +34,13 @@ class NotificationService: UNNotificationServiceExtension {
                     fileName = "attachment"
                 }
                 
+                // MARK: - Since the extension is already working background, we need to do all this in the main queue
                 if let url = URL(string: urlStringFinal),
-                    let data = NSData(contentsOf: url) as Data? {
+                    let data = NSData(contentsOf: url){
                     let path = NSTemporaryDirectory() + fileName
-                    // FIXME: - Video files are not able to be created at this point
-                    _ = FileManager.default.createFile(atPath: path, contents: data, attributes: nil)
+                    // MARK: - Apple only supports certain types of media formats. You need to check before using one. 
+                    data.write(toFile: path, atomically: true)
+                    print ("file downloaded")
                     do {
                         let file = URL(fileURLWithPath: path)
                         let attachment = try UNNotificationAttachment(
