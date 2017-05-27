@@ -13,7 +13,7 @@ import UserNotifications
 class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
     
     var window: UIWindow?
-    
+    //let notificationHandler = NotificationHandler()
     
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -38,31 +38,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
         UIApplication.shared.applicationIconBadgeNumber = 0
         
         
-        /*
-         let action1 = UIMutableUserNotificationAction()
-         action1.identifier = "ACTION_1"
-         action1.title = "first action"
-         action1.activationMode = UIUserNotificationActivationMode.Background
-         action1.destructive = false
-         action1.authenticationRequired = true
-         
-         let action2 = UIMutableUserNotificationAction()
-         action2.identifier = "ACTION_2"
-         action2.title = "second action"
-         action2.activationMode = UIUserNotificationActivationMode.Foreground
-         action2.destructive = false
-         action2.authenticationRequired = true
-         
-         let category1 = UIMutableUserNotificationCategory()
-         category1.identifier = "CATEGORY_1"
-         category1.setActions([action1], forContext: UIUserNotificationActionContext.Minimal)
-         category1.setActions([action1, action2], forContext: UIUserNotificationActionContext.Default)
-         
-         let categories = NSSet(objects: category1)
-         
-         
-         let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: categories as? Set<UIUserNotificationCategory>)
-         */
+        
+        //         let action1 = UIMutableUserNotificationAction()
+        //         action1.identifier = "ACTION_1"
+        //         action1.title = "first action"
+        //         action1.activationMode = UIUserNotificationActivationMode.background
+        //         action1.isDestructive = false
+        //         action1.isAuthenticationRequired = true
+        //
+        //         let action2 = UIMutableUserNotificationAction()
+        //         action2.identifier = "ACTION_2"
+        //         action2.title = "second action"
+        //         action2.activationMode = UIUserNotificationActivationMode.foreground
+        //         action2.isDestructive = false
+        //         action2.isAuthenticationRequired = true
+        //
+        //         let category1 = UIMutableUserNotificationCategory()
+        //         category1.identifier = "CATEGORY_1"
+        //         category1.setActions([action1], for: UIUserNotificationActionContext.minimal)
+        //         category1.setActions([action1, action2], for: UIUserNotificationActionContext.default)
+        //
+        //         let categories = NSSet(objects: category1)
+        //
+        //
+        //         let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: categories as? Set<UIUserNotificationCategory>)
+        
         
         
         
@@ -70,11 +70,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
         // iOS 10 support
         if #available(iOS 10, *) {
             UNUserNotificationCenter.current().requestAuthorization(options:[.badge, .alert, .sound]){ (granted, error) in }
+            //registerNotificationCategory()
+            //UNUserNotificationCenter.current().delegate = notificationHandler
             application.registerForRemoteNotifications()
         } else {
             UIApplication.shared.registerUserNotificationSettings(UIUserNotificationSettings(types: [.badge, .sound, .alert], categories: nil))
             UIApplication.shared.registerForRemoteNotifications()
         }
+        
         
         
         
@@ -102,6 +105,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
         
         return true
     }
+    
+    
+//    private func registerNotificationCategory() {
+//        if #available(iOS 10.0, *) {
+//            let saySomethingCategory: UNNotificationCategory = {
+//                // 1
+//                let inputAction = UNTextInputNotificationAction(
+//                    identifier: "action.input",
+//                    title: "Input",
+//                    options: [.foreground],
+//                    textInputButtonTitle: "Send",
+//                    textInputPlaceholder: "What do you want to say...")
+//                
+//                // 2
+//                let goodbyeAction = UNNotificationAction(
+//                    identifier: "action.goodbye",
+//                    title: "Goodbye",
+//                    options: [.foreground])
+//                
+//                let cancelAction = UNNotificationAction(
+//                    identifier: "action.cancel",
+//                    title: "Cancel",
+//                    options: [.destructive])
+//                
+//                // 3
+//                return UNNotificationCategory(identifier:"saySomethingCategory", actions: [inputAction, goodbyeAction, cancelAction], intentIdentifiers: [], options: [.customDismissAction])
+//            }()
+//            UNUserNotificationCenter.current().setNotificationCategories([saySomethingCategory])
+//        } else {
+//            // Fallback on earlier versions
+//        }
+//    }
     
     
     func application( _ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data ) {
@@ -170,12 +205,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
                     if application.applicationState == .inactive || application.applicationState == .background{
                         rootViewController.openNotification(notiAction as? String, id: id as? String, title: title)
                     } else {
-//                        let alert = UIAlertController(title: title, message: lead, preferredStyle: UIAlertControllerStyle.alert)
-//                        alert.addAction(UIAlertAction(title: "去看看", style: .default, handler: { (action: UIAlertAction) in
-//                            rootViewController.openNotification(notiAction as? String, id: id as? String, title: title)
-//                        }))
-//                        alert.addAction(UIAlertAction(title: "不感兴趣", style: UIAlertActionStyle.default, handler: nil))
-//                        rootViewController.present(alert, animated: true, completion: nil)
+                        //                        let alert = UIAlertController(title: title, message: lead, preferredStyle: UIAlertControllerStyle.alert)
+                        //                        alert.addAction(UIAlertAction(title: "去看看", style: .default, handler: { (action: UIAlertAction) in
+                        //                            rootViewController.openNotification(notiAction as? String, id: id as? String, title: title)
+                        //                        }))
+                        //                        alert.addAction(UIAlertAction(title: "不感兴趣", style: UIAlertActionStyle.default, handler: nil))
+                        //                        rootViewController.present(alert, animated: true, completion: nil)
                     }
                 }
             }
@@ -334,4 +369,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WXApiDelegate {
         return true
     }
     
+}
+
+
+class NotificationHandler: NSObject, UNUserNotificationCenterDelegate {
+    @available(iOS 10.0, *)
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void)
+    {
+        completionHandler([.alert, .sound])
+        
+        // 如果不想显示某个通知，可以直接用空 options 调用 completionHandler:
+        // completionHandler([])
+    }
 }

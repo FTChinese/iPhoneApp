@@ -103,6 +103,8 @@
 		604056BB1E9C861C008A7701 /* LeakAvoider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604056B91E9C861C008A7701 /* LeakAvoider.swift */; };
 		604056BD1E9DFA36008A7701 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 604056BC1E9DFA36008A7701 /* UserNotifications.framework */; };
 		604056BE1E9DFA46008A7701 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 604056BC1E9DFA36008A7701 /* UserNotifications.framework */; };
+		60450BA41ED911EB001DA995 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60450BA31ED911EB001DA995 /* NotificationService.swift */; };
+		60450BA81ED911EB001DA995 /* FT富媒体速递.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 60450BA11ED911EB001DA995 /* FT富媒体速递.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		605C58FE1E8DF0B800174DF3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 605C58FD1E8DF0B800174DF3 /* Security.framework */; };
 		605C59001E8DF0EC00174DF3 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 605C58FF1E8DF0EC00174DF3 /* CFNetwork.framework */; };
 		605C59011E8DF5E500174DF3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 605C58FD1E8DF0B800174DF3 /* Security.framework */; };
@@ -133,6 +135,13 @@
 			remoteGlobalIDString = 50256C981A4B9D0B005950B9;
 			remoteInfo = "FT Academy";
 		};
+		60450BA61ED911EB001DA995 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 50256C911A4B9D0B005950B9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 60450BA01ED911EB001DA995;
+			remoteInfo = "FT富媒体速递";
+		};
 		60BD9C401ED3BD1F00CFAD3C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 50256C911A4B9D0B005950B9 /* Project object */;
@@ -150,6 +159,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				60BD9C421ED3BD1F00CFAD3C /* FT今日焦点.appex in Embed App Extensions */,
+				60450BA81ED911EB001DA995 /* FT富媒体速递.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -222,6 +232,9 @@
 		60289D821EA4A98B001B1135 /* AudioHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioHelper.swift; sourceTree = "<group>"; };
 		604056B91E9C861C008A7701 /* LeakAvoider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeakAvoider.swift; sourceTree = "<group>"; };
 		604056BC1E9DFA36008A7701 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		60450BA11ED911EB001DA995 /* FT富媒体速递.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "FT富媒体速递.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		60450BA31ED911EB001DA995 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		60450BA51ED911EB001DA995 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		605C58FD1E8DF0B800174DF3 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		605C58FF1E8DF0EC00174DF3 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		606D05061EBC28DE00957DD5 /* benz.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = benz.mp4; sourceTree = "<group>"; };
@@ -296,6 +309,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		60450B9E1ED911EB001DA995 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		60BD9C331ED3BD1F00CFAD3C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -353,6 +373,7 @@
 				50FC07E11A539BF3006EE23F /* WXApiObject.h */,
 				50256CB11A4B9D0B005950B9 /* FT AcademyTests */,
 				60BD9C391ED3BD1F00CFAD3C /* FT今日焦点 */,
+				60450BA21ED911EB001DA995 /* FT富媒体速递 */,
 				50256C9A1A4B9D0B005950B9 /* Products */,
 				50C34C361BC664AE00C8A8CB /* FT中文网HD.plist */,
 				507C7E751DB0BCE800A8EF50 /* FT中文网 copy-Info.plist */,
@@ -368,6 +389,7 @@
 				50256CAE1A4B9D0B005950B9 /* FT中文网.xctest */,
 				507C7E741DB0BCE800A8EF50 /* FT中文网-iPad.app */,
 				60BD9C361ED3BD1F00CFAD3C /* FT今日焦点.appex */,
+				60450BA11ED911EB001DA995 /* FT富媒体速递.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -510,6 +532,15 @@
 			name = FileManager;
 			sourceTree = "<group>";
 		};
+		60450BA21ED911EB001DA995 /* FT富媒体速递 */ = {
+			isa = PBXGroup;
+			children = (
+				60450BA31ED911EB001DA995 /* NotificationService.swift */,
+				60450BA51ED911EB001DA995 /* Info.plist */,
+			);
+			path = "FT富媒体速递";
+			sourceTree = "<group>";
+		};
 		607480331E9B40DA009C0756 /* Audio */ = {
 			isa = PBXGroup;
 			children = (
@@ -568,6 +599,7 @@
 			);
 			dependencies = (
 				60BD9C411ED3BD1F00CFAD3C /* PBXTargetDependency */,
+				60450BA71ED911EB001DA995 /* PBXTargetDependency */,
 			);
 			name = "FT中文网";
 			productName = "FT Academy";
@@ -611,6 +643,23 @@
 			productName = "FT Academy";
 			productReference = 507C7E741DB0BCE800A8EF50 /* FT中文网-iPad.app */;
 			productType = "com.apple.product-type.application";
+		};
+		60450BA01ED911EB001DA995 /* FT富媒体速递 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 60450BAB1ED911EB001DA995 /* Build configuration list for PBXNativeTarget "FT富媒体速递" */;
+			buildPhases = (
+				60450B9D1ED911EB001DA995 /* Sources */,
+				60450B9E1ED911EB001DA995 /* Frameworks */,
+				60450B9F1ED911EB001DA995 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "FT富媒体速递";
+			productName = "FT富媒体速递";
+			productReference = 60450BA11ED911EB001DA995 /* FT富媒体速递.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 		60BD9C351ED3BD1F00CFAD3C /* FT今日焦点 */ = {
 			isa = PBXNativeTarget;
@@ -674,6 +723,11 @@
 							};
 						};
 					};
+					60450BA01ED911EB001DA995 = {
+						CreatedOnToolsVersion = 8.3.1;
+						DevelopmentTeam = CAEDT8EKGV;
+						ProvisioningStyle = Automatic;
+					};
 					60BD9C351ED3BD1F00CFAD3C = {
 						CreatedOnToolsVersion = 8.3.1;
 						DevelopmentTeam = CAEDT8EKGV;
@@ -703,6 +757,7 @@
 				507C7E4B1DB0BCE800A8EF50 /* FT中文网-iPad */,
 				50256CAD1A4B9D0B005950B9 /* FT中文网Tests */,
 				60BD9C351ED3BD1F00CFAD3C /* FT今日焦点 */,
+				60450BA01ED911EB001DA995 /* FT富媒体速递 */,
 			);
 		};
 /* End PBXProject section */
@@ -754,6 +809,13 @@
 				507C7E761DB0BCF100A8EF50 /* LaunchScreen.xib in Resources */,
 				507C7E701DB0BCE800A8EF50 /* schedule.json in Resources */,
 				50E577D81DB754880016A73F /* close.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		60450B9F1ED911EB001DA995 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -933,6 +995,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		60450B9D1ED911EB001DA995 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				60450BA41ED911EB001DA995 /* NotificationService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		60BD9C321ED3BD1F00CFAD3C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -949,6 +1019,11 @@
 			isa = PBXTargetDependency;
 			target = 50256C981A4B9D0B005950B9 /* FT中文网 */;
 			targetProxy = 50256CAF1A4B9D0B005950B9 /* PBXContainerItemProxy */;
+		};
+		60450BA71ED911EB001DA995 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 60450BA01ED911EB001DA995 /* FT富媒体速递 */;
+			targetProxy = 60450BA61ED911EB001DA995 /* PBXContainerItemProxy */;
 		};
 		60BD9C411ED3BD1F00CFAD3C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1240,6 +1315,48 @@
 			};
 			name = Release;
 		};
+		60450BA91ED911EB001DA995 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = CAEDT8EKGV;
+				INFOPLIST_FILE = "FT富媒体速递/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ft.ftchinese.mobile.FT-----";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		60450BAA1ED911EB001DA995 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = CAEDT8EKGV;
+				INFOPLIST_FILE = "FT富媒体速递/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ft.ftchinese.mobile.FT-----";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
 		60BD9C441ED3BD1F00CFAD3C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1322,6 +1439,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		60450BAB1ED911EB001DA995 /* Build configuration list for PBXNativeTarget "FT富媒体速递" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				60450BA91ED911EB001DA995 /* Debug */,
+				60450BAA1ED911EB001DA995 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		60BD9C431ED3BD1F00CFAD3C /* Build configuration list for PBXNativeTarget "FT今日焦点" */ = {
 			isa = XCConfigurationList;

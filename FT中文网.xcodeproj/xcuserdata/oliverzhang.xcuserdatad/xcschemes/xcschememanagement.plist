@@ -19,6 +19,11 @@
 			<key>orderHint</key>
 			<integer>13</integer>
 		</dict>
+		<key>FT富媒体速递.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>14</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
@@ -33,6 +38,11 @@
 			<true/>
 		</dict>
 		<key>507C7E4B1DB0BCE800A8EF50</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>60450BA01ED911EB001DA995</key>
 		<dict>
 			<key>primary</key>
 			<true/>
