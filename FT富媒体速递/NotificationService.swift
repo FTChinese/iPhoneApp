@@ -38,7 +38,7 @@ class NotificationService: UNNotificationServiceExtension {
                 if let url = URL(string: urlStringFinal),
                     let data = NSData(contentsOf: url){
                     let path = NSTemporaryDirectory() + fileName
-                    // MARK: - Apple only supports certain types of media formats. You need to check before using one. 
+                    // MARK: - Apple only supports certain types of media formats. If the format is not supported, it will fall back to default notitication.
                     data.write(toFile: path, atomically: true)
                     print ("file downloaded")
                     do {
