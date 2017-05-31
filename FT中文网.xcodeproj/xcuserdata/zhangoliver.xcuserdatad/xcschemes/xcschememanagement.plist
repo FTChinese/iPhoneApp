@@ -25,6 +25,16 @@
 			<key>orderHint</key>
 			<integer>1</integer>
 		</dict>
+		<key>FT今日焦点.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>14</integer>
+		</dict>
+		<key>FT富媒体速递.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>15</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
@@ -44,6 +54,16 @@
 			<true/>
 		</dict>
 		<key>50C34C161BC664AD00C8A8CB</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>60450BA01ED911EB001DA995</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>60BD9C351ED3BD1F00CFAD3C</key>
 		<dict>
 			<key>primary</key>
 			<true/>
